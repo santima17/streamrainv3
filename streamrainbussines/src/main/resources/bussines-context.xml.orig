@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+<<<<<<< Updated upstream:streamrainuserbussines/src/main/resources/user-bussines-context.xml
+	<bean id="userBussines" class="com.tsi2.streamrain.bussines.user.implementations.DAOUserBussinesImpl" />
+	<bean id="categoryBussines" class="com.tsi2.streamrain.bussines.category.implementations.DAOCategoryBussinesImpl" />
+	<bean id="tenantBussines" class="com.tsi2.streamrain.bussines.tenant.implementations.DAOTenantBussinesImpl" />
+	<bean id="contentBussines" class="com.tsi2.streamrain.bussines.content.implementations.DAOContentBussinesImpl" />
+=======
+	<bean id="userBussines" class="com.tsi2.streamrain.bussines.user.implementations.BLUserImpl" />
+	<bean id="categoryBussines" class="com.tsi2.streamrain.bussines.category.implementations.BLCategoryImpl" />
+	<bean id="tenantBussines" class="com.tsi2.streamrain.bussines.tenant.implementations.BLTenantImpl" />
+
+>>>>>>> Stashed changes:streamrainbussines/src/main/resources/bussines-context.xml
+
+</beans>

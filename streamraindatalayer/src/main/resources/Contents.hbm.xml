@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 04/10/2017 11:03:07 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.tsi2.streamrain.model.generator.Contents" table="contents" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <property name="name" type="string">
+            <column name="name" length="100" not-null="true" unique="true" />
+        </property>
+        <property name="description" type="string">
+            <column name="description" length="250" />
+        </property>
+        <property name="type" type="string">
+            <column name="type" length="100" not-null="true" />
+        </property>
+        <property name="ranking" type="java.lang.Double">
+            <column name="ranking" precision="22" scale="0" />
+        </property>
+        <property name="coverPictureUrl" type="string">
+            <column name="cover_picture_url" length="150" not-null="true" />
+        </property>
+        <property name="storageUrl" type="string">
+            <column name="storage_url" length="150" not-null="true" />
+        </property>
+        <property name="isPayPerView" type="java.lang.Boolean">
+            <column name="is_pay_per_view" />
+        </property>
+        <set name="categorieses" table="content_categories" inverse="false" lazy="true" fetch="select">
+            <key>
+                <column name="id_content" not-null="true" />
+            </key>
+            <many-to-many entity-name="com.tsi2.streamrain.model.generator.Categories">
+                <column name="id_categorie" not-null="true" />
+            </many-to-many>
+        </set>
+        <set name="userFavses" table="user_favs" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="content_id" not-null="true" />
+            </key>
+            <one-to-many class="com.tsi2.streamrain.model.generator.UserFavs" />
+        </set>
+        <set name="contentCollectionses" table="content_collections" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="content_id" not-null="true" />
+            </key>
+            <one-to-many class="com.tsi2.streamrain.model.generator.ContentCollections" />
+        </set>
+        <set name="sharedContentses" table="shared_contents" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="content_id" not-null="true" />
+            </key>
+            <one-to-many class="com.tsi2.streamrain.model.generator.SharedContents" />
+        </set>
+        <set name="contentCastses" table="content_casts" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="content_id" not-null="true" />
+            </key>
+            <one-to-many class="com.tsi2.streamrain.model.generator.ContentCasts" />
+        </set>
+        <one-to-one name="alwaysAvailableContents" class="com.tsi2.streamrain.model.generator.AlwaysAvailableContents" cascade="save-update"></one-to-one>
+        <set name="contentsesForIdContent2" table="similar_contents" inverse="false" lazy="true" fetch="select">
+            <key>
+                <column name="id_content_1" not-null="true" />
+            </key>
+            <many-to-many entity-name="com.tsi2.streamrain.model.generator.Contents">
+                <column name="id_content_2" not-null="true" />
+            </many-to-many>
+        </set>
+        <set name="userViewses" table="user_views" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="content_id" not-null="true" />
+            </key>
+            <one-to-many class="com.tsi2.streamrain.model.generator.UserViews" />
+        </set>
+        <set name="contentsesForIdContent1" table="similar_contents" inverse="false" lazy="true" fetch="select">
+            <key>
+                <column name="id_content_2" not-null="true" />
+            </key>
+            <many-to-many entity-name="com.tsi2.streamrain.model.generator.Contents">
+                <column name="id_content_1" not-null="true" />
+            </many-to-many>
+        </set>
+        <set name="userPpvses" table="user_ppvs" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="content_id" not-null="true" />
+            </key>
+            <one-to-many class="com.tsi2.streamrain.model.generator.UserPpvs" />
+        </set>
+        <one-to-one name="liveOnlyContents" class="com.tsi2.streamrain.model.generator.LiveOnlyContents"></one-to-one>
+        <set name="featuredContentses" table="featured_contents" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="content_id" not-null="true" />
+            </key>
+            <one-to-many class="com.tsi2.streamrain.model.generator.FeaturedContents" />
+        </set>
+        <set name="userRatingses" table="user_ratings" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="content_id" not-null="true" />
+            </key>
+            <one-to-many class="com.tsi2.streamrain.model.generator.UserRatings" />
+        </set>
+    </class>
+</hibernate-mapping>

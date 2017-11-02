@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+  <session-factory>
+    <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+    <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/generator?zeroDateTimeBehavior=convertToNull</property>
+    <property name="hibernate.connection.username">root</property>
+    <property name="hibernate.connection.password">apagon23</property>
+    <property name="connection.autoReconnect">true</property>
+    <property name="connection.autoReconnectForPools">true</property>
+    <mapping resource="com/tsi2/streamrain/model/UserPpvs.hbm.xml"/>
+    <mapping resource="com/tsi2/streamrain/model/UserComments.hbm.xml"/>
+    <mapping resource="com/tsi2/streamrain/model/FeaturedContents.hbm.xml"/>
+    <mapping resource="com/tsi2/streamrain/model/ContentCollections.hbm.xml"/>
+    <mapping resource="com/tsi2/streamrain/model/UserViews.hbm.xml"/>
+    <mapping resource="com/tsi2/streamrain/model/UserFavs.hbm.xml"/>
+    <mapping resource="com/tsi2/streamrain/model/Categories.hbm.xml"/>
+    <mapping resource="com/tsi2/streamrain/model/ContentCasts.hbm.xml"/>
+    <mapping resource="com/tsi2/streamrain/model/SpoilerMarks.hbm.xml"/>
+    <mapping resource="com/tsi2/streamrain/model/AlwaysAvailableContents.hbm.xml"/>
+    <mapping resource="com/tsi2/streamrain/model/UserSubscriptions.hbm.xml"/>
+    <mapping resource="com/tsi2/streamrain/model/Collections.hbm.xml"/>
+    <mapping resource="com/tsi2/streamrain/model/LiveOnlyContents.hbm.xml"/>
+    <mapping resource="com/tsi2/streamrain/model/UserUnfavs.hbm.xml"/>
+    <mapping resource="com/tsi2/streamrain/model/Contents.hbm.xml"/>
+    <mapping resource="com/tsi2/streamrain/model/PaymentMethods.hbm.xml"/>
+    <mapping resource="com/tsi2/streamrain/model/UserChatMessges.hbm.xml"/>
+    <mapping resource="com/tsi2/streamrain/model/Users.hbm.xml"/>
+    <mapping resource="com/tsi2/streamrain/model/UserRatings.hbm.xml"/>
+    <mapping resource="com/tsi2/streamrain/model/FeaturedCollections.hbm.xml"/>
+  </session-factory>
+</hibernate-configuration>

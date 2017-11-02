@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 26/09/2017 05:05:13 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.tsi2.streamrain.model.Users" table="users" catalog="generator" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <property name="email" type="string">
+            <column name="email" length="100" not-null="true" unique="true" />
+        </property>
+        <property name="nickname" type="string">
+            <column name="nickname" length="45" not-null="true" unique="true" />
+        </property>
+        <property name="password" type="string">
+            <column name="password" length="45" not-null="true" />
+        </property>
+        <property name="isBanned" type="java.lang.Boolean">
+            <column name="is_banned?" />
+        </property>
+        <property name="country" type="string">
+            <column name="country" length="100" not-null="true" />
+        </property>
+        <property name="city" type="string">
+            <column name="city" length="100" not-null="true" />
+        </property>
+        <property name="facebookUserId" type="string">
+            <column name="facebook_user_id" length="45" unique="true" />
+        </property>
+        <property name="twitterUserId" type="string">
+            <column name="twitter_user_id" length="45" unique="true" />
+        </property>
+        <property name="integratorId" type="string">
+            <column name="integrator_id" length="45" />
+        </property>
+        <set name="userChatMessgeses" table="chat_message_receivers" inverse="false" lazy="true" fetch="select">
+            <key>
+                <column name="user_id" not-null="true" />
+            </key>
+            <many-to-many entity-name="com.tsi2.streamrain.model.UserChatMessges">
+                <column name="user_chat_message_id" not-null="true" />
+            </many-to-many>
+        </set>
+        <set name="userChatMessgeses_1" table="user_chat_messges" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="user_id" not-null="true" />
+            </key>
+            <one-to-many class="com.tsi2.streamrain.model.UserChatMessges" />
+        </set>
+        <set name="userCommentses" table="user_comments" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="user_id" not-null="true" />
+            </key>
+            <one-to-many class="com.tsi2.streamrain.model.UserComments" />
+        </set>
+        <set name="userUnfavses" table="user_unfavs" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="user_id" not-null="true" />
+            </key>
+            <one-to-many class="com.tsi2.streamrain.model.UserUnfavs" />
+        </set>
+        <set name="spoilerMarkses" table="spoiler_marks" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="user_id" not-null="true" />
+            </key>
+            <one-to-many class="com.tsi2.streamrain.model.SpoilerMarks" />
+        </set>
+        <set name="userFavses" table="user_favs" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="user_id" not-null="true" />
+            </key>
+            <one-to-many class="com.tsi2.streamrain.model.UserFavs" />
+        </set>
+        <set name="userViewses" table="user_views" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="user_id" not-null="true" />
+            </key>
+            <one-to-many class="com.tsi2.streamrain.model.UserViews" />
+        </set>
+        <set name="userRatingses" table="user_ratings" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="user_id" not-null="true" />
+            </key>
+            <one-to-many class="com.tsi2.streamrain.model.UserRatings" />
+        </set>
+        <set name="userPpvses" table="user_ppvs" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="user_id" not-null="true" />
+            </key>
+            <one-to-many class="com.tsi2.streamrain.model.UserPpvs" />
+        </set>
+        <set name="userSubscriptionses" table="user_subscriptions" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="user_id" not-null="true" />
+            </key>
+            <one-to-many class="com.tsi2.streamrain.model.UserSubscriptions" />
+        </set>
+    </class>
+</hibernate-mapping>

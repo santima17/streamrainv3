@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 26/09/2017 05:05:13 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.tsi2.streamrain.model.UserChatMessges" table="user_chat_messges" catalog="generator" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="liveOnlyContents" class="com.tsi2.streamrain.model.LiveOnlyContents" fetch="select">
+            <column name="content_id" not-null="true" />
+        </many-to-one>
+        <many-to-one name="users" class="com.tsi2.streamrain.model.Users" fetch="select">
+            <column name="user_id" not-null="true" />
+        </many-to-one>
+        <property name="date" type="timestamp">
+            <column name="date" length="19" not-null="true" />
+        </property>
+        <property name="text" type="string">
+            <column name="text" length="150" not-null="true" />
+        </property>
+        <property name="isDeleted" type="java.lang.Boolean">
+            <column name="is_deleted?" />
+        </property>
+        <set name="userses" table="chat_message_receivers" inverse="false" lazy="true" fetch="select">
+            <key>
+                <column name="user_chat_message_id" not-null="true" />
+            </key>
+            <many-to-many entity-name="com.tsi2.streamrain.model.Users">
+                <column name="user_id" not-null="true" />
+            </many-to-many>
+        </set>
+    </class>
+</hibernate-mapping>

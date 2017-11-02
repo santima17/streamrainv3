@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 26/09/2017 05:05:13 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.tsi2.streamrain.model.ContentCasts" table="content_casts" catalog="generator" optimistic-lock="version">
+        <composite-id name="id" class="com.tsi2.streamrain.model.ContentCastsId">
+            <key-property name="contentId" type="int">
+                <column name="content_id" />
+            </key-property>
+            <key-property name="firstName" type="string">
+                <column name="first_name" length="45" />
+            </key-property>
+            <key-property name="lastName" type="string">
+                <column name="last_name" length="45" />
+            </key-property>
+        </composite-id>
+        <many-to-one name="contents" class="com.tsi2.streamrain.model.Contents" update="false" insert="false" fetch="select">
+            <column name="content_id" not-null="true" />
+        </many-to-one>
+        <property name="coverPhotoUrl" type="string">
+            <column name="cover_photo_url" length="150" />
+        </property>
+        <property name="isActor" type="java.lang.Boolean">
+            <column name="is_actor?" />
+        </property>
+        <property name="isDirector" type="java.lang.Boolean">
+            <column name="is_director?" />
+        </property>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 04/10/2017 11:03:07 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.tsi2.streamrain.model.generator.ContentCollections" table="content_collections" optimistic-lock="version">
+        <composite-id name="id" class="com.tsi2.streamrain.model.generator.ContentCollectionsId">
+            <key-property name="collectionId" type="int">
+                <column name="collection_id" />
+            </key-property>
+            <key-property name="contentId" type="int">
+                <column name="content_id" />
+            </key-property>
+        </composite-id>
+        <many-to-one name="collections" class="com.tsi2.streamrain.model.generator.Collections" update="false" insert="false" fetch="select">
+            <column name="collection_id" not-null="true" />
+        </many-to-one>
+        <many-to-one name="contents" class="com.tsi2.streamrain.model.generator.Contents" update="false" insert="false" fetch="select">
+            <column name="content_id" not-null="true" />
+        </many-to-one>
+        <property name="number" type="int">
+            <column name="number" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

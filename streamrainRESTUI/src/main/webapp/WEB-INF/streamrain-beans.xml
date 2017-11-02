@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns="http://www.springframework.org/schema/beans"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<import resource="streamrain-mvc-config.xml" />
+
+	<!-- Scans within the base package of the application for @Component classes 
+		to configure as beans -->
+	<context:component-scan base-package="com.tsi2.streamrain.*" />
+
+	<context:property-placeholder location="classpath:application.properties" />
+
+	<bean id="userService"
+		class="com.tsi2.streamrain.services.user.implementations.UserServiceImpl" />
+
+	<bean id="categoryService"
+		class="com.tsi2.streamrain.services.category.implementations.CategoryServiceImpl" />
+
+	<bean id="tenantService"
+		class="com.tsi2.streamrain.services.tenants.implementations.TenantServiceImpl" />
+		
+	<bean id="contentService"
+		class="com.tsi2.streamrain.services.content.implementations.ContentServiceImpl" />
+
+	<bean id="connectionFactoryTwitter"
+		class="org.springframework.social.twitter.connect.TwitterConnectionFactory">
+		<constructor-arg index="0" value="${twitter.consumer.key}" />
+		<constructor-arg index="1" value="${twitter.consumer.secret}" />
+	</bean>
+
+	<bean id="generatorAuthenticationManager"
+		class="com.tsi2.streamrain.security.authentication.managers.GeneratorAuthenticationManager"/>
+
+	<bean id="administratorAuthenticationManager"
+		class="com.tsi2.streamrain.security.authentication.managers.AdministratorAuthenticationManager" />
+
+	<bean id="userAuthenticationManager"
+		class="com.tsi2.streamrain.security.authentication.managers.UserAuthenticationManager" />
+
+
+</beans>
