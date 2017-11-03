@@ -16,22 +16,21 @@
           <p class="text-danger">Conectando...</p>
         </div>
         <div v-if="catalog != null">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Description</th>
-                <th>Type</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(streaming, index) in catalog" :key="index">
-                <td>{{ streaming.id }}</td>
-                <td>{{ streaming.description }}</td>
-                <td><p class="text-danger">{{ streaming.type }}</p></td>
-              </tr>
-            </tbody>
-          </table>
+          <ul class="list-inline">
+            <li v-for="(streaming, index) in catalog" :key="index">
+              <div class="panel panel-info">
+                <div class="panel-heading">
+                  <h2 class="panel-title">{{ streaming.description }}</h2>
+                  <strong class="panel-title text-right">{{ (streaming.type).toUpperCase() }}</strong>
+                </div>
+                <div class="panel-body text-center">
+                  <p>Image</p>
+                  <hr>
+                  <button class="btn btn-info">Ver ahora!</button>
+                </div>
+              </div>
+            </li>
+          </ul>
         </div>
         <hr>
       </div>

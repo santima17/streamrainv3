@@ -67,7 +67,7 @@ const routes = [
     component: Catalog,
     props: {
       tenant,
-      eventBus     
+      eventBus
     },
     meta: {
       title: `${tenant} | Catalog`
