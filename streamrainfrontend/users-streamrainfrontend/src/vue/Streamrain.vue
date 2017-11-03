@@ -23,7 +23,7 @@
         </div>
       </div>
     </nav>
-    <router-view></router-view>
+    <router-view :janusAlert="janusAlert"></router-view>
     <streamrain-janus :backend="backend" :eventBus="eventBus"></streamrain-janus>
     <footer class="container-fluid text-center">
       <p>Streamrain {{ tenant }} footer</p>
@@ -34,14 +34,30 @@
 <script>
   import Janus from './streaming/janus/Janus.vue';
   export default {
+    name: 'streamrain',
     props: [
       'tenant',
       'backend',
       'eventBus'
     ],
-    name: 'streamrain',
     components: {
       'streamrain-janus': Janus
+    },
+    data () {
+      return {
+        janusAlert: null
+      }
+    },
+    created () {
+      const updateJanusAlert = this.updateJanusAlert;
+      this.eventBus.$on('setJanusAlert', function (janusAlert) {
+        updateJanusAlert(janusAlert);
+      });
+    },
+    methods: {
+      updateJanusAlert: function (janusAlert) {
+        this.janusAlert = janusAlert;
+      }
     }
   }
 </script>

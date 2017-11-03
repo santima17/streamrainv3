@@ -15,13 +15,10 @@
       });
       const eventBus = this.eventBus;
       const janusUpdateStreamsList = this.janusUpdateStreamsList;
-      const started = this.started;
       eventBus.$on('getJanusStreamsList', function () {
-        if (started) {
-          janusUpdateStreamsList(function (result) {
-            eventBus.$emit('setJanusStreamsList', result);
-          });
-        }
+        janusUpdateStreamsList(function (result) {
+          eventBus.$emit('setJanusStreamsList', result);
+        });
       });
     },
     data () {
@@ -58,23 +55,22 @@
       },
       // JANUS
       janusInit: function () {
-        let eventBus = this.eventBus;
-        let started = this.started;
-        let server = this.server;
-        let userToken = this.userToken;
+        const eventBus = this.eventBus;
+        const started = this.started;
+        const server = this.server;
+        const userToken = this.userToken;
+        const opaqueId = this.opaqueId;
+        const updateStarted = this.updateStarted;
+        const updateStreamingHandle = this.updateStreamingHandle;
+        const janusUpdateStreamsList = this.janusUpdateStreamsList;
         let janus = this.janus;
-        let opaqueId = this.opaqueId;
-        let updateStarted = this.updateStarted;
-        let updateStreamingHandle = this.updateStreamingHandle;
-        let janusUpdateStreamsList = this.janusUpdateStreamsList;
         Janus.init({
           debug: "all",
           callback: function() {
             // Use a button to start the demo
             if(started)
               return;
-            started = true;
-            updateStarted(started);
+            updateStarted(true);
             // Make sure the browser supports WebRTC
             if(!Janus.isWebrtcSupported()) {
               Janus.log("No WebRTC support... ");
@@ -111,6 +107,9 @@
               },
               error: function(error) {
                 Janus.error(error);
+                eventBus.$emit('setJanusAlert', {
+                  message: `Janus ${error}`
+                });
               },
               destroyed: function() {
                 window.location.reload();
@@ -120,23 +119,27 @@
         });
       },
       janusUpdateStreamsList: function (callback) {
-        let streamingHandle = this.streamingHandle;
-        Janus.debug('Sending message (List Streams)');
-        streamingHandle.send({
-          message: {
-            request: 'list'
-          },
-          success: (result) => {
-            if (result === null || result === undefined) {
-              Janus.error('Got no response to our query for available streams');
-              return callback(null);
+        const streamingHandle = this.streamingHandle;
+        if (streamingHandle) {
+          Janus.debug('Sending message (List Streams)');
+          streamingHandle.send({
+            message: {
+              request: 'list'
+            },
+            success: (result) => {
+              if (result === null || result === undefined) {
+                Janus.error('Got no response to our query for available streams');
+                return callback(null);
+              }
+              if (result['list'] !== undefined && result['list'] !== null) {
+                Janus.log('Got a list of available streams');
+                return callback(result['list']);
+              }
             }
-            if (result['list'] !== undefined && result['list'] !== null) {
-              Janus.log('Got a list of available streams');
-              return callback(result['list']);
-            }
-          }
-        });
+          });
+        } else {
+          return callback(null);
+        }
       },
     }
   }

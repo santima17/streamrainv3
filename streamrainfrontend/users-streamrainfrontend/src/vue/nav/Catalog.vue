@@ -3,9 +3,16 @@
     <div class="row content">
       <div class="col-sm-2 sidenav">
       </div>
-      <div class="col-sm-8 text-left"> 
+      <div class="col-sm-8 text-left">
+        <div class="row content" v-if="janusAlert">
+          <div class="alert alert-dismissible alert-warning">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <p><strong>Oops!</strong></p>
+            <p>{{ janusAlert.message }}</p>
+          </div>
+        </div>
         <h1>{{ tenant }} Catalog</h1>
-        <div v-if="catalog === null">
+        <div v-if="!catalog && !janusAlert">
           <p class="text-danger">Conectando...</p>
         </div>
         <div v-if="catalog != null">
@@ -38,7 +45,8 @@
   export default {
     props: [
       'tenant',
-      'eventBus'
+      'eventBus',
+      'janusAlert'
     ],
     data () {
       return {
@@ -47,16 +55,15 @@
     },
     created () {
       const updateCatalog = this.updateCatalog;
-      const eventBus = this.eventBus;
-      eventBus.$emit('getJanusStreamsList', null);
-      eventBus.$on('setJanusStreamsList', function (result) {
+      this.eventBus.$emit('getJanusStreamsList', null);
+      this.eventBus.$on('setJanusStreamsList', function (result) {
         updateCatalog(result);
       });
     },
     methods: {
       updateCatalog: function (catalog) {
         this.catalog = catalog;
-      },
+      }
     }
   }
 </script>
