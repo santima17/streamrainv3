@@ -33,7 +33,8 @@
 <script>
   export default {
     props: [
-      'tenant'
+      'tenant',
+      'backend'
     ],
     name: 'streamrain'
   }
