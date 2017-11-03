@@ -1,6 +1,7 @@
 package com.tsi2.streamrain.datatypes.content;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -23,6 +24,11 @@ public class ContentDto {
     private Integer duration;
     private Date dateStart;
     private Integer estimatedDuraction;
+    private List<Integer> idCategories;
+    private Boolean featured;
+    private Date featuredDateStart;
+    private Date featuredDateFinish;
+    private String tenantId;
     
 	public Integer getId() {
 		return id;
@@ -122,5 +128,35 @@ public class ContentDto {
 	public void setAlwaysAvailable(Boolean alwaysAvailable) {
 		this.alwaysAvailable = alwaysAvailable;
 	}
-						    
+	public List<Integer> getIdCategories() {
+		return idCategories;
+	}
+	public void setIdCategories(List<Integer> idCategories) {
+		this.idCategories = idCategories;
+	}
+	public String getTenantId() {
+		return tenantId;
+	}
+	public void setTenantId(String tenantId) {
+		this.tenantId = tenantId;
+	}
+	public Boolean getFeatured() {
+		return featured;
+	}
+	public void setFeatured(Boolean featured) {
+		this.featured = featured;
+	}
+	public Date getFeaturedDateStart() {
+		return featuredDateStart;
+	}
+	public void setFeaturedDateStart(Date featuredDateStart) {
+		this.featuredDateStart = featuredDateStart;
+	}
+	public Date getFeaturedDateFinish() {
+		return featuredDateFinish;
+	}
+	public void setFeaturedDateFinish(Date featuredDateFinish) {
+		this.featuredDateFinish = featuredDateFinish;
+	}
+									    
 }

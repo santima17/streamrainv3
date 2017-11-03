@@ -81,6 +81,19 @@
 		        	}
 			    });
 			});
+
+			$(function() {
+				$('#featuredCheck').on('click', function(){
+					var x = $(this).is(':checked');
+					if (x == true){
+			    		$('#featuredStart').show();
+		        		$('#featuredFinish').show();
+				    }else{
+				    	$('#featuredStart').hide();
+		        		$('#featuredFinish').hide();
+					}
+				});	    
+			});
 		 
 		</script>
 	</head>
@@ -142,6 +155,14 @@
 			           <td><form:input type="file" path="video"/></td>
 			        </tr>
 			        <tr>
+			        	<td>Categories:</td>
+			        	<td>
+					        <form:select multiple="true" path="idCategories">
+							    <form:options items="${categoriesOptionList}" itemValue="id" itemLabel="name"/>
+							</form:select>
+						</td>
+					</tr>
+			        <tr>
 						<td>Directors:</td>
 				        <td> 
 					        <table id="tabla">
@@ -188,7 +209,21 @@
 					<tr>
 			           <td>Pay Per View(PPV):</td>
 			           <td><form:checkbox path="isPayPerView"/></td>
-			        </tr>        
+			        </tr>    
+			        <tr>
+			           <td>Featured:</td>
+			           <td><form:checkbox id="featuredCheck" path="featured"/></td>
+			        </tr>
+			        <tr id="featuredStart" style="display:none">
+						<td>Date Start:</td>
+						<td><form:input type="date" path="featuredDateStart" /></td>
+						<td><form:errors path="featuredDateStart" cssClass="fielderror"/></td>
+					</tr>   
+					<tr id="featuredFinish" style="display:none">
+						<td>Date Finish:</td>
+						<td><form:input type="date" path="featuredDateFinish" /></td>
+						<td><form:errors path="featuredDateFinish" cssClass="fielderror"/></td>
+					</tr>   
 					<tr>
 						<td colspan="3"><input type="submit" value="Create" /></td>
 					</tr>

@@ -1,5 +1,7 @@
 package com.tsi2.streamrain.services.category.implementations;
 
+import java.util.List;
+
 import com.tsi.streamrain.datatypes.category.CategoryDto;
 import com.tsi2.streamrain.bussines.category.implementations.BLCategoryImpl;
 import com.tsi2.streamrain.bussines.category.interfaces.IBLCategory;
@@ -17,6 +19,13 @@ public class CategoryServiceImpl implements ICategoryService {
 		IConverter catConverter = (CategoryConverter)StremRainFacadesContextLoader.contextLoader().getBean("categoryConverter");
 		daoService.saveCategory((Categories)catConverter.deConverter(c), tenantID);
 		return true;
+	}
+
+	public List<CategoryDto> getAllCategories(String tenantID) {
+		IBLCategory daoService = (BLCategoryImpl) StremRainUserBussinesContextLoader.contextLoader().getBean("categoryBussines");
+		IConverter catConverter = (CategoryConverter)StremRainFacadesContextLoader.contextLoader().getBean("categoryConverter");
+		List<Categories> list = daoService.loadAllCategories(tenantID);
+		return (List<CategoryDto>)catConverter.convertAll(list);
 	}
 	
 }

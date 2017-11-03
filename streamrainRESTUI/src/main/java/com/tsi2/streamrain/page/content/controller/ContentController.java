@@ -3,7 +3,6 @@ package com.tsi2.streamrain.page.content.controller;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -25,9 +24,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.tsi.streamrain.datatypes.category.CategoryDto;
 import com.tsi2.streamrain.datatypes.content.ContentCastDto;
 import com.tsi2.streamrain.datatypes.content.ContentDto;
+import com.tsi2.streamrain.services.category.interfaces.ICategoryService;
 import com.tsi2.streamrain.services.content.interfaces.IContentService;
+import com.tsi2.streamrain.services.tenants.interfaces.ITenantService;
 
 @Controller
 public class ContentController {
@@ -38,10 +40,17 @@ public class ContentController {
 	@Autowired
 	IContentService contentService;
 	
+	@Autowired
+	ICategoryService categoryService;
+	
+	@Autowired
+	ITenantService tenantService;
+	
 	private static final String CONTENT_PREFIX = "/generator/content/";
 		
 	@RequestMapping(value = "/{tenant}/portal/createContent", method = RequestMethod.GET)
-	public String showCreateContent () {		
+	public String showCreateContent (@PathVariable("tenant") String tenant) {	
+		tenantService.setCurrentTenant(tenant);
 		return CONTENT_PREFIX + "createContent";
 	}
 	
@@ -51,6 +60,7 @@ public class ContentController {
 		//	return CONTENT_PREFIX + "createContent";
 		//}
 		try {
+			contentDto.setTenantId(tenant);
 			String pictureName = recordFile(contentDto.getPicture());
 			contentDto.setCoverPictureUrl(pictureName);
 			String videoName = recordFile(contentDto.getVideo());
@@ -95,6 +105,12 @@ public class ContentController {
 				}
     		}
     	}
+	}
+	
+	
+	@ModelAttribute("categoriesOptionList")
+	public List<CategoryDto> populateCategoriesList() {
+		return categoryService.getAllCategories("generator1");
 	}
 	
 	@ModelAttribute("typeList")

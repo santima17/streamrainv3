@@ -16,4 +16,6 @@
 	
 	<bean id="contentCastConverter" class="com.tsi2.streamrain.converters.content.ContentCastConverter" />
 	
+	<bean id="daoService" class="com.tsi2.streamrain.dao.implementations.StreamRainMySQLDAO"/>
+	
 </beans>

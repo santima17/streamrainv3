@@ -4,18 +4,24 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.tsi2.streamrain.context.StremRainDataContextLoader;
 import com.tsi2.streamrain.converters.interfaces.IConverter;
+import com.tsi2.streamrain.dao.implementations.StreamRainMySQLDAO;
+import com.tsi2.streamrain.dao.interfaces.IDAOService;
 import com.tsi2.streamrain.datatypes.content.ContentCastDto;
 import com.tsi2.streamrain.datatypes.content.ContentDto;
 import com.tsi2.streamrain.model.generator.AlwaysAvailableContents;
+import com.tsi2.streamrain.model.generator.Categories;
 import com.tsi2.streamrain.model.generator.ContentCasts;
 import com.tsi2.streamrain.model.generator.ContentCastsId;
 import com.tsi2.streamrain.model.generator.Contents;
+import com.tsi2.streamrain.model.generator.FeaturedContents;
 import com.tsi2.streamrain.model.generator.LiveOnlyContents;
 
 public class ContentConverter implements IConverter<ContentDto, Contents>{
 
 	//IConverter contentCastConverter = (ContentCastConverter)StremRainFacadesContextLoader.contextLoader().getBean("contentCastConverter");
+	IDAOService daoService = (StreamRainMySQLDAO) StremRainDataContextLoader.contextLoader().getBean("daoService");
 	
 	public ContentDto converter(Contents source) {
 		// TODO Auto-generated method stub
@@ -54,12 +60,18 @@ public class ContentConverter implements IConverter<ContentDto, Contents>{
 		Set<ContentCasts> actors = deConvertAllContentCasts(source.getActors());
 		Set<ContentCasts> directors = deConvertAllContentCasts(source.getDirectors());
 		actors.addAll(directors);
-		//contents.setContentCastses(new HashSet<ContentCasts>());
-		//for(ContentCasts cast:actors) {
-		//	cast.setContents(contents);
-			//contents.getContentCastses().add(cast);
-		//}
-		//contents.setContentCastses(actors);
+		
+		for(ContentCasts cast:actors) {
+			cast.setContents(contents);
+		}
+		contents.setContentCastses(actors);
+		
+		Set<Categories> categories = new HashSet<Categories>();
+		for(Integer idCategory : source.getIdCategories()) {
+			Categories cat = daoService.get(Categories.class, idCategory, source.getTenantId());
+			categories.add(cat);
+		}
+		contents.setCategorieses(categories);
 		
 		if (source.getAlwaysAvailable()) {
 			AlwaysAvailableContents alwaysAvailableContents = new AlwaysAvailableContents();
@@ -71,7 +83,17 @@ public class ContentConverter implements IConverter<ContentDto, Contents>{
 			liveOnlyContents.setDateStart(source.getDateStart());
 			liveOnlyContents.setEstimatedDuraction(source.getEstimatedDuraction());
 			contents.setLiveOnlyContents(liveOnlyContents);
-			//liveOnlyContents.setContents(contents);
+			liveOnlyContents.setContents(contents);
+		}
+		
+		if (source.getFeatured()) {
+			FeaturedContents featuredContents = new FeaturedContents();
+			featuredContents.setDateStart(source.getFeaturedDateStart());
+			featuredContents.setDateFinish(source.getFeaturedDateFinish());
+			featuredContents.setContents(contents);
+			Set<FeaturedContents> featuresList = new HashSet<FeaturedContents>();
+			featuresList.add(featuredContents);
+			contents.setFeaturedContentses(featuresList);
 		}
 				
 		return contents;

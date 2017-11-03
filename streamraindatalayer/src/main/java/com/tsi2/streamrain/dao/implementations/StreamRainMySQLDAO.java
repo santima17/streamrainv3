@@ -29,7 +29,7 @@ public class StreamRainMySQLDAO implements IDAOService{
        dbSession.delete(object);
     }
 
-    public <T> T get(final Class<T> type, final Long id, final String tenantID){
+    public <T> T get(final Class<T> type, final Integer id, final String tenantID){
        Session dbSession = DBHibernateUtil.getSessionFactoryGenerator(tenantID);
        return (T) dbSession.get(type, id);
     }

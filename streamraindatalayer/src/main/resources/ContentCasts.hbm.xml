@@ -15,7 +15,7 @@
                 <column name="last_name" length="45" />
             </key-property>
         </composite-id>
-        <many-to-one name="contents" class="com.tsi2.streamrain.model.generator.Contents" update="false" insert="false" fetch="select">
+        <many-to-one name="contents" class="com.tsi2.streamrain.model.generator.Contents" update="false" insert="false" >
             <column name="content_id" not-null="true" />
         </many-to-one>
         <property name="coverPhotoUrl" type="string">
