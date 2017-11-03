@@ -18,6 +18,8 @@ const tenant = 'Default Tenant';
 const backend = 'http://localhost:3002';
 // ======================================================
 
+const eventBus = new Vue();
+
 const routes = [
   {
     path: '/notFound',
@@ -64,7 +66,8 @@ const routes = [
     path: '/catalog',
     component: Catalog,
     props: {
-      tenant
+      tenant,
+      eventBus
     },
     meta: {
       title: `${tenant} | Catalog`
@@ -92,7 +95,8 @@ new Vue({
   render: h => h(Streamrain, {
     props: {
       tenant,
-      backend
+      backend,
+      eventBus
     }
   })
 })

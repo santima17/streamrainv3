@@ -24,6 +24,7 @@
       </div>
     </nav>
     <router-view></router-view>
+    <streamrain-janus :backend="backend" :eventBus="eventBus"></streamrain-janus>
     <footer class="container-fluid text-center">
       <p>Streamrain {{ tenant }} footer</p>
     </footer>
@@ -31,11 +32,16 @@
 </template>
 
 <script>
+  import Janus from './streaming/janus/Janus.vue';
   export default {
     props: [
       'tenant',
-      'backend'
+      'backend',
+      'eventBus'
     ],
-    name: 'streamrain'
+    name: 'streamrain',
+    components: {
+      'streamrain-janus': Janus
+    }
   }
 </script>

@@ -202,7 +202,7 @@ Janus.init = function(options) {
 		}
 		Janus.log("Initializing library");
 
-		var usedDependencies = options.dependencies || Janus.useDefaultDependencies();
+		var usedDependencies = options.dependencies || Janus.useOldDependencies();
 		Janus.isArray = usedDependencies.isArray;
 		Janus.webRTCAdapter = usedDependencies.webRTCAdapter;
 		Janus.httpAPICall = usedDependencies.httpAPICall;
@@ -304,8 +304,11 @@ Janus.randomString = function(len) {
 	return randomString;
 }
 
+// STREAMRAIN
+export default Janus;
 
-function Janus(gatewayCallbacks) {
+// STREAMRAIN
+export function Janus(gatewayCallbacks) {
 	if(Janus.initDone === undefined) {
 		gatewayCallbacks.error("Library not initialized");
 		return {};
