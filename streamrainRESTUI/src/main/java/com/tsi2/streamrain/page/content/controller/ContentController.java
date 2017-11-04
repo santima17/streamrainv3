@@ -113,6 +113,11 @@ public class ContentController {
 		return categoryService.getAllCategories("generator1");
 	}
 	
+	@ModelAttribute("contentsOptionList")
+	public List<ContentDto> populateSimilarContentList() {
+		return contentService.getAllContents("generator1");
+	}
+	
 	@ModelAttribute("typeList")
 	public Map<Integer, String> populateTypeList() {
 		Map<Integer, String> types = new HashMap<>();

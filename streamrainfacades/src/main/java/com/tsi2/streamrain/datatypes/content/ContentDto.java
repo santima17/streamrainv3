@@ -29,11 +29,10 @@ public class ContentDto {
     private Integer duration;
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(iso = ISO.DATE)
-    //@Temporal(TemporalType.TIMESTAMP)
-    //@DateTimeFormat(iso = ISO.DATE_TIME)
     private Date dateStart;
     private Integer estimatedDuraction;
     private List<Integer> idCategories;
+    private List<Integer> idSimilarContents;
     private Boolean featured;
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(iso = ISO.DATE)
@@ -171,5 +170,11 @@ public class ContentDto {
 	public void setFeaturedDateFinish(Date featuredDateFinish) {
 		this.featuredDateFinish = featuredDateFinish;
 	}
-									    
+	public List<Integer> getIdSimilarContents() {
+		return idSimilarContents;
+	}
+	public void setIdSimilarContents(List<Integer> idSimilarContents) {
+		this.idSimilarContents = idSimilarContents;
+	}
+										    
 }

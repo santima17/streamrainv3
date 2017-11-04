@@ -207,6 +207,14 @@
 						</td>
 					</tr>
 					<tr>
+			        	<td>Similar Contents:</td>
+			        	<td>
+					        <form:select multiple="true" path="idSimilarContents">
+							    <form:options items="${contentsOptionList}" itemValue="id" itemLabel="name"/>
+							</form:select>
+						</td>
+					</tr>
+					<tr>
 			           <td>Pay Per View(PPV):</td>
 			           <td><form:checkbox path="isPayPerView"/></td>
 			        </tr>    

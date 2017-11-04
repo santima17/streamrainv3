@@ -1,5 +1,7 @@
 package com.tsi2.streamrain.services.content.implementations;
 
+import java.util.List;
+
 import com.tsi2.streamrain.bussines.content.implementations.BLContentImpl;
 import com.tsi2.streamrain.bussines.content.interfaces.IBLContent;
 import com.tsi2.streamrain.context.StremRainFacadesContextLoader;
@@ -17,6 +19,13 @@ public class ContentServiceImpl implements IContentService{
 		IConverter contentConverter = (ContentConverter)StremRainFacadesContextLoader.contextLoader().getBean("contentConverter");
 		daoService.saveContent((Contents)contentConverter.deConverter(content), tenantID);
 		return true;
+	}
+
+	public List<ContentDto> getAllContents(String tenantID) {
+		IBLContent daoService = (BLContentImpl) StremRainUserBussinesContextLoader.contextLoader().getBean("contentBussines");
+		IConverter contentConverter = (ContentConverter)StremRainFacadesContextLoader.contextLoader().getBean("contentConverter");
+		List<Contents> list = daoService.getAllContents(tenantID);
+		return (List<ContentDto>)contentConverter.convertAll(list);
 	}
 
 }

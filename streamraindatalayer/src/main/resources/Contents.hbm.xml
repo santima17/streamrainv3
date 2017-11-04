@@ -76,7 +76,7 @@
             </key>
             <one-to-many class="com.tsi2.streamrain.model.generator.UserViews" />
         </set>
-        <set name="contentsesForIdContent1" table="similar_contents" inverse="false" lazy="true" fetch="select">
+        <set name="contentsesForIdContent1" table="similar_contents" inverse="false" lazy="true" fetch="select" cascade="all">
             <key>
                 <column name="id_content_2" not-null="true" />
             </key>
