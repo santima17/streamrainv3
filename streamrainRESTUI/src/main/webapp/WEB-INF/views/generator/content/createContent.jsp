@@ -138,7 +138,7 @@
 					</tr>
 					<tr id="dateStart" style="display:none">
 						<td>Date Start:</td>
-						<td><form:input type="date" path="dateStart" /></td>
+						<td><form:input type="date" path="dateStart"/></td>
 						<td><form:errors path="dateStart" cssClass="fielderror"/></td>
 					</tr>
 					<tr id="estimatedDuration" style="display:none">

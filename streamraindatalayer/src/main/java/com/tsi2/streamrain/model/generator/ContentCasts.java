@@ -9,8 +9,10 @@ package com.tsi2.streamrain.model.generator;
 public class ContentCasts  implements java.io.Serializable {
 
 
-     private ContentCastsId id;
+	 private Integer id;
      private Contents contents;
+     private String firstName;
+     private String lastName;
      private String coverPhotoUrl;
      private Boolean isActor;
      private Boolean isDirector;
@@ -19,26 +21,47 @@ public class ContentCasts  implements java.io.Serializable {
     }
 
 	
-    public ContentCasts(ContentCastsId id, Contents contents) {
-        this.id = id;
-        this.contents = contents;
-    }
-    public ContentCasts(ContentCastsId id, Contents contents, String coverPhotoUrl, Boolean isActor, Boolean isDirector) {
-       this.id = id;
+    public ContentCasts(Contents contents, String firstName, String lastName, String coverPhotoUrl, Boolean isActor, Boolean isDirector) {
        this.contents = contents;
+       this.firstName = firstName;
+       this.lastName = lastName;
        this.coverPhotoUrl = coverPhotoUrl;
        this.isActor = isActor;
        this.isDirector = isDirector;
     }
    
-    public ContentCastsId getId() {
-        return this.id;
-    }
     
-    public void setId(ContentCastsId id) {
-        this.id = id;
-    }
-    public Contents getContents() {
+    public Integer getId() {
+		return id;
+	}
+
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	
+	public String getFirstName() {
+		return firstName;
+	}
+
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+
+	public String getLastName() {
+		return lastName;
+	}
+
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+
+	public Contents getContents() {
         return this.contents;
     }
     

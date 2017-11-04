@@ -4,6 +4,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.web.multipart.MultipartFile;
 
 public class ContentDto {
@@ -22,11 +27,19 @@ public class ContentDto {
     private MultipartFile picture;
     private MultipartFile video;
     private Integer duration;
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(iso = ISO.DATE)
+    //@Temporal(TemporalType.TIMESTAMP)
+    //@DateTimeFormat(iso = ISO.DATE_TIME)
     private Date dateStart;
     private Integer estimatedDuraction;
     private List<Integer> idCategories;
     private Boolean featured;
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(iso = ISO.DATE)
     private Date featuredDateStart;
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(iso = ISO.DATE)
     private Date featuredDateFinish;
     private String tenantId;
     

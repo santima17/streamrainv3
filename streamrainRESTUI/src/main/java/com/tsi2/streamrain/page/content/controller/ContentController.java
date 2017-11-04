@@ -163,7 +163,9 @@ public class ContentController {
 		 director3.setIsDirector(true);
 		 Set<ContentCastDto> directores = new HashSet<ContentCastDto>(Arrays.asList(director,director2, director3));
 		 contentDto.setDirectors(directores);
-		 contentDto.setDateStart(new Date());
+		 //contentDto.setDateStart(new Date());
+		 //contentDto.setFeaturedDateStart(new Date());
+		 //contentDto.setFeaturedDateFinish(new Date());
 	     return contentDto;
 	}
 

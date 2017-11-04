@@ -17,12 +17,12 @@ public class ContentCastConverter implements IConverter<ContentCastDto, ContentC
 
 	public ContentCasts deConverter(ContentCastDto source) {
 		ContentCasts contentsCast = new ContentCasts();
-		ContentCastsId contentCastId = new ContentCastsId();
+		/*ContentCastsId contentCastId = new ContentCastsId();
 		contentCastId.setFirstName(source.getFirstName());
 		contentCastId.setLastName(source.getLastName());
 		contentsCast.setId(contentCastId);
 		contentsCast.setIsActor(source.getIsActor());
-		contentsCast.setIsDirector(source.getIsDirector());
+		contentsCast.setIsDirector(source.getIsDirector());*/
 		return contentsCast;
 	}
 

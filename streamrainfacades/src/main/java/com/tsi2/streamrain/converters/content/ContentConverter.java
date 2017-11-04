@@ -30,10 +30,8 @@ public class ContentConverter implements IConverter<ContentDto, Contents>{
 	
 	private ContentCasts deConverter(ContentCastDto source) {
 		ContentCasts contentsCast = new ContentCasts();
-		ContentCastsId contentCastId = new ContentCastsId();
-		contentCastId.setFirstName(source.getFirstName());
-		contentCastId.setLastName(source.getLastName());
-		contentsCast.setId(contentCastId);
+		contentsCast.setFirstName(source.getFirstName());
+		contentsCast.setLastName(source.getLastName());
 		contentsCast.setIsActor(source.getIsActor());
 		contentsCast.setIsDirector(source.getIsDirector());
 		return contentsCast;
