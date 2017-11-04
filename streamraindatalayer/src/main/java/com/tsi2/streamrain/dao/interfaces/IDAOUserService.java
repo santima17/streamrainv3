@@ -1,11 +1,15 @@
 package com.tsi2.streamrain.dao.interfaces;
 
+import com.tsi2.streamrain.model.generator.Users;
+
 public interface IDAOUserService extends IDAOService {
 	
-	public boolean findByNickname(final String nickname, final String tenantID);
+	Users getUserByNickname(final String userNickname, final String tenantID); 
+	
+	boolean findByNickname(final String nickname, final String tenantID);
 
-	public boolean findByNicknamePassword(String nickname, String password, String tenantID);
+	boolean findByNicknamePassword(final String nickname, final String password, final String tenantID);
 
-	public boolean findByTwitterId(String twitterId, String tenantID);
+	boolean findByTwitterId(final String twitterId, final String tenantID);
 
 }

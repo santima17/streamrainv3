@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -29,7 +28,7 @@ import com.tsi2.streamrain.datatypes.content.ContentCastDto;
 import com.tsi2.streamrain.datatypes.content.ContentDto;
 import com.tsi2.streamrain.services.category.interfaces.ICategoryService;
 import com.tsi2.streamrain.services.content.interfaces.IContentService;
-import com.tsi2.streamrain.services.tenants.interfaces.ITenantService;
+import com.tsi2.streamrain.services.session.interfaces.ISessionService;
 
 @Controller
 public class ContentController {
@@ -44,13 +43,13 @@ public class ContentController {
 	ICategoryService categoryService;
 	
 	@Autowired
-	ITenantService tenantService;
+	ISessionService sessionService;
 	
 	private static final String CONTENT_PREFIX = "/generator/content/";
 		
 	@RequestMapping(value = "/{tenant}/portal/createContent", method = RequestMethod.GET)
 	public String showCreateContent (@PathVariable("tenant") String tenant) {	
-		tenantService.setCurrentTenant(tenant);
+		sessionService.setCurrentTenant(tenant);
 		return CONTENT_PREFIX + "createContent";
 	}
 	

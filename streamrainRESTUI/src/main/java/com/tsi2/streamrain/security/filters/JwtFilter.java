@@ -17,7 +17,7 @@ import com.tsi2.streamrain.security.utils.JwtUtil;
 public class JwtFilter extends GenericFilterBean {
 
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
+	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain filterChain)
 			throws IOException, ServletException {
 
 		Authentication authentication = JwtUtil.getAuthentication((HttpServletRequest) request);

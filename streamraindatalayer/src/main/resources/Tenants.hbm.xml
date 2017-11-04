@@ -4,24 +4,30 @@
 <!-- Generated 04/10/2017 11:18:37 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="com.tsi2.streamrain.model.main.Tenants" table="tenants" catalog="main" optimistic-lock="version">
-        <id name="id" type="int">
+        <id name="id" type="java.lang.Integer">
             <column name="id" />
-            <generator class="assigned" />
+            <generator class="identity" />
         </id>
         <property name="name" type="string">
             <column name="name" length="45" not-null="true" />
         </property>
-        <property name="ip" type="string">
-            <column name="ip" length="16" not-null="true" />
+        <property name="dbIp" type="string">
+            <column name="db_ip" length="16" not-null="true" />
         </property>
-        <property name="port" type="int">
-            <column name="port" not-null="true" />
+        <property name="dbPort" type="int">
+            <column name="db_port" not-null="true" />
         </property>
-        <property name="user" type="string">
-            <column name="user" length="45" not-null="true" />
+        <property name="dbUser" type="string">
+            <column name="db_user" length="45" not-null="true" />
         </property>
-        <property name="password" type="string">
-            <column name="password" length="45" not-null="true" />
+        <property name="dbPassword" type="string">
+            <column name="db_password" length="45" not-null="true" />
+        </property>
+        <property name="generatorUser" type="string">
+            <column name="generator_user" length="45" not-null="true" />
+        </property>
+        <property name="generatorPassword" type="string">
+            <column name="generator_password" length="45" not-null="true" />
         </property>
     </class>
 </hibernate-mapping>

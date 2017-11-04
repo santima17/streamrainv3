@@ -33,4 +33,12 @@ public class StreamRainMySQLUserDAO extends StreamRainMySQLDAO implements IDAOUs
 		return user != null;
 	}
 
+	public Users getUserByNickname(String userNickname, String tenantID) {
+		Session dbSession = DBHibernateUtil.getSessionFactoryGenerator(tenantID);
+		Users user = (Users) dbSession.createQuery("select u from Users u where u.nickname = :nickname")
+        .setString("nickname", userNickname)
+        .uniqueResult();
+		return user;
+	}
+
 }

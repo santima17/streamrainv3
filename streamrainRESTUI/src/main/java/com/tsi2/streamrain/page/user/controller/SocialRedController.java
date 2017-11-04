@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.tsi2.streamrain.datatypes.user.UserDto;
+import com.tsi2.streamrain.services.session.interfaces.ISessionService;
 import com.tsi2.streamrain.services.tenants.interfaces.ITenantService;
 import com.tsi2.streamrain.services.user.interfaces.IUserService;
 
@@ -35,12 +36,12 @@ public class SocialRedController {
 	IUserService userService;
 	
 	@Autowired
-	ITenantService tenantService;
+	ISessionService sessionService;
 			
 	@RequestMapping(value = "/{tenant}/auth/twitter", method = RequestMethod.GET)
 	public String showLogin(@PathVariable("tenant") String tenant, HttpServletRequest request, HttpServletResponse response) {
 		try {		
-			tenantService.setCurrentTenant(tenant);
+			sessionService.setCurrentTenant(tenant);
 			
 			OAuth1Operations oauth1Operations = connectionFactoryTwitter.getOAuthOperations();
 						 
@@ -77,7 +78,7 @@ public class SocialRedController {
 			
 			String name = connection.getDisplayName();
 			
-			String tenantId = tenantService.getCurrentTenant();
+			String tenantId = sessionService.getCurrentTenant();
 			
 			if (!userService.existsUserXTwitterId(connectionKey.getProviderUserId(), tenantId)) {
 				UserDto user = new UserDto();

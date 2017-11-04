@@ -12,21 +12,18 @@ import com.tsi2.streamrain.services.tenants.interfaces.ITenantService;
 
 public class TenantServiceImpl implements ITenantService{
 
-	private String currentTenant;
+	
+	IBLTenant tenantBussines = (BLTenantImpl) StremRainUserBussinesContextLoader.contextLoader().getBean("tenantBussines");
+	IConverter<TenantDto, Tenants> tenantConverter = (TenantConverter)StremRainFacadesContextLoader.contextLoader().getBean("tenantConverter");
 	
 	public boolean saveTenant(final TenantDto tenant) {
-		IBLTenant tenantBussines = (BLTenantImpl) StremRainUserBussinesContextLoader.contextLoader().getBean("tenantBussines");
-		IConverter tenantConverter = (TenantConverter)StremRainFacadesContextLoader.contextLoader().getBean("tenantConverter");
 		tenantBussines.saveTenant((Tenants)tenantConverter.deConverter(tenant));
 		return false;
 	}
-	
-	public String getCurrentTenant() {
-		return currentTenant;
+	@Override
+	public boolean existsUser(final String nickname, final String password) {
+		return tenantBussines.existsUser(nickname, password);
 	}
 
-	public void setCurrentTenant(final String currentTenant) {
-		this.currentTenant = currentTenant;
-}
 
 }
