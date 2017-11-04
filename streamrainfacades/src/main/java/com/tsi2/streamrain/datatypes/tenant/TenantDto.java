@@ -2,16 +2,18 @@ package com.tsi2.streamrain.datatypes.tenant;
 
 public class TenantDto {
 
-	private int id;
+	private Integer id;
 	private String name;
-	private String ip;
-	private int port;
-	private String user;
-	private String password;
-	public int getId() {
+	private String dbIp;
+	private int dbPort;
+	private String dbUser;
+	private String dbPassword;
+	private String generatorUser;
+	private String generatorPassword;
+	public Integer getId() {
 		return id;
 	}
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 	public String getName() {
@@ -20,29 +22,41 @@ public class TenantDto {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getIp() {
-		return ip;
+	public String getDbIp() {
+		return dbIp;
 	}
-	public void setIp(String ip) {
-		this.ip = ip;
+	public void setDbIp(String dbIp) {
+		this.dbIp = dbIp;
 	}
-	public int getPort() {
-		return port;
+	public int getDbPort() {
+		return dbPort;
 	}
-	public void setPort(int port) {
-		this.port = port;
+	public void setDbPort(int dbPort) {
+		this.dbPort = dbPort;
 	}
-	public String getUser() {
-		return user;
+	public String getDbUser() {
+		return dbUser;
 	}
-	public void setUser(String user) {
-		this.user = user;
+	public void setDbUser(String dbUser) {
+		this.dbUser = dbUser;
 	}
-	public String getPassword() {
-		return password;
+	public String getDbPassword() {
+		return dbPassword;
 	}
-	public void setPassword(String password) {
-		this.password = password;
+	public void setDbPassword(String dbPassword) {
+		this.dbPassword = dbPassword;
+	}
+	public String getGeneratorUser() {
+		return generatorUser;
+	}
+	public void setGeneratorUser(String generatorUser) {
+		this.generatorUser = generatorUser;
+	}
+	public String getGeneratorPassword() {
+		return generatorPassword;
+	}
+	public void setGeneratorPassword(String generatorPassword) {
+		this.generatorPassword = generatorPassword;
 	}
 
 	

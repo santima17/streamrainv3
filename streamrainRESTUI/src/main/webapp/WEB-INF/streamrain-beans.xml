@@ -22,7 +22,10 @@
 
 	<bean id="tenantService"
 		class="com.tsi2.streamrain.services.tenants.implementations.TenantServiceImpl" />
-		
+
+	<bean id="sessionService"
+		class="com.tsi2.streamrain.services.session.implementations.SessionServiceImpl" />
+
 	<bean id="contentService"
 		class="com.tsi2.streamrain.services.content.implementations.ContentServiceImpl" />
 
@@ -33,7 +36,7 @@
 	</bean>
 
 	<bean id="generatorAuthenticationManager"
-		class="com.tsi2.streamrain.security.authentication.managers.GeneratorAuthenticationManager"/>
+		class="com.tsi2.streamrain.security.authentication.managers.GeneratorAuthenticationManager" />
 
 	<bean id="administratorAuthenticationManager"
 		class="com.tsi2.streamrain.security.authentication.managers.AdministratorAuthenticationManager" />

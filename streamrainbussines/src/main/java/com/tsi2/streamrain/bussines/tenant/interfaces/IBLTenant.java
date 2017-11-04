@@ -6,4 +6,6 @@ public interface IBLTenant {
 	
 	public boolean saveTenant(final Tenants tenant);
 
+	public boolean existsUser(final String nickname, final String password);
+
 }

@@ -4,55 +4,89 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.tsi2.streamrain.datatypes.user.UserDto;
+import com.tsi2.streamrain.services.session.interfaces.ISessionService;
+import com.tsi2.streamrain.services.tenants.interfaces.ITenantService;
 import com.tsi2.streamrain.services.user.interfaces.IUserService;
 import com.tsi2.streamrain.utils.Utils;
 
-@Controller
+@RestController
+@RequestMapping("/user")
 public class UserController {
 	
 	@Resource(name="userService")
 	IUserService userService;
+	
+	@Resource(name="sessionService")
+	ISessionService sessionService;
 		
-	private static final String USER_PREFIX = "/user/";
-	
-	@RequestMapping(value = "/{tenant}/registerUser", method = RequestMethod.GET)
-	public String showRegisterUser () {		
-		return USER_PREFIX + "registerUser";
-	}
-	
 	@InitBinder
     protected void initBinder(WebDataBinder binder) {
         binder.setValidator(new ValidadorUser());
     }
 	
-	@RequestMapping(value = "/{tenant}/registerProcess", method = RequestMethod.POST)
-    public String registerUser(@PathVariable("tenant") String tenant, @Valid UserDto userDto, BindingResult result, Model model) {
-		if (result.hasErrors()) {
-			return USER_PREFIX + "registerUser";
-		}
-		if (userDto.getNickname() != null && (!"".equals(userDto.getNickname()))) {
-			if (userService.existsUserXNickName(userDto.getNickname(), tenant)) {
-				model.addAttribute("error", "Already exists a users with that nickname");
-				return USER_PREFIX + "registerUser";
-			}
-		}
-		String passEncrptyed = Utils.encryptPassword(userDto.getPassword());
-		userDto.setPassword(passEncrptyed);
-		userService.saveUser(userDto, tenant);
-		model.addAttribute("message", "The user was successfully registered");
-		
-		return USER_PREFIX + "registerUser";
-	}
+    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<UserDto> getAllUsers() {
+        return userService.getAll(sessionService.getCurrentTenant());
+    }
+    
+    @RequestMapping(value = "/{userNickname}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserDto> getUser(@PathVariable String userNickname) {
+    	UserDto user = userService.getUserByNickname(userNickname, sessionService.getCurrentTenant());
+        ResponseEntity<UserDto> response;
+        if (user == null) {
+            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            response = new ResponseEntity<>(user, HttpStatus.OK);
+        }
+        return response;
+    }
+    
+    @RequestMapping(method = RequestMethod.POST)
+    public ResponseEntity<BindingResult> insertUser(@RequestBody @Valid UserDto user, BindingResult result) {
+    	ResponseEntity<BindingResult> response = new ResponseEntity<>(HttpStatus.CREATED);
+    	if (result.hasErrors()) {
+    		return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+    	}
+        userService.saveUser(user, sessionService.getCurrentTenant());
+        return response;
+    }
+    
+    @RequestMapping(value = "/{userNickname}", method = RequestMethod.PUT)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ResponseEntity<BindingResult> updateUser(@PathVariable String userNickname, @RequestBody @Valid UserDto user, BindingResult result) {
+    	ResponseEntity<BindingResult> response = new ResponseEntity<>(HttpStatus.CREATED);
+    	if (result.hasErrors()) {
+    		return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+    	}
+        UserDto userOld = userService.getUserByNickname(userNickname, sessionService.getCurrentTenant());
+        if (userOld == null) {
+        	return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }else {
+            userService.updateUser(userNickname, user, sessionService.getCurrentTenant());
+        }
+        return response;
+    }
+    
+    @RequestMapping(value = "/{userNickname}", method = RequestMethod.DELETE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUser(@PathVariable String userNickname) {
+        userService.deleteUser(userNickname, sessionService.getCurrentTenant());
+    }
 	
 				
 	@ModelAttribute("userDto")

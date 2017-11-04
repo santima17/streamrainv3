@@ -18,31 +18,28 @@ import com.tsi2.streamrain.security.filters.LoginFilter;
 //@Order(3)
 public class AdministratorSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	
 	@Autowired
 	AuthenticationManager administratorAuthenticationManager;
-	
+
 	@Override
-    protected AuthenticationManager authenticationManager() {
-        return administratorAuthenticationManager;
-    }
-	
+	protected AuthenticationManager authenticationManager() {
+		return administratorAuthenticationManager;
+	}
+
 	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http.csrf().disable().authorizeRequests().antMatchers("/index.jsp").permitAll() // permitimos el acceso a /login a
-																					// cualquiera
-				.anyRequest().authenticated() // cualquier otra peticion requiere autenticacion
+	protected void configure(final HttpSecurity http) throws Exception {
+		http.csrf().disable().authorizeRequests().antMatchers("/index.jsp").permitAll().antMatchers("/administrador/*")
+				.authenticated() // cualquier otra peticion requiere autenticacion
 				.and()
 				// Las peticiones /login pasaran previamente por este filtro
-				.addFilterBefore(new LoginFilter("/administrator/login", authenticationManager()),
+				.addFilterBefore(new LoginFilter("/administrador/login", authenticationManager()),
 						UsernamePasswordAuthenticationFilter.class)
-				// Las demás peticiones pasarán por este filtro para validar el token
 				.addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class);
 	}
 
 	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+	protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
 		// Creamos una cuenta de usuario por default
-		auth.inMemoryAuthentication().withUser("ask").password("123").roles("ADMIN");
+//		auth.inMemoryAuthentication().withUser("ask").password("123").roles("ADMIN");
 	}
 }
