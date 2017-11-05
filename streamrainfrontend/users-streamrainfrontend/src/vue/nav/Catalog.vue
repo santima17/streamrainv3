@@ -13,7 +13,7 @@
         </div>
         <h1>{{ tenant }} Catalog</h1>
         <div v-if="!catalog && !janusAlert">
-          <p class="text-danger">Conectando...</p>
+          <p class="text-danger">Connecting...</p>
         </div>
         <div v-if="catalog != null">
           <ul class="list-inline">
@@ -26,7 +26,7 @@
                 <div class="panel-body text-center">
                   <p>Image</p>
                   <hr>
-                  <button class="btn btn-info">Ver ahora!</button>
+                  <router-link :to="`/live/${streaming.id}`"><div class="btn btn-info">Watch now!</div></router-link>
                 </div>
               </div>
             </li>
@@ -53,11 +53,18 @@
       }
     },
     created () {
+      const eventBus = this.eventBus;
+
+      this.eventBus.$once('JanusReady', function () {
+        eventBus.$emit('getJanusStreamsList', null);
+      });
+
       const updateCatalog = this.updateCatalog;
-      this.eventBus.$emit('getJanusStreamsList', null);
-      this.eventBus.$on('setJanusStreamsList', function (result) {
+      this.eventBus.$once('setJanusStreamsList', function (result) {
         updateCatalog(result);
       });
+
+      this.eventBus.$emit('JanusReady?', null);
     },
     methods: {
       updateCatalog: function (catalog) {

@@ -10,6 +10,8 @@ import Signup from './vue/session/Signup.vue';
 import NotFound from './vue/nav/NotFound.vue';
 import Home from './vue/nav/Home.vue';
 import Catalog from './vue/nav/Catalog.vue';
+// Streaming
+import LiveOnly from './vue/streaming/LiveOnly.vue'; 
 
 Vue.use(VueRouter);
 
@@ -71,6 +73,17 @@ const routes = [
     },
     meta: {
       title: `${tenant} | Catalog`
+    }
+  },
+  {
+    path: '/live/:streamId',
+    component: LiveOnly,
+    props: {
+      tenant,
+      eventBus
+    },
+    meta: {
+      title: `${tenant} | Live!`
     }
   }
 ];
