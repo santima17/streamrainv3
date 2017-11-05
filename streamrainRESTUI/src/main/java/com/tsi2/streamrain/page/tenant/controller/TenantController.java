@@ -2,34 +2,31 @@ package com.tsi2.streamrain.page.tenant.controller;
 
 import javax.annotation.Resource;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.tsi2.streamrain.datatypes.tenant.TenantDto;
 import com.tsi2.streamrain.services.tenants.interfaces.ITenantService;
 
-@Controller
+
+@RestController
+@RequestMapping("/administrador")
 public class TenantController {
 	
 	@Resource(name="tenantService")
 	ITenantService tenantService;
+	
 		
-	private static final String USER_PREFIX = "/tenant/";
+    @RequestMapping(method = RequestMethod.POST)
+    public ResponseEntity<BindingResult> insertUser(@RequestBody TenantDto tenant) {
+    	ResponseEntity<BindingResult> response = new ResponseEntity<>(HttpStatus.CREATED);
+    	tenantService.saveTenant(tenant);
+        return response;
+    }
 	
-	@RequestMapping(value = "/registerTenant", method = RequestMethod.GET)
-	public String showRegisterTenant (Model model) {	
-		TenantDto tenant = new TenantDto();
-		model.addAttribute("tenantForm", tenant);
-		return USER_PREFIX + "registerTenant";
-	}
-	
-	@RequestMapping(value = "/registerTenant", method = RequestMethod.POST)
-	public String saveTenant (@ModelAttribute("tenantForm") TenantDto tenant) {
-		tenantService.saveTenant(tenant);
-		return USER_PREFIX + "registerTenant";
-	}
-
 }

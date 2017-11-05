@@ -10,5 +10,4 @@
 	<bean id="daoUserService" class="com.tsi2.streamrain.dao.implementations.StreamRainMySQLUserDAO"/>
 	<bean id="daoMainService" class="com.tsi2.streamrain.dao.implementations.StreamRainMySQLMainDAO"/>
 	
-	
 </beans>
