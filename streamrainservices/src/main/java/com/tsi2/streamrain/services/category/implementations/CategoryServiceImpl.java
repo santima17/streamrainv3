@@ -13,19 +13,18 @@ import com.tsi2.streamrain.model.generator.Categories;
 import com.tsi2.streamrain.services.category.interfaces.ICategoryService;
 
 public class CategoryServiceImpl implements ICategoryService {
+	
+	IBLCategory categoryBussines = (BLCategoryImpl) StremRainUserBussinesContextLoader.contextLoader().getBean("categoryBussines");
+	IConverter catConverter = (CategoryConverter) StremRainFacadesContextLoader.contextLoader().getBean("categoryConverter");
 
 	public boolean saveCategory(final CategoryDto c, final String tenantID) {
-		IBLCategory daoService = (BLCategoryImpl) StremRainUserBussinesContextLoader.contextLoader().getBean("categoryBussines");
-		IConverter catConverter = (CategoryConverter)StremRainFacadesContextLoader.contextLoader().getBean("categoryConverter");
-		daoService.saveCategory((Categories)catConverter.deConverter(c), tenantID);
+		categoryBussines.saveCategory((Categories) catConverter.deConverter(c), tenantID);
 		return true;
 	}
 
-	public List<CategoryDto> getAllCategories(String tenantID) {
-		IBLCategory daoService = (BLCategoryImpl) StremRainUserBussinesContextLoader.contextLoader().getBean("categoryBussines");
-		IConverter catConverter = (CategoryConverter)StremRainFacadesContextLoader.contextLoader().getBean("categoryConverter");
-		List<Categories> list = daoService.loadAllCategories(tenantID);
-		return (List<CategoryDto>)catConverter.convertAll(list);
+	public List<CategoryDto> getAllCategories(final String tenantID) {
+		List<Categories> list = categoryBussines.loadAllCategories(tenantID);
+		return (List<CategoryDto>) catConverter.convertAll(list);
 	}
-	
+
 }

@@ -21,47 +21,43 @@ public class UserServiceImpl implements IUserService{
 
 	IConverter<UserDto, Users> userConverter = (UserConverter) StremRainFacadesContextLoader.contextLoader().getBean("userConverter");
 	IConverter<UserSubscriptionDto, UserSubscriptions> paymentConverter = (PaymentConverter) StremRainFacadesContextLoader.contextLoader().getBean("paymentConverter");
-	IBLUser blService = (BLUserImpl) StremRainUserBussinesContextLoader.contextLoader().getBean("userBussines");
+	IBLUser userBussines = (BLUserImpl) StremRainUserBussinesContextLoader.contextLoader().getBean("userBussines");
 	
 	public boolean saveUser(final UserDto u, final String tenantID) {
-		blService.saveUser((Users)userConverter.deConverter(u), tenantID);
+		userBussines.saveUser((Users)userConverter.deConverter(u), tenantID);
 		return true;
 	}
 	
-	@Override
 	public List<UserDto> getAll(final String tenantID) {
-		return userConverter.convertAll(blService.getAll(tenantID));
+		return userConverter.convertAll(userBussines.getAll(tenantID));
 	}
 	
-	@Override
 	public UserDto getUserByNickname(final String userNickname, final String tenantID) {
-		return userConverter.converter(blService.getUserByNickname(userNickname, tenantID));
+		return userConverter.converter(userBussines.getUserByNickname(userNickname, tenantID));
 	}
 	
 	public boolean existsUserXNickName(final String nickname, final String tenantID) {
-		return blService.findUserXNickname(nickname, tenantID);
+		return userBussines.findUserXNickname(nickname, tenantID);
 	}
 
 	public boolean existsUser(final String nickname, final String password, final String tenantID) {
-		return blService.findUser(nickname, password, tenantID);
+		return userBussines.findUser(nickname, password, tenantID);
 	}
 
 	public boolean existsUserXTwitterId(final String twitterId, final String tenantID) {
-		return blService.findUserXTwitterId(twitterId, tenantID);
+		return userBussines.findUserXTwitterId(twitterId, tenantID);
 	}
 
-	@Override
 	public void updateUser(final String userNickname, final UserDto user, final String tenantID) {
-		blService.updateUser((Users)userConverter.deConverter(user), tenantID);
+		userBussines.updateUser((Users)userConverter.deConverter(user), tenantID);
 	}
 
-	@Override
 	public void deleteUser(final String userNickname, final String tenantID) {
-		blService.deleteUser(userNickname, tenantID);
+		userBussines.deleteUser(userNickname, tenantID);
 	}
 
 	public void saveUserSubscription(UserSubscriptionDto userSubscription, String tenantID) {
-		blService.saveUserSubscription((UserSubscriptions)paymentConverter.deConverter(userSubscription), userSubscription.getUserNickName(), userSubscription.getIdPaymentMethod(), tenantID);	
+		userBussines.saveUserSubscription((UserSubscriptions)paymentConverter.deConverter(userSubscription), userSubscription.getUserNickName(), userSubscription.getIdPaymentMethod(), tenantID);	
 	}
 
 
