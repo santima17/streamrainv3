@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter  from 'vue-router';
+import VueResource from 'vue-resource'
 // Header & footer
 import Streamrain from './vue/Streamrain.vue'
 // Session
@@ -14,10 +15,10 @@ import Catalog from './vue/nav/Catalog.vue';
 import LiveOnly from './vue/streaming/LiveOnly.vue'; 
 
 Vue.use(VueRouter);
+Vue.use(VueResource);
 
-// TODO: Esto tiene que ir definido en otro lado ========
-const tenant = 'Default Tenant';
-const backend = 'http://localhost:3002';
+// ======================================================
+const config = require('./assets/config');
 // ======================================================
 
 const eventBus = new Vue();
@@ -26,64 +27,50 @@ const routes = [
   {
     path: '/notFound',
     component: NotFound,
-    props: {
-      tenant
-    },
     meta: {
-      title: `${tenant} | Page Not Found`
+      title: `${config.tenant.name} | Page Not Found`
     }
   },
   {
     path: '/login',
     component: Login,
     meta: {
-      title: `${tenant} | Log In`
+      title: `${config.tenant.name} | Log In`
     }
   },
   {
     path: '/logout',
     component: Logout,
     meta: {
-      title: `${tenant} | Log Out`
+      title: `${config.tenant.name} | Log Out`
     }
   },
   {
     path: '/signup',
     component: Signup,
     meta: {
-      title: `${tenant} | Sign Up!`
+      title: `${config.tenant.name} | Sign Up!`
     }
   },
   {
     path: '/',
     component: Home,
-    props: {
-      tenant
-    },
     meta: {
-      title: `${tenant} | Home`
+      title: `${config.tenant.name} | Home`
     }
   },
   {
     path: '/catalog',
     component: Catalog,
-    props: {
-      tenant,
-      eventBus
-    },
     meta: {
-      title: `${tenant} | Catalog`
+      title: `${config.tenant.name} | Catalog`
     }
   },
   {
     path: '/live/:streamId',
     component: LiveOnly,
-    props: {
-      tenant,
-      eventBus
-    },
     meta: {
-      title: `${tenant} | Live!`
+      title: `${config.tenant.name} | Live!`
     }
   }
 ];
@@ -107,8 +94,7 @@ new Vue({
   router,
   render: h => h(Streamrain, {
     props: {
-      tenant,
-      backend,
+      config,
       eventBus
     }
   })

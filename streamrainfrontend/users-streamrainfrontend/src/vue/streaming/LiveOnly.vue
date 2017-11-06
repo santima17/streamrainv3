@@ -27,12 +27,33 @@
             </div>
             <div class="panel panel-info" v-if="chatroom.ready">
               <div class="panel-heading">
+                <div class="btn-group pull-right">
+                  <button class="btn btn-info dropdown-toggle btn-xs" data-toggle="dropdown" aria-expanded="false">
+                    <span class="glyphicon glyphicon-menu-down"></span>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li v-if="!chatroom.privateMessageMode">
+                      <a v-on:click="activePrivateMessageMode" role="button">Private message... <i class="glyphicon glyphicon-send"></i></a>
+                    </li>
+                    <li v-if="chatroom.privateMessageMode">
+                      <a v-on:click="chatroom.privateMessageMode = false" role="button">Back to the chat room</a>
+                    </li>
+                  </ul>
+                </div>
                 <h3 class="panel-title">Chatroom</span></h3>
               </div>
-              <div class="panel-body chat-body relative" id="chatroom">
+              <div v-if="!chatroom.privateMessageMode" class="panel-body chat-body relative" id="chatroom">
                 <div v-for="(message, index) in chatroom.messages" :key="index">
                   <p :class="message.p_class">{{ message.preamble }}:</p><p class="small">{{ message.text }}</p>
                   <hr>
+                </div>
+              </div>
+              <div v-if="chatroom.privateMessageMode" class="panel-body chat-body relative" id="chatroom">
+                <p class="text-info">Send to:</p>
+                <div v-for="(participant, index) in chatroom.participants" :key="index">
+                  <div class="checkbox">
+                    <label><input type="checkbox" v-on:click="clickCheck" :value="participant">{{ participant }}</label>
+                  </div>
                 </div>
               </div>
               <div class="panel-footer">
@@ -55,7 +76,7 @@
 <script>
   export default {
     props: [
-      'tenant',
+      'config',
       'eventBus',
       'janusAlert'
     ],
@@ -67,7 +88,10 @@
         chatroom: {
           ready: false,
           myId: null,
-          messages: []
+          messages: [],
+          participants: [],
+          participantsSelected: [],
+          privateMessageMode: false
         },
         messageToSend: null
       }
@@ -81,19 +105,59 @@
       });
 
       this.eventBus.$on('janusTextroomNewPublicMessage', function (message) {
-        i.janusTextroomNewPublicMessage(message);
+        i.chatroom.messages.push({
+          p_class: 'text-primary',
+          preamble: `[${message.from}]`,
+          text: message.text
+        });
+      });
+
+      this.eventBus.$on('janusTextroomNewPrivateMessage', function (message) {
+        i.chatroom.messages.push({
+          p_class: 'text-danger',
+          preamble: `[Private Message] from [${message.from}]`,
+          text: message.text
+        });
+      });
+
+      this.eventBus.$once('janusTextroomParticipants', function (participants) {
+        i.chatroom.participants = participants;
+        i.chatroom.participantsSelected = [];
       });
 
       this.eventBus.$once('janusTextroomYouJoined', function (myId) {
-        i.janusTextroomYouJoined(myId);
+        i.chatroom.ready = true;
+        i.myId = myId;
+        i.chatroom.messages.push({
+          p_class: 'text-success',
+          preamble: '[Welcome]',
+          text: `You just joined the chatroom as ${myId}`
+        });
       });
 
       this.eventBus.$on('janusTextroomSomeoneJoined', function (Id) {
-        i.janusTextroomSomeoneJoined(Id);
+        i.chatroom.messages.push({
+          p_class: 'text-info',
+          preamble: '[Info]',
+          text: `${Id} just joined the chatroom`
+        });
+        i.chatroom.participants.push(Id);
       });
 
       this.eventBus.$on('janusTextroomSomeoneLeaved', function (Id) {
-        i.janusTextroomSomeoneLeaved(Id);
+        i.chatroom.messages.push({
+          p_class: 'text-info',
+          preamble: '[Info]',
+          text: `${Id} just left the chatroom`
+        });
+        let index = i.chatroom.participants.indexOf(Id);
+        if (index > -1) {
+          i.chatroom.participants.splice(index, 1);
+        }
+        index = i.chatroom.participantsSelected.indexOf(Id);
+        if (index > -1) {
+          i.chatroom.participantsSelected.splice(index, 1);
+        }
       });
 
       this.eventBus.$emit('JanusReady?', null);
@@ -102,38 +166,38 @@
       this.eventBus.$emit('leaveStreaming', null);
     },
     methods: {
+      activePrivateMessageMode: function () {
+        this.chatroom.participantsSelected = [];
+        this.chatroom.privateMessageMode = true;
+      },
+      clickCheck: function (event) {
+        const username = event.target.value;
+        const checked = event.target.checked;
+        if (checked) {
+          let index = this.chatroom.participantsSelected.indexOf(username);
+          if (index < 0) {
+            this.chatroom.participantsSelected.push(username);
+          }
+        } else {
+          let index = this.chatroom.participantsSelected.indexOf(username);
+          if (index > -1) {
+            this.chatroom.participantsSelected.splice(index, 1);
+          }
+        }
+      },
       sendMessage: function () {
-        this.eventBus.$emit('janusSendMessage', this.messageToSend);
-      },
-      janusTextroomNewPublicMessage: function (message) {
-        this.chatroom.messages.push({
-          p_class: 'text-primary',
-          preamble: `[${message.from}]`,
-          text: message.text
-        });
-      },
-      janusTextroomYouJoined: function (myId) {
-        this.chatroom.ready = true;
-        this.myId = myId;
-        this.chatroom.messages.push({
-          p_class: 'text-success',
-          preamble: '[Welcome]',
-          text: `You just joined the chatroom as ${myId}`
-        });
-      },
-      janusTextroomSomeoneJoined: function (Id) {
-        this.chatroom.messages.push({
-          p_class: 'text-info',
-          preamble: '[Info]',
-          text: `${Id} just joined the chatroom`
-        });
-      },
-      janusTextroomSomeoneLeaved: function (Id) {
-        this.chatroom.messages.push({
-          p_class: 'text-info',
-          preamble: '[Info]',
-          text: `${Id} just left the chatroom`
-        });
+        if (this.chatroom.privateMessageMode) {
+          if (this.chatroom.participantsSelected.length > 0) {
+            this.eventBus.$emit('janusSendPrivateMessage', {
+              messageToSend: this.messageToSend,
+              receivers: this.chatroom.participantsSelected
+            });
+            this.messageToSend = '';
+          }  
+        } else {
+          this.eventBus.$emit('janusSendPublicMessage', this.messageToSend);
+          this.messageToSend = ''
+        }
       }
     }
   }

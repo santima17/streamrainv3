@@ -11,7 +11,7 @@
             <p>{{ janusAlert.message }}</p>
           </div>
         </div>
-        <h1>{{ tenant }} Catalog</h1>
+        <h1>{{ config.tenant.name }} Catalog</h1>
         <div v-if="!catalog && !janusAlert">
           <p class="text-danger">Connecting...</p>
         </div>
@@ -43,7 +43,7 @@
 <script>
   export default {
     props: [
-      'tenant',
+      'config',
       'eventBus',
       'janusAlert'
     ],

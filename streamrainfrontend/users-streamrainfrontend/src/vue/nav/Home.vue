@@ -4,7 +4,7 @@
       <div class="col-sm-2 sidenav">
       </div>
       <div class="col-sm-8 text-left"> 
-        <h1>Welcome to Streamrain {{ tenant }}</h1>
+        <h1>Welcome to Streamrain {{ config.tenant.name }}</h1>
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
         <hr>
       </div>
@@ -17,7 +17,7 @@
 <script>
   export default {
     props: [
-      'tenant'
-    ]
+      'config'
+    ],
   }
 </script>

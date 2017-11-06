@@ -2,10 +2,10 @@
 </template>
 
 <script>
-  import { Janus } from '../../../assets/janus.js';
+  import { Janus } from '../../../assets/janus/janus.js';
   export default {
     props: [
-      'backend',
+      'config',
       'eventBus'
     ],
     created () {
@@ -27,7 +27,7 @@
         });
       });
 
-      this.eventBus.$on('janusSendMessage', function (messageToSend) {
+      this.eventBus.$on('janusSendPublicMessage', function (messageToSend) {
         const message = {
           textroom: 'message',
           transaction: Janus.randomString(12),
@@ -40,8 +40,27 @@
             Janus.error(JSON.stringify(reason));
           },
           success: function() {
-            Janus.error('ÉEEEEXITO');
           }
+        });
+      });
+
+      this.eventBus.$on('janusSendPrivateMessage', function (obj) {
+        obj.receivers.forEach((to) => {
+          const message = {
+            textroom: 'message',
+            transaction: Janus.randomString(12),
+            room: i.streamId,
+            to,
+            text: obj.messageToSend
+          };
+          i.textroom.handle.data({
+            text: JSON.stringify(message),
+            error: function(reason) {
+              Janus.error(JSON.stringify(reason));
+            },
+            success: function() {
+            }
+          });
         });
       });
 
@@ -80,13 +99,20 @@
       }
     },
     methods: {
-      callBackend: function (callback) { 
+      callBackend: function (callback) {
+        // TODO: definir bien las rutas y parámetros.
+        const i = this;
+        this.$http.get(`${this.config.backend}/backend-mock/${this.config.tenant.id}/janus-servers`)
+        .then((result) => { 
+          i.updateJanusInf(result.body);
+          return callback (null);
+        });
+      },
+      updateJanusInf: function (inf) {
+        this.server = inf.janus;
+        this.userToken = inf.token;
         // HARDCODEADO
-        this.server = 'http://localhost:8088/janus';
-        this.userToken = 'userToken1';
         this.textroom.myusername = `USER_${Janus.randomString(3)}`;
-        return callback(null);
-        // HARDCODEADO
       },
       leaveStreaming: function () {
         const request = {
@@ -254,6 +280,10 @@
                         // Private message
                         // ACÁ PUBLICAMOS LOS MENSAJES
                         Janus.error(JSON.stringify(json));
+                        eventBus.$emit('janusTextroomNewPrivateMessage', {
+                          from,
+                          text: msg
+                        });
                         // $('#chatroom').append('<p style="color: purple;">[' + dateString + '] <b>[whisper from ' + participants[from] + ']</b> ' + msg);
                         // $('#chatroom').get(0).scrollTop = $('#chatroom').get(0).scrollHeight;
                       } else {
@@ -368,6 +398,7 @@
         }
       },
       janusJoinTextroom: function (textroomId) {
+        const eventBus = this.eventBus;
         this.textroom.myid = Janus.randomString(12);
         const transaction = Janus.randomString(12);
         const register = {
@@ -403,7 +434,11 @@
           // $('#chatroom').css('height', ($(window).height()-420)+"px");
           // $('#datasend').removeAttr('disabled');
           // Any participants already in?
-          console.log('Participants:', JSON.stringify(response.participants));
+          const participants = [];
+          response.participants.forEach((p) => {
+            participants.push(p.username);
+          });
+          eventBus.$emit('janusTextroomParticipants', participants);
           // if(response.participants && response.participants.length > 0) {
           //   for(var i in response.participants) {
           //     var p = response.participants[i];

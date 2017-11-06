@@ -9,7 +9,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand">Streamrain {{ tenant }}</a>
+          <a class="navbar-brand">Streamrain {{ config.tenant.name }}</a>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
@@ -23,10 +23,19 @@
         </div>
       </div>
     </nav>
-    <router-view :janusAlert="janusAlert"></router-view>
-    <streamrain-janus :backend="backend" :eventBus="eventBus"></streamrain-janus>
+    <router-view 
+      :config="config"
+      :eventBus="eventBus"
+      :janusAlert="janusAlert"
+    >
+    </router-view>
+    <streamrain-janus 
+      :config="config"
+      :eventBus="eventBus"
+    >
+    </streamrain-janus>
     <footer class="container-fluid text-center">
-      <p>Streamrain {{ tenant }} footer</p>
+      <p>Streamrain {{ config.tenant.name }} footer</p>
     </footer>
   </div>
 </template>
@@ -36,8 +45,7 @@
   export default {
     name: 'streamrain',
     props: [
-      'tenant',
-      'backend',
+      'config',
       'eventBus'
     ],
     components: {

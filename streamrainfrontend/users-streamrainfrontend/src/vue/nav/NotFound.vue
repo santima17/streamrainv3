@@ -17,7 +17,6 @@
 <script>
   export default {
     props: [
-      'tenant',
     ],
     created () {
       document.title = `${this.tenant} | Page Not Found`;
