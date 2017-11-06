@@ -2,6 +2,7 @@ package com.tsi2.streamrain.services.user.interfaces;
 
 import java.util.List;
 
+import com.tsi2.streamrain.datatypes.paymentmethod.UserSubscriptionDto;
 import com.tsi2.streamrain.datatypes.user.UserDto;
 
 public interface IUserService {
@@ -21,5 +22,7 @@ public interface IUserService {
 	void updateUser(final String userNickname, final UserDto user, final String currentTenant);
 	
 	void deleteUser(final String userNickname, final String currentTenant);
+
+	void saveUserSubscription(UserSubscriptionDto userSubscription, String currentTenant);
 
 }

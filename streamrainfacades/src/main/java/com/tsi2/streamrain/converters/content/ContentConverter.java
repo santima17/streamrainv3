@@ -6,9 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.tsi.streamrain.datatypes.category.CategoryDto;
 import com.tsi2.streamrain.context.StremRainDataContextLoader;
-import com.tsi2.streamrain.context.StremRainFacadesContextLoader;
 import com.tsi2.streamrain.converters.interfaces.IConverter;
 import com.tsi2.streamrain.dao.implementations.StreamRainMySQLDAO;
 import com.tsi2.streamrain.dao.interfaces.IDAOService;

@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tsi2.streamrain.datatypes.user.UserDto;
 import com.tsi2.streamrain.services.session.interfaces.ISessionService;
-import com.tsi2.streamrain.services.tenants.interfaces.ITenantService;
 import com.tsi2.streamrain.services.user.interfaces.IUserService;
 import com.tsi2.streamrain.utils.Utils;
 
@@ -66,6 +65,7 @@ public class UserController {
         return response;
     }
     
+        
     @RequestMapping(value = "/{userNickname}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<BindingResult> updateUser(@PathVariable String userNickname, @RequestBody @Valid UserDto user, BindingResult result) {
