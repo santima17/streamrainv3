@@ -3,11 +3,11 @@ package com.tsi2.streamrain.converters.payment;
 import java.util.List;
 
 import com.tsi2.streamrain.converters.interfaces.IConverter;
-import com.tsi2.streamrain.datatypes.paymentmethod.UserSubscriptionDto;
+import com.tsi2.streamrain.datatypes.payment.UserSubscriptionDto;
 import com.tsi2.streamrain.model.generator.UserSubscriptions;
 
 
-public class PaymentConverter implements IConverter<UserSubscriptionDto, UserSubscriptions>{
+public class SubscribePaymentConverter implements IConverter<UserSubscriptionDto, UserSubscriptions>{
 		
 	public UserSubscriptionDto converter(UserSubscriptions source) {
 		return null;

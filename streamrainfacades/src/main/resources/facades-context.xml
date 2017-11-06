@@ -16,7 +16,11 @@
 	
 	<bean id="contentCastConverter" class="com.tsi2.streamrain.converters.content.ContentCastConverter" />
 	
-	<bean id="paymentConverter" class="com.tsi2.streamrain.converters.payment.PaymentConverter" />
+	<bean id="subscribePaymentConverter" class="com.tsi2.streamrain.converters.payment.SubscribePaymentConverter" />
+	
+	<bean id="paymentPPVConverter" class="com.tsi2.streamrain.converters.payment.PaymentPPVConverter" />
+	
+	<bean id="paymentMethodConverter" class="com.tsi2.streamrain.converters.payment.PaymentMethodConverter" />
 	
 	<bean id="daoService" class="com.tsi2.streamrain.dao.implementations.StreamRainMySQLDAO"/>
 		

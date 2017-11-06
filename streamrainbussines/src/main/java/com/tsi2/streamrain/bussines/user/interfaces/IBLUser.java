@@ -2,7 +2,6 @@ package com.tsi2.streamrain.bussines.user.interfaces;
 
 import java.util.List;
 
-import com.tsi2.streamrain.model.generator.UserSubscriptions;
 import com.tsi2.streamrain.model.generator.Users;
 
 public interface IBLUser {
@@ -22,7 +21,5 @@ public interface IBLUser {
 	void updateUser(final Users deConverter, final String currentTenant);
 
 	void deleteUser(final String userNickname, final String currentTenant);
-
-	void saveUserSubscription(UserSubscriptions userSubscriptions, final String nickName, final Integer idPaymentMethod, final String tenantID);
 
 }

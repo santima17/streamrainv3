@@ -1,4 +1,4 @@
-package com.tsi2.streamrain.datatypes.paymentmethod;
+package com.tsi2.streamrain.datatypes.payment;
 
 import java.util.Date;
 
