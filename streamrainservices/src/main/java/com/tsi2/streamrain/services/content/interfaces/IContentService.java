@@ -5,6 +5,7 @@ import java.util.List;
 import com.tsi2.streamrain.datatypes.content.ContentDto;
 import com.tsi2.streamrain.datatypes.content.UserContentCommentDto;
 import com.tsi2.streamrain.datatypes.content.UserContentFavDto;
+import com.tsi2.streamrain.datatypes.content.UserContentViewDto;
 
 public interface IContentService {
 	
@@ -23,5 +24,7 @@ public interface IContentService {
 	boolean addContentToFav(final UserContentFavDto userContentFavDto, final String tenantID);
 
 	boolean addCommentToContent(final UserContentCommentDto userContentCommentDto, final String tenantID);
+
+	boolean addViewToContent(final UserContentViewDto userContentViewDto, final String tenantID);
 
 }

@@ -18,6 +18,7 @@ import com.tsi2.streamrain.datatypes.content.ContentDto;
 import com.tsi2.streamrain.datatypes.content.ContentVoteDto;
 import com.tsi2.streamrain.datatypes.content.UserContentCommentDto;
 import com.tsi2.streamrain.datatypes.content.UserContentFavDto;
+import com.tsi2.streamrain.datatypes.content.UserContentViewDto;
 import com.tsi2.streamrain.services.category.interfaces.ICategoryService;
 import com.tsi2.streamrain.services.content.interfaces.IContentService;
 import com.tsi2.streamrain.services.session.interfaces.ISessionService;
@@ -89,6 +90,17 @@ public class ContentUserController {
 		return response;
     }
     
+    @RequestMapping(value = "/addViewToContent", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserContentViewDto> addViewToContent(@RequestBody UserContentViewDto userContentViewDto) {
+    	boolean voteOk = contentService.addViewToContent(userContentViewDto, sessionService.getCurrentTenant());
+        ResponseEntity<UserContentViewDto> response;
+        if (voteOk) {
+            response = new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+		return response;
+    }
     
     
     

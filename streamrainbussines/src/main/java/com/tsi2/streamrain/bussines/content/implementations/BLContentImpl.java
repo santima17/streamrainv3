@@ -5,7 +5,10 @@ import java.util.Date;
 import java.util.List;
 
 import com.tsi2.streamrain.bussines.content.interfaces.IBLContent;
+import com.tsi2.streamrain.bussines.user.implementations.BLUserImpl;
+import com.tsi2.streamrain.bussines.user.interfaces.IBLUser;
 import com.tsi2.streamrain.context.StremRainDataContextLoader;
+import com.tsi2.streamrain.context.StremRainUserBussinesContextLoader;
 import com.tsi2.streamrain.dao.implementations.StreamRainMySQLDAO;
 import com.tsi2.streamrain.dao.implementations.StreamRainMySQLUserDAO;
 import com.tsi2.streamrain.dao.interfaces.IDAOService;
@@ -14,12 +17,16 @@ import com.tsi2.streamrain.model.generator.Contents;
 import com.tsi2.streamrain.model.generator.UserComments;
 import com.tsi2.streamrain.model.generator.UserFavs;
 import com.tsi2.streamrain.model.generator.UserRatings;
+import com.tsi2.streamrain.model.generator.UserViews;
+import com.tsi2.streamrain.model.generator.Users;
 
 public class BLContentImpl implements IBLContent {
 
 	IDAOService daoService = (StreamRainMySQLDAO) StremRainDataContextLoader.contextLoader().getBean("daoService");
+	
 	IDAOUserService daoUserService = (StreamRainMySQLUserDAO) StremRainDataContextLoader.contextLoader().getBean("daoUserService");
 	
+	IBLUser userBussines = (BLUserImpl) StremRainUserBussinesContextLoader.contextLoader().getBean("userBussines");
 	
 	public boolean saveContent(final Contents contents, final String tenantID) {
 		daoService.save(contents, tenantID);
@@ -79,6 +86,18 @@ public class BLContentImpl implements IBLContent {
 		daoService.save(userComments, tenantID);
 		return true;
 		
+	}
+
+	public boolean addViewToContent(Integer contentID, String userNickname, Date dateStart, Date dateFinish, int second,
+			String tenantID) {
+		UserViews userViews = new UserViews();
+		userViews.getDateStart();
+		userViews.setDateFinish(dateFinish);
+		userViews.setSecond(second);
+		userViews.setUsers(daoUserService.getUserByNickname(userNickname, tenantID));
+		userViews.setContents(daoService.get(Contents.class, contentID, tenantID));
+		daoService.save(userViews, tenantID);
+		return true;
 	}
 	
 
