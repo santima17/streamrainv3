@@ -19,7 +19,7 @@ import com.tsi2.streamrain.services.payment.interfaces.IPaymentService;
 import com.tsi2.streamrain.services.session.interfaces.ISessionService;
 
 @RestController
-@RequestMapping("/payment/subscription")
+@RequestMapping("/user/payment/subscription")
 public class PaymentSubscriptionController {
 	
 	@Resource(name="paymentService")
@@ -30,7 +30,7 @@ public class PaymentSubscriptionController {
 	
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PaymentMethodDto> getAllPaytmentMethods() {
-		sessionService.setCurrentTenant("generator1");
+		//sessionService.setCurrentTenant("generator1");
         return (List<PaymentMethodDto>) paymentService.getAllPaytmentMethods(sessionService.getCurrentTenant());
     }
 	
@@ -40,7 +40,7 @@ public class PaymentSubscriptionController {
     	if (result.hasErrors()) {
     		return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
     	}
-    	sessionService.setCurrentTenant("generator1");
+    	//sessionService.setCurrentTenant("generator1");
     	paymentService.saveUserSubscription(userSubscription, sessionService.getCurrentTenant());
         return response;
     }

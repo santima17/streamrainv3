@@ -11,6 +11,7 @@ import com.tsi2.streamrain.dao.interfaces.IDAOUserService;
 import com.tsi2.streamrain.model.generator.Contents;
 import com.tsi2.streamrain.model.generator.PaymentMethods;
 import com.tsi2.streamrain.model.generator.UserPpvs;
+import com.tsi2.streamrain.model.generator.UserPpvsId;
 import com.tsi2.streamrain.model.generator.UserSubscriptions;
 import com.tsi2.streamrain.model.generator.Users;
 
@@ -32,6 +33,10 @@ public class BLPaymentImpl implements IBLPayment {
 		Users user = daoService.getUserByNickname(userNickName, tenantID);
 		PaymentMethods paymentMethods = daoPaymentMethodService.get(PaymentMethods.class, idPaymentMethods, tenantID);
 		Contents contents = daoPaymentMethodService.get(Contents.class, idContent, tenantID);
+		UserPpvsId ppvId = new UserPpvsId();
+		ppvId.setContentId(contents.getId());
+		ppvId.setUserId(user.getId());
+		userPPV.setId(ppvId);
 		userPPV.setContents(contents);
 		userPPV.setUsers(user);
 		userPPV.setPaymentMethods(paymentMethods);

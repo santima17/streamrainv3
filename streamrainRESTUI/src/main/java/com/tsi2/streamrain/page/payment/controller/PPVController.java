@@ -11,12 +11,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tsi2.streamrain.datatypes.payment.UserContentPPVDto;
-import com.tsi2.streamrain.datatypes.payment.UserSubscriptionDto;
 import com.tsi2.streamrain.services.payment.interfaces.IPaymentService;
 import com.tsi2.streamrain.services.session.interfaces.ISessionService;
 
 @RestController
-@RequestMapping("/user/ppv")
+@RequestMapping("/user/payment/ppv")
 public class PPVController {
 	
 	@Resource(name="paymentService")
