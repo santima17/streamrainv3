@@ -22,7 +22,7 @@ public class JwtUtil {
 	public static void addAuthentication(HttpServletResponse res, String username) {
 
 		String token = Jwts.builder().setSubject(username)
-				.setExpiration(new Date(System.currentTimeMillis() + 60000))
+				.setExpiration(new Date(System.currentTimeMillis() + 1800000))
 				.signWith(SignatureAlgorithm.HS512, KEY).compact();
 		res.addHeader(TOKEN_HEADER, TOKEN_PREFIX + token);
 	}

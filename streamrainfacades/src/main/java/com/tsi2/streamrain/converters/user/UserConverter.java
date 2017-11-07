@@ -35,7 +35,7 @@ public class UserConverter implements IConverter<UserDto, Users>{
 		for(Users user : source) {
 			dtoList.add(converter(user));
 		}
-		return null;
+		return dtoList;
 	}
 
 	public List<Users> deConvertAll(List<UserDto> source) {

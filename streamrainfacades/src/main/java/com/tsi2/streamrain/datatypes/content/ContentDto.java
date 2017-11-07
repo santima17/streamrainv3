@@ -1,8 +1,14 @@
 package com.tsi2.streamrain.datatypes.content;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.web.multipart.MultipartFile;
 
 public class ContentDto {
@@ -21,8 +27,20 @@ public class ContentDto {
     private MultipartFile picture;
     private MultipartFile video;
     private Integer duration;
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(iso = ISO.DATE)
     private Date dateStart;
     private Integer estimatedDuraction;
+    private List<Integer> idCategories;
+    private List<Integer> idSimilarContents;
+    private Boolean featured;
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(iso = ISO.DATE)
+    private Date featuredDateStart;
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(iso = ISO.DATE)
+    private Date featuredDateFinish;
+    private String tenantId;
     
 	public Integer getId() {
 		return id;
@@ -122,5 +140,41 @@ public class ContentDto {
 	public void setAlwaysAvailable(Boolean alwaysAvailable) {
 		this.alwaysAvailable = alwaysAvailable;
 	}
-						    
+	public List<Integer> getIdCategories() {
+		return idCategories;
+	}
+	public void setIdCategories(List<Integer> idCategories) {
+		this.idCategories = idCategories;
+	}
+	public String getTenantId() {
+		return tenantId;
+	}
+	public void setTenantId(String tenantId) {
+		this.tenantId = tenantId;
+	}
+	public Boolean getFeatured() {
+		return featured;
+	}
+	public void setFeatured(Boolean featured) {
+		this.featured = featured;
+	}
+	public Date getFeaturedDateStart() {
+		return featuredDateStart;
+	}
+	public void setFeaturedDateStart(Date featuredDateStart) {
+		this.featuredDateStart = featuredDateStart;
+	}
+	public Date getFeaturedDateFinish() {
+		return featuredDateFinish;
+	}
+	public void setFeaturedDateFinish(Date featuredDateFinish) {
+		this.featuredDateFinish = featuredDateFinish;
+	}
+	public List<Integer> getIdSimilarContents() {
+		return idSimilarContents;
+	}
+	public void setIdSimilarContents(List<Integer> idSimilarContents) {
+		this.idSimilarContents = idSimilarContents;
+	}
+										    
 }

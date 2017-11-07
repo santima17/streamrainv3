@@ -9,6 +9,6 @@
 	<bean id="categoryBussines" class="com.tsi2.streamrain.bussines.category.implementations.BLCategoryImpl" />
 	<bean id="tenantBussines" class="com.tsi2.streamrain.bussines.tenant.implementations.BLTenantImpl" />
 	<bean id="contentBussines" class="com.tsi2.streamrain.bussines.content.implementations.BLContentImpl" />
-
-
+	<bean id="paymentBussines" class="com.tsi2.streamrain.bussines.payment.implementations.BLPaymentImpl" />
+	
 </beans>

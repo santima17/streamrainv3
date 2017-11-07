@@ -18,31 +18,26 @@ import com.tsi2.streamrain.security.filters.LoginFilter;
 @Order(1)
 public class UserSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	
 	@Autowired
 	AuthenticationManager userAuthenticationManager;
-	
+
 	@Override
-    protected AuthenticationManager authenticationManager() {
-        return userAuthenticationManager;
-    }
-	
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http.csrf().disable().authorizeRequests().antMatchers("/*").permitAll(); // permitimos el acceso a /login a
-																					// cualquiera
-//				.antMatchers("/user/*").authenticated() // cualquier otra peticion requiere autenticacion
-//				.and()
-				// Las peticiones /login pasaran previamente por este filtro
-//				.addFilterBefore(new LoginFilter("/user/login", authenticationManager()),
-//						UsernamePasswordAuthenticationFilter.class)
-//				// Las demás peticiones pasarán por este filtro para validar el token
-//				.addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class);
+	protected AuthenticationManager authenticationManager() {
+		return userAuthenticationManager;
 	}
 
 	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		// Creamos una cuenta de usuario por default
-		auth.inMemoryAuthentication().withUser("ask").password("123").roles("ADMIN");
+	protected void configure(final HttpSecurity http) throws Exception {
+		http.csrf().disable().authorizeRequests()
+		.antMatchers("/index.jsp").permitAll()
+		.antMatchers("/user/registerUser").permitAll()
+		.antMatchers("/user/*").authenticated().and()
+				// Las peticiones /login pasaran previamente por este filtro
+				.addFilterBefore(new LoginFilter("/user/login", authenticationManager()),
+						UsernamePasswordAuthenticationFilter.class);
+	}
+
+	@Override
+	protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
 	}
 }

@@ -14,9 +14,9 @@ public class StreamRainConnectionProvider implements ConnectionProvider {
 
 	public StreamRainConnectionProvider(final Tenants connInfo) {
 		basicDataSource.setDriverClassName("com.mysql.jdbc.Driver");
-		basicDataSource.setUrl("jdbc:mysql://"+connInfo.getIp()+":"+connInfo.getPort()+"/"+connInfo.getName()+"?zeroDateTimeBehavior=convertToNull");
-		basicDataSource.setUsername(connInfo.getUser());
-		basicDataSource.setPassword(connInfo.getPassword());
+		basicDataSource.setUrl("jdbc:mysql://"+connInfo.getDbIp()+":"+connInfo.getDbPort()+"/"+connInfo.getName()+"?zeroDateTimeBehavior=convertToNull");
+		basicDataSource.setUsername(connInfo.getDbUser());
+		basicDataSource.setPassword(connInfo.getDbPassword());
 		basicDataSource.setInitialSize(2);
 		basicDataSource.setDefaultAutoCommit(true);
 		basicDataSource.setMaxActive(100);

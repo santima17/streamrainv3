@@ -6,23 +6,20 @@ import java.util.List;
 import com.tsi2.streamrain.converters.interfaces.IConverter;
 import com.tsi2.streamrain.datatypes.content.ContentCastDto;
 import com.tsi2.streamrain.model.generator.ContentCasts;
-import com.tsi2.streamrain.model.generator.ContentCastsId;
 
 public class ContentCastConverter implements IConverter<ContentCastDto, ContentCasts>{
 
 	public ContentCastDto converter(ContentCasts source) {
-		// TODO Auto-generated method stub
-		return null;
+		ContentCastDto contentsCast = new ContentCastDto();
+		contentsCast.setFirstName(source.getFirstName());
+		contentsCast.setLastName(source.getLastName());
+		contentsCast.setIsActor(source.getIsActor());
+		contentsCast.setIsDirector(source.getIsDirector());
+		return contentsCast;
 	}
 
 	public ContentCasts deConverter(ContentCastDto source) {
 		ContentCasts contentsCast = new ContentCasts();
-		ContentCastsId contentCastId = new ContentCastsId();
-		contentCastId.setFirstName(source.getFirstName());
-		contentCastId.setLastName(source.getLastName());
-		contentsCast.setId(contentCastId);
-		contentsCast.setIsActor(source.getIsActor());
-		contentsCast.setIsDirector(source.getIsDirector());
 		return contentsCast;
 	}
 

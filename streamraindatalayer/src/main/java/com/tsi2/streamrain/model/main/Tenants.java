@@ -9,79 +9,84 @@ package com.tsi2.streamrain.model.main;
 public class Tenants  implements java.io.Serializable {
 
 
-     private int id;
-     private String name;
-     private String portal;
-     private String ip;
-     private int port;
-     private String user;
-     private String password;
+    private Integer id;
+    private String name;
+    private String dbIp;
+    private int dbPort;
+    private String dbUser;
+    private String dbPassword;
+    private String generatorUser;
+    private String generatorPassword;
 
-    public Tenants() {
-    }
+   public Tenants() {
+   }
 
-    public Tenants(int id, String name, String portal, String ip, int port, String user, String password) {
-       this.id = id;
-       this.name = name;
-       this.portal = portal;
-       this.ip = ip;
-       this.port = port;
-       this.user = user;
-       this.password = password;
-    }
+   public Tenants(String name, String dbIp, int dbPort, String dbUser, String dbPassword, String generatorUser, String generatorPassword) {
+      this.name = name;
+      this.dbIp = dbIp;
+      this.dbPort = dbPort;
+      this.dbUser = dbUser;
+      this.dbPassword = dbPassword;
+      this.generatorUser = generatorUser;
+      this.generatorPassword = generatorPassword;
+   }
+  
+   public Integer getId() {
+       return this.id;
+   }
    
-    public int getId() {
-        return this.id;
-    }
-    
-    public void setId(int id) {
-        this.id = id;
-    }
-    public String getName() {
-        return this.name;
-    }
-    
-    public void setName(String name) {
-        this.name = name;
-    }
-    public String getIp() {
-        return this.ip;
-    }
-    
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-    public int getPort() {
-        return this.port;
-    }
-    
-    public void setPort(int port) {
-        this.port = port;
-    }
-    public String getUser() {
-        return this.user;
-    }
-    
-    public void setUser(String user) {
-        this.user = user;
-    }
-    public String getPassword() {
-        return this.password;
-    }
-    
-    public void setPassword(String password) {
-        this.password = password;
-    }
+   public void setId(Integer id) {
+       this.id = id;
+   }
+   public String getName() {
+       return this.name;
+   }
+   
+   public void setName(String name) {
+       this.name = name;
+   }
+   public String getDbIp() {
+       return this.dbIp;
+   }
+   
+   public void setDbIp(String dbIp) {
+       this.dbIp = dbIp;
+   }
+   public int getDbPort() {
+       return this.dbPort;
+   }
+   
+   public void setDbPort(int dbPort) {
+       this.dbPort = dbPort;
+   }
+   public String getDbUser() {
+       return this.dbUser;
+   }
+   
+   public void setDbUser(String dbUser) {
+       this.dbUser = dbUser;
+   }
+   public String getDbPassword() {
+       return this.dbPassword;
+   }
+   
+   public void setDbPassword(String dbPassword) {
+       this.dbPassword = dbPassword;
+   }
+   public String getGeneratorUser() {
+       return this.generatorUser;
+   }
+   
+   public void setGeneratorUser(String generatorUser) {
+       this.generatorUser = generatorUser;
+   }
+   public String getGeneratorPassword() {
+       return this.generatorPassword;
+   }
+   
+   public void setGeneratorPassword(String generatorPassword) {
+       this.generatorPassword = generatorPassword;
+   }
 
-	public String getPortal() {
-		return portal;
-	}
-
-	public void setPortal(String portal) {
-		this.portal = portal;
-	}
-
-    
 }
-
 

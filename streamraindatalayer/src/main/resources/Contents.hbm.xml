@@ -29,7 +29,7 @@
         <property name="isPayPerView" type="java.lang.Boolean">
             <column name="is_pay_per_view" />
         </property>
-        <set name="categorieses" table="content_categories" inverse="false" lazy="true" fetch="select">
+        <set name="categorieses" table="content_categories" inverse="false" lazy="true" fetch="select" cascade="all">
             <key>
                 <column name="id_content" not-null="true" />
             </key>
@@ -49,19 +49,19 @@
             </key>
             <one-to-many class="com.tsi2.streamrain.model.generator.ContentCollections" />
         </set>
-        <set name="sharedContentses" table="shared_contents" inverse="true" lazy="true" fetch="select">
+        <set name="sharedContentses" table="shared_contents" inverse="true" lazy="true" fetch="select" >
             <key>
                 <column name="content_id" not-null="true" />
             </key>
             <one-to-many class="com.tsi2.streamrain.model.generator.SharedContents" />
         </set>
-        <set name="contentCastses" table="content_casts" inverse="true" lazy="true" fetch="select">
+        <set name="contentCastses" table="content_casts" inverse="true" lazy="true" fetch="select" cascade="all">
             <key>
                 <column name="content_id" not-null="true" />
             </key>
             <one-to-many class="com.tsi2.streamrain.model.generator.ContentCasts" />
         </set>
-        <one-to-one name="alwaysAvailableContents" class="com.tsi2.streamrain.model.generator.AlwaysAvailableContents" cascade="save-update"></one-to-one>
+        <one-to-one name="alwaysAvailableContents" class="com.tsi2.streamrain.model.generator.AlwaysAvailableContents" cascade="all"></one-to-one>
         <set name="contentsesForIdContent2" table="similar_contents" inverse="false" lazy="true" fetch="select">
             <key>
                 <column name="id_content_1" not-null="true" />
@@ -76,7 +76,7 @@
             </key>
             <one-to-many class="com.tsi2.streamrain.model.generator.UserViews" />
         </set>
-        <set name="contentsesForIdContent1" table="similar_contents" inverse="false" lazy="true" fetch="select">
+        <set name="contentsesForIdContent1" table="similar_contents" inverse="false" lazy="true" fetch="select" cascade="all">
             <key>
                 <column name="id_content_2" not-null="true" />
             </key>
@@ -90,8 +90,8 @@
             </key>
             <one-to-many class="com.tsi2.streamrain.model.generator.UserPpvs" />
         </set>
-        <one-to-one name="liveOnlyContents" class="com.tsi2.streamrain.model.generator.LiveOnlyContents"></one-to-one>
-        <set name="featuredContentses" table="featured_contents" inverse="true" lazy="true" fetch="select">
+        <one-to-one name="liveOnlyContents" class="com.tsi2.streamrain.model.generator.LiveOnlyContents" cascade="all"></one-to-one>
+        <set name="featuredContentses" table="featured_contents" inverse="true" lazy="true" fetch="select" cascade="all">
             <key>
                 <column name="content_id" not-null="true" />
             </key>

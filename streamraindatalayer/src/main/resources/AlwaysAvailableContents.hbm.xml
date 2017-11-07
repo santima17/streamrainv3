@@ -10,7 +10,7 @@
                 <param name="property">contents</param>
             </generator>
         </id>
-        <one-to-one name="contents" class="com.tsi2.streamrain.model.generator.Contents" constrained="true"></one-to-one>
+        <one-to-one name="contents" class="com.tsi2.streamrain.model.generator.Contents"></one-to-one>
         <property name="duration" type="int">
             <column name="duration" not-null="true" />
         </property>

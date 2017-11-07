@@ -16,28 +16,24 @@ import com.tsi2.streamrain.security.filters.LoginFilter;
 //@Order(2)
 public class GeneratorSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	
 	@Autowired
 	AuthenticationManager generatorAuthenticationManager;
-	
+
 	@Override
-    protected AuthenticationManager authenticationManager() {
-        return generatorAuthenticationManager;
-    }
-	
+	protected AuthenticationManager authenticationManager() {
+		return generatorAuthenticationManager;
+	}
+
 	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http.csrf().disable().authorizeRequests().antMatchers("/index.jsp").permitAll() // permitimos el acceso a /login a
-																					// cualquiera
-				.anyRequest().authenticated() // cualquier otra peticion requiere autenticacion
-				.and()
-				// Las peticiones /login pasaran previamente por este filtro
-				.addFilterBefore(new LoginFilter("/generator/login", authenticationManager()),
+	protected void configure(final HttpSecurity http) throws Exception {
+		http.csrf().disable().authorizeRequests().antMatchers("/index.jsp").permitAll()
+		.antMatchers("/generador/*").authenticated().and()
+				.addFilterBefore(new LoginFilter("/generador/login", authenticationManager()),
 						UsernamePasswordAuthenticationFilter.class);
 	}
 
 	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+	protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
 		// Creamos una cuenta de usuario por default
 		auth.inMemoryAuthentication().withUser("ask").password("123").roles("ADMIN");
 	}

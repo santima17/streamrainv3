@@ -17,11 +17,13 @@ public class TenantConverter implements IConverter<TenantDto, Tenants>{
 	public Tenants deConverter(TenantDto source) {
 		Tenants target = new Tenants();
 		target.setId(source.getId());
-		target.setIp(source.getIp());
+		target.setDbIp(source.getDbIp());
 		target.setName(source.getName());
-		target.setPassword(source.getPassword());
-		target.setPort(source.getPort());
-		target.setUser(source.getUser());
+		target.setDbPassword(source.getDbPassword());
+		target.setDbPort(source.getDbPort());
+		target.setDbUser(source.getDbUser());
+		target.setGeneratorPassword(source.getGeneratorPassword());
+		target.setGeneratorUser(source.getGeneratorUser());
 		return target;
 	}
 
