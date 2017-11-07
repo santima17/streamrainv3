@@ -18,8 +18,7 @@
             <div v-if="!stream.ready && !janusAlert">
               <p class="text-danger">Connecting...</p>
             </div>
-            <video width="100%" v-if="stream.ready">
-            </video>
+            <video ref="video" width="100%" v-on:playing="playingVideo" autoplay />
           </div>
           <div class="col-sm-5">
             <div v-if="!chatroom.ready && !janusAlert">
@@ -93,7 +92,8 @@
           participantsSelected: [],
           privateMessageMode: false
         },
-        messageToSend: null
+        messageToSend: null,
+        currentStream: null
       }
     },
     created () {
@@ -102,6 +102,105 @@
 
       this.eventBus.$once('JanusReady', function (result) {
         i.eventBus.$emit('getJanusLiveContent', streamId);
+      });
+
+      this.eventBus.$on('janusStartingStream', function () {
+        console.error('janusStartingStream');
+      });
+
+      this.eventBus.$on('janusStartedStream', function () {
+        console.error('janusStartedStream');
+        i.stream.ready = true;
+      });
+
+      this.eventBus.$on('janusRemoteStream', function (obj) {
+        console.error('janusRemoteStream');
+        const stream = obj.stream;
+        const browser = obj.browser;
+        this.currentStream = stream;
+        if (i.$refs.video.length > 0) {
+          // Been here already: let's see if anything changed
+          const videoTracks = stream.getVideoTracks();
+          if (videoTracks && videoTracks.length > 0 && !videoTracks[0].muted) {
+            // $('#novideo').remove();
+            if (i.$refs.video.videoWidth) i.$refs.video.show();
+          }
+          return;
+        }
+
+        // $('#stream').append('<video class="rounded centered hide" id="remotevideo" width=320 height=240 autoplay/>');
+        // Show the stream and hide the spinner when we get a playing event
+        // i.$refs.video.bind('playing', function () {
+        //   // $('#waitingvideo').remove();
+        //   // if (this.videoWidth) $('#remotevideo').removeClass('hide').show();
+        //   // if (spinner !== null && spinner !== undefined) spinner.stop();
+        //   // spinner = null;
+        //   const videoTracks = stream.getVideoTracks();
+        //   if (videoTracks === null || videoTracks === undefined || videoTracks.length === 0) return;
+        //   const width = this.videoWidth;
+        //   const height = this.videoHeight;
+        //   // $('#curres').removeClass('hide').text(width+'x'+height).show();
+        //   if (browser.name === 'firefox') {
+        //     // Firefox Stable has a bug: width and height are not immediately available after a playing
+        //     // setTimeout(function() {
+        //     //   const width = $("#remotevideo").get(0).videoWidth;
+        //     //   const height = $("#remotevideo").get(0).videoHeight;
+        //     //   $('#curres').removeClass('hide').text(width+'x'+height).show();
+        //     // }, 2000);
+        //   }
+        // });
+        const videoTracks = stream.getVideoTracks();
+        if (videoTracks && videoTracks.length &&
+          (
+            browser.name === "chrome" ||
+            browser.name === "firefox" ||
+            browser.name === "safari"
+          )
+        ){
+          // $('#curbitrate').removeClass('hide').show();
+          // bitrateTimer = setInterval(function() {
+          //   // Display updated bitrate, if supported
+          //   var bitrate = streaming.getBitrate();
+          //   //~ Janus.debug("Current bitrate is " + streaming.getBitrate());
+          //   $('#curbitrate').text(bitrate);
+          //   // Check if the resolution changed too
+          //   var width = $("#remotevideo").get(0).videoWidth;
+          //   var height = $("#remotevideo").get(0).videoHeight;
+          //   if(width > 0 && height > 0)
+          //     $('#curres').removeClass('hide').text(width+'x'+height).show();
+          // }, 1000);
+        }
+
+        //Janus.attachMediaStream($('#remotevideo').get(0), stream);
+        // A ver si funciona de esta forma lo que está en la línea anterior
+        if(browser.name === 'chrome') {
+          var chromever = browser.version;
+          if(chromever >= 43) {
+            i.$refs.video.srcObject = stream;
+          } else if(typeof element.src !== 'undefined') {
+            i.$refs.video.src = URL.createObjectURL(stream);
+          } else {
+            console.error("Error attaching stream to element");
+          }
+        } else {
+          i.$refs.video.srcObject = stream;
+        }
+
+        // var videoTracks = stream.getVideoTracks();
+        // if(videoTracks === null || videoTracks === undefined || videoTracks.length === 0 || videoTracks[0].muted) {
+        //   // No remote video
+        //   $('#remotevideo').hide();
+        //   $('#stream').append(
+        //     '<div id="novideo" class="no-video-container">' +
+        //       '<i class="fa fa-video-camera fa-5 no-video-icon"></i>' +
+        //       '<span class="no-video-text">No remote video available</span>' +
+        //     '</div>');
+        // }
+
+      });
+
+      this.eventBus.$on('janusStoppedStream', function () {
+        console.error('janusStoppedStream');
       });
 
       this.eventBus.$on('janusTextroomNewPublicMessage', function (message) {
@@ -118,6 +217,23 @@
           preamble: `[Private Message] from [${message.from}]`,
           text: message.text
         });
+      });
+
+      this.eventBus.$on('janusSendPrivateMessageResult', function (result) {
+        if (result.notSended.length > 0) {
+          i.chatroom.messages.push({
+            p_class: 'text-danger',
+            preamble: `[Private Message] error when trying to send to ${result.notSended}`,
+            text: result.messageToSend
+          });
+        }
+        if (result.sended.length > 0) {
+          i.chatroom.messages.push({
+            p_class: 'text-danger',
+            preamble: `[Private Message] sended to ${result.sended}`,
+            text: result.messageToSend
+          });
+        }
       });
 
       this.eventBus.$once('janusTextroomParticipants', function (participants) {
@@ -166,6 +282,25 @@
       this.eventBus.$emit('leaveStreaming', null);
     },
     methods: {
+      playingVideo: function () {
+        // $('#waitingvideo').remove();
+        // if (this.videoWidth) $('#remotevideo').removeClass('hide').show();
+        // if (spinner !== null && spinner !== undefined) spinner.stop();
+        // spinner = null;
+        const videoTracks = this.currentStream.getVideoTracks();
+        if (videoTracks === null || videoTracks === undefined || videoTracks.length === 0) return;
+        // const width = this.videoWidth;
+        // const height = this.videoHeight;
+        // $('#curres').removeClass('hide').text(width+'x'+height).show();
+        if (browser.name === 'firefox') {
+          // Firefox Stable has a bug: width and height are not immediately available after a playing
+          // setTimeout(function() {
+          //   const width = $("#remotevideo").get(0).videoWidth;
+          //   const height = $("#remotevideo").get(0).videoHeight;
+          //   $('#curres').removeClass('hide').text(width+'x'+height).show();
+          // }, 2000);
+        }
+      },
       activePrivateMessageMode: function () {
         this.chatroom.participantsSelected = [];
         this.chatroom.privateMessageMode = true;
@@ -193,6 +328,7 @@
               receivers: this.chatroom.participantsSelected
             });
             this.messageToSend = '';
+            this.chatroom.privateMessageMode = false;
           }  
         } else {
           this.eventBus.$emit('janusSendPublicMessage', this.messageToSend);
@@ -210,4 +346,3 @@
     width:100%;
   }
 </style>
-

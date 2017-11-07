@@ -28,6 +28,12 @@ const adapter = require('./adapter');
 // List of sessions
 Janus.sessions = {};
 
+// STREAMRAIN
+Janus.browser = {
+	name: adapter.browserDetails.browser,
+	version: adapter.browserDetails.version
+}
+
 // Screensharing Chrome Extension ID
 Janus.extensionId = "hapfgfdkleiggjjpfpenajgdnfckjpaj";
 Janus.isExtensionEnabled = function() {

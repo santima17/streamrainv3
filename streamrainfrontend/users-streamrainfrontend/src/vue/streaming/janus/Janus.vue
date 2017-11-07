@@ -45,6 +45,8 @@
       });
 
       this.eventBus.$on('janusSendPrivateMessage', function (obj) {
+        let sended = [];
+        let notSended = [];
         obj.receivers.forEach((to) => {
           const message = {
             textroom: 'message',
@@ -57,10 +59,17 @@
             text: JSON.stringify(message),
             error: function(reason) {
               Janus.error(JSON.stringify(reason));
+              notSended.push(to);
             },
             success: function() {
+              sended.push(to);
             }
           });
+        });
+        i.eventBus.$emit('janusSendPrivateMessageResult', {
+          messageToSend: obj.messageToSend,
+          sended,
+          notSended
         });
       });
 
@@ -184,16 +193,124 @@
                   success: function (pluginHandle) {
                     i.setStreamingHandle(pluginHandle);
                     Janus.log('Plugin attached! (' + pluginHandle.getPlugin() + ', id=' + pluginHandle.getId() + ')');
-                    // i.janusUpdateStreamsList(function (result) {
-                    //   eventBus.$emit('setJanusStreamsList', result);
-                    // });
                   },
                   error: function (error) {
                     Janus.error('Error attaching plugin... ', error);
                   },
                   onmessage: function (msg, jsep) {
+                    const result = msg['result'];
+                    if (result !== null && result !== undefined) {
+                      if (result['status'] !== undefined && result['status'] !== null) {
+                        const status = result['status'];
+                        if (status === 'starting')
+                          eventBus.$emit('janusStartingStream', null);
+                        else if (status === 'started')
+                          eventBus.$emit('janusStartedStream', null);                          
+                        else if (status === 'stopped')
+                          eventBus.$emit('janusStoppedStream', null); 
+                      }
+                    } else if (msg['error'] !== undefined && msg['error'] !== null) {
+                      Janus.error(JSON.stringify(msg['error']));
+                      // TODO: Stop Stream.
+                      return;
+                    }
+                    if (jsep !== undefined && jsep !== null) {
+                      Janus.debug('Handling SDP as well...');
+                      Janus.debug(jsep);
+                      // Answer
+                      i.streaming.handle.createAnswer({
+                        jsep: jsep,
+                        media: {
+                          audioSend: false,
+                          videoSend: false
+                        }, // We want recvonly audio/video
+                        success: function(jsep) {
+                          Janus.debug('Got SDP!');
+                          Janus.debug(jsep);
+                          var body = {
+                            request: 'start'
+                          };
+                          i.streaming.handle.send({
+                            message: body,
+                            jsep: jsep
+                          });
+                          // $('#watch').html("Stop").removeAttr('disabled').click(stopStream);
+                        },
+                        error: function(error) {
+                          Janus.error('WebRTC error: ', error);
+                        }
+                      });
+                    }
                   },
                   onremotestream: function (stream) {
+                    Janus.error(JSON.stringify(stream));
+                    eventBus.$emit('janusRemoteStream', {
+                      stream,
+                      browser: Janus.browser
+                    });
+                    // if($('#remotevideo').length > 0) {
+                    //   // Been here already: let's see if anything changed
+                    //   const videoTracks = stream.getVideoTracks();
+                    //   if(videoTracks && videoTracks.length > 0 && !videoTracks[0].muted) {
+                    //     $('#novideo').remove();
+                    //     if($("#remotevideo").get(0).videoWidth)
+                    //       $('#remotevideo').show();
+                    //   }
+                    //   return;
+                    // }
+                    // $('#stream').append('<video class="rounded centered hide" id="remotevideo" width=320 height=240 autoplay/>');
+                    // // Show the stream and hide the spinner when we get a playing event
+                    // $("#remotevideo").bind("playing", function () {
+                    //   $('#waitingvideo').remove();
+                    //   if(this.videoWidth)
+                    //     $('#remotevideo').removeClass('hide').show();
+                    //   if(spinner !== null && spinner !== undefined)
+                    //     spinner.stop();
+                    //   spinner = null;
+                    //   var videoTracks = stream.getVideoTracks();
+                    //   if(videoTracks === null || videoTracks === undefined || videoTracks.length === 0)
+                    //     return;
+                    //   var width = this.videoWidth;
+                    //   var height = this.videoHeight;
+                    //   $('#curres').removeClass('hide').text(width+'x'+height).show();
+                    //   if(adapter.browserDetails.browser === "firefox") {
+                    //     // Firefox Stable has a bug: width and height are not immediately available after a playing
+                    //     setTimeout(function() {
+                    //       var width = $("#remotevideo").get(0).videoWidth;
+                    //       var height = $("#remotevideo").get(0).videoHeight;
+                    //       $('#curres').removeClass('hide').text(width+'x'+height).show();
+                    //     }, 2000);
+                    //   }
+                    // });
+                    // var videoTracks = stream.getVideoTracks();
+                    // if(videoTracks && videoTracks.length &&
+                    //     (adapter.browserDetails.browser === "chrome" ||
+                    //       adapter.browserDetails.browser === "firefox" ||
+                    //       adapter.browserDetails.browser === "safari")) {
+                    //   $('#curbitrate').removeClass('hide').show();
+                    //   bitrateTimer = setInterval(function() {
+                    //     // Display updated bitrate, if supported
+                    //     var bitrate = streaming.getBitrate();
+                    //     //~ Janus.debug("Current bitrate is " + streaming.getBitrate());
+                    //     $('#curbitrate').text(bitrate);
+                    //     // Check if the resolution changed too
+                    //     var width = $("#remotevideo").get(0).videoWidth;
+                    //     var height = $("#remotevideo").get(0).videoHeight;
+                    //     if(width > 0 && height > 0)
+                    //       $('#curres').removeClass('hide').text(width+'x'+height).show();
+                    //   }, 1000);
+                    // }
+                    // Janus.attachMediaStream($('#remotevideo').get(0), stream);
+                    // var videoTracks = stream.getVideoTracks();
+                    // if(videoTracks === null || videoTracks === undefined || videoTracks.length === 0 || videoTracks[0].muted) {
+                    //   // No remote video
+                    //   $('#remotevideo').hide();
+                    //   $('#stream').append(
+                    //     '<div id="novideo" class="no-video-container">' +
+                    //       '<i class="fa fa-video-camera fa-5 no-video-icon"></i>' +
+                    //       '<span class="no-video-text">No remote video available</span>' +
+                    //     '</div>');
+                    // }
                   },
                   oncleanup: function () {
                   }
@@ -215,7 +332,7 @@
                     });
                   },
                   error: function(error) {
-                    console.error('Error attaching plugin...', error);
+                    Janus.error('Error attaching plugin...', error);
                   },
                   webrtcState: function(on) {
                     // Indica el estado de la conexión webRTC
@@ -278,24 +395,18 @@
                       let whisper = json['whisper'];
                       if (whisper === true) {
                         // Private message
-                        // ACÁ PUBLICAMOS LOS MENSAJES
                         Janus.error(JSON.stringify(json));
                         eventBus.$emit('janusTextroomNewPrivateMessage', {
                           from,
                           text: msg
                         });
-                        // $('#chatroom').append('<p style="color: purple;">[' + dateString + '] <b>[whisper from ' + participants[from] + ']</b> ' + msg);
-                        // $('#chatroom').get(0).scrollTop = $('#chatroom').get(0).scrollHeight;
                       } else {
                         // Public message
-                        // ACÁ PUBLICAMOS LOS MENSAJES
                         Janus.error(JSON.stringify(json));
                         eventBus.$emit('janusTextroomNewPublicMessage', {
                           from,
                           text: msg
                         });
-                        // $('#chatroom').append('<p>[' + dateString + '] <b>' + participants[from] + ':</b> ' + msg);
-                        // $('#chatroom').get(0).scrollTop = $('#chatroom').get(0).scrollHeight;
                       }
                     } else if (what === 'join') {
                       if (json['username'] === i.textroom.myusername ) {
@@ -303,56 +414,16 @@
                       } else {
                         eventBus.$emit('janusTextroomSomeoneJoined', json['username']);
                       }
-                      // Somebody joined
-                      // let username = json["username"];
-                      // let display = json["display"];
-                      // participants[username] = display ? display : username;
-                      // if (username !== myid && $('#rp' + username).length === 0) {
-                      //   // Add to the participants list
-                      //   $('#list').append('<li id="rp' + username + '" class="list-group-item">' + participants[username] + '</li>');
-                      //   $('#rp' + username).css('cursor', 'pointer').click(function() {
-                      //     var username = $(this).attr('id').split("rp")[1];
-                      //     sendPrivateMsg(username);
-                      //   });
-                      // }
-                      // $('#chatroom').append('<p style="color: green;">[' + getDateString() + '] <i>' + participants[username] + ' joined</i></p>');
-                      // $('#chatroom').get(0).scrollTop = $('#chatroom').get(0).scrollHeight;
                     } else if (what === 'leave') {
                       eventBus.$emit('janusTextroomSomeoneLeaved', json['username']);
-                      // Somebody left
-                      // var username = json["username"];
-                      // var when = new Date();
-                      // $('#rp' + username).remove();
-                      // $('#chatroom').append('<p style="color: green;">[' + getDateString() + '] <i>' + participants[username] + ' left</i></p>');
-                      // $('#chatroom').get(0).scrollTop = $('#chatroom').get(0).scrollHeight;
-                      // delete participants[username];
                     } else if (what === 'kicked') {
                       // TODO
-                      // Somebody was kicked
-                      // var username = json["username"];
-                      // var when = new Date();
-                      // $('#rp' + username).remove();
-                      // $('#chatroom').append('<p style="color: green;">[' + getDateString() + '] <i>' + participants[username] + ' was kicked from the room</i></p>');
-                      // $('#chatroom').get(0).scrollTop = $('#chatroom').get(0).scrollHeight;
-                      // delete participants[username];
-                      // if (username === myid) {
-                      //   bootbox.alert("You have been kicked from the room", function() {
-                      //     window.location.reload();
-                      //   });
-                      // }
                     } else if (what === 'destroyed') {
-                      // if (json["room"] !== myroom)
-                      //   return;
-                      // // Room was destroyed, goodbye!
-                      // Janus.warn("The room has been destroyed!");
-                      // bootbox.alert("The room has been destroyed", function() {
-                      //   window.location.reload();
-                      // });
+                      // TODO
                     }
                   },
                   oncleanup: function() {
-                    // Janus.log(" ::: Got a cleanup notification :::");
-                    // $('#datasend').attr('disabled', true);
+                    // TODO
                   }
                 });
               },
@@ -372,6 +443,7 @@
       janusGetLiveContent: function (streamId) {
         if (this.textroom.ready &&  this.streaming.ready) {
           this.janusJoinTextroom(streamId);
+          this.janusWatchStream(streamId);
         }
       },
       janusUpdateStreamsList: function (callback) {
@@ -397,6 +469,15 @@
           return callback(null);
         }
       },
+      janusWatchStream: function (streamId) {
+        const body = {
+          request: 'watch',
+          id: parseInt(streamId)
+        };
+	      this.streaming.handle.send({
+          message: body
+        });
+      },
       janusJoinTextroom: function (textroomId) {
         const eventBus = this.eventBus;
         this.textroom.myid = Janus.randomString(12);
@@ -410,63 +491,25 @@
         };
         this.textroom.transactions[transaction] = function (response) {
           if (response['textroom'] === 'error') {
-            // Something went wrong
-            // if(response["error_code"] === 417) {
-            //   // This is a "no such room" error: give a more meaningful description
-            //   bootbox.alert(
-            //     "<p>Apparently room <code>" + myroom + "</code> (the one this demo uses as a test room) " +
-            //     "does not exist...</p><p>Do you have an updated <code>janus.plugin.textroom.cfg</code> " +
-            //     "configuration file? If not, make sure you copy the details of room <code>" + myroom + "</code> " +
-            //     "from that sample in your current configuration file, then restart Janus and try again."
-            //   );
-            // } else {
-            //   bootbox.alert(response["error"]);
-            // }
-            // $('#username').removeAttr('disabled').val("");
-            // $('#register').removeAttr('disabled').click(registerUsername);
             Janus.error(response['error']);
             return;
           }
-          // We're in
-          // $('#roomjoin').hide();
-          // $('#room').removeClass('hide').show();
-          // $('#participant').removeClass('hide').html(this.myusername).show();
-          // $('#chatroom').css('height', ($(window).height()-420)+"px");
-          // $('#datasend').removeAttr('disabled');
-          // Any participants already in?
           const participants = [];
           response.participants.forEach((p) => {
             participants.push(p.username);
           });
           eventBus.$emit('janusTextroomParticipants', participants);
-          // if(response.participants && response.participants.length > 0) {
-          //   for(var i in response.participants) {
-          //     var p = response.participants[i];
-          //     participants[p.username] = p.display ? p.display : p.username;
-          //     if(p.username !== this.myid && $('#rp' + p.username).length === 0) {
-          //       // Add to the participants list
-          //       $('#list').append('<li id="rp' + p.username + '" class="list-group-item">' + participants[p.username] + '</li>');
-          //       $('#rp' + p.username).css('cursor', 'pointer').click(function() {
-          //         var username = $(this).attr('id').split("rp")[1];
-          //         sendPrivateMsg(username);
-          //       });
-          //     }
-          //     $('#chatroom').append('<p style="color: green;">[' + getDateString() + '] <i>' + participants[p.username] + ' joined</i></p>');
-          //     $('#chatroom').get(0).scrollTop = $('#chatroom').get(0).scrollHeight;
-          //   }
-          // }
         };
         this.textroom.handle.data({
           text: JSON.stringify(register),
           error: function(reason) {
             Janus.error(reason);
-            // $('#username').removeAttr('disabled').val("");
-            // $('#register').removeAttr('disabled').click(registerUsername);
           }
         });
       }
     }
   }
+
   function getDateString(jsonDate) {
     var when = new Date();
     if(jsonDate) {
