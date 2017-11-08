@@ -1,5 +1,7 @@
 package com.tsi2.streamrain.bussines.janus.implementations;
 
+import java.util.Date;
+
 import com.tsi2.streamrain.bussines.janus.interfaces.IBLJanus;
 import com.tsi2.streamrain.context.StremRainDataContextLoader;
 import com.tsi2.streamrain.dao.implementations.StreamRainMySQLDAO;
@@ -23,7 +25,8 @@ public class BLJanusImpl implements IBLJanus {
 	}
 
 	public Integer saveJanusServer(JanusServers janusServers, String tokenJanusCreationTokens, String tenantID) {
-		JanusCreationTokens janusCreationTokens = daoJanusService.getJanusByToken(tokenJanusCreationTokens, tenantID);
+		Date now = new Date();
+		JanusCreationTokens janusCreationTokens = daoJanusService.getJanusByToken(tokenJanusCreationTokens, now, tenantID);
 		if (janusCreationTokens == null) {
 			return null;
 		}

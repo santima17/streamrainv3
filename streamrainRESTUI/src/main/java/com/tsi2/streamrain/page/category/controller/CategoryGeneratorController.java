@@ -13,8 +13,8 @@ import com.tsi2.streamrain.services.category.interfaces.ICategoryService;
 import com.tsi2.streamrain.services.session.interfaces.ISessionService;
 
 @RestController
-@RequestMapping("/user/category")
-public class CategoryUserController {
+@RequestMapping("/generator/category")
+public class CategoryGeneratorController {
 	
 	@Autowired
 	ICategoryService categoryService;

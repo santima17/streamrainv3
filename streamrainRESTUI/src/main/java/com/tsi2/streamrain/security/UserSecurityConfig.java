@@ -19,9 +19,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import com.tsi2.streamrain.security.filters.JwtFilter;
 import com.tsi2.streamrain.security.filters.LoginFilter;
 
-@Configuration
-@EnableWebSecurity
-@Order(1)
+//@Configuration
+//@EnableWebSecurity
+//@Order(1)
 public class UserSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
