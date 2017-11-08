@@ -2,7 +2,7 @@ package com.tsi2.streamrain.services.category.interfaces;
 
 import java.util.List;
 
-import com.tsi.streamrain.datatypes.category.CategoryDto;
+import com.tsi2.streamrain.datatypes.category.CategoryDto;
 
 public interface ICategoryService {
 

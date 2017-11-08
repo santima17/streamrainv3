@@ -1,4 +1,4 @@
-package com.tsi.streamrain.datatypes.janus;
+package com.tsi2.streamrain.datatypes.janus;
 
 import java.util.Date;
 
