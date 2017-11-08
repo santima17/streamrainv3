@@ -14,9 +14,8 @@ public class BLJanusImpl implements IBLJanus {
 		return (Integer) daoService.save(janusToken, tenantID);
 	}
 
-	public void updateJanusToken(JanusCreationTokens deConverter, String tenantID) {
-		// TODO Auto-generated method stub
-		
+	public boolean updateJanusToken(JanusCreationTokens janusToken, String tenantID) {
+		return daoService.saveOrUpdate(janusToken, tenantID);	
 	}
 
 }

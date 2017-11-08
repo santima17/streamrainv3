@@ -6,6 +6,6 @@ public interface IJanusService {
 
 	JanusCreateTokenDto createJanusToken(JanusCreateTokenDto janusCreateTokenDto, final String currentTenant);
 	
-	void updateJanusToken(JanusCreateTokenDto janusCreateTokenDto, final String tenantID);
+	boolean updateJanusToken(JanusCreateTokenDto janusCreateTokenDto, final String tenantID);
 
 }

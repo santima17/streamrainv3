@@ -6,6 +6,6 @@ public interface IBLJanus {
 
 	Integer saveJanusToken(JanusCreationTokens janusToken, String tenantID);
 
-	void updateJanusToken(JanusCreationTokens deConverter, String tenantID);
+	boolean updateJanusToken(JanusCreationTokens janusToken, String tenantID);
 
 }

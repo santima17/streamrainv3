@@ -23,9 +23,8 @@ public class JanusServiceImpl implements IJanusService{
 		return janusCreateTokenDto;
 	}
 
-	public void updateJanusToken(JanusCreateTokenDto janusCreateTokenDto, String tenantID) {
-		janusBussines.updateJanusToken((JanusCreationTokens) janusTokentConverter.deConverter(janusCreateTokenDto), tenantID);
-		
+	public boolean updateJanusToken(JanusCreateTokenDto janusCreateTokenDto, String tenantID) {
+		return janusBussines.updateJanusToken((JanusCreationTokens) janusTokentConverter.deConverter(janusCreateTokenDto), tenantID);
 	}
 
 }
