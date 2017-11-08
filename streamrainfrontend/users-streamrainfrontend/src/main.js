@@ -13,6 +13,7 @@ import Home from './vue/nav/Home.vue';
 import Catalog from './vue/nav/Catalog.vue';
 // Streaming
 import LiveOnly from './vue/streaming/LiveOnly.vue'; 
+import AlwaysAvailable from './vue/streaming/AlwaysAvailable.vue';
 
 Vue.use(VueRouter);
 Vue.use(VueResource);
@@ -71,6 +72,13 @@ const routes = [
     component: LiveOnly,
     meta: {
       title: `${config.tenant.name} | Live!`
+    }
+  },
+  {
+    path: '/vod',
+    component: AlwaysAvailable,
+    meta: {
+      title: `${config.tenant.name} | Vod!`
     }
   }
 ];

@@ -92,7 +92,7 @@
         streamId: null,
         // Streaming
         streaming: {
-          ready: true, // TODO: false
+          ready: false, // TODO: false
           handle: null
         },
         // TextRoom
@@ -159,8 +159,8 @@
         this.streaming.handle = handle;
       },
       setStreamingReady: function () {
-        this.textroom.ready = true;
-        if (this.streaming.ready) {
+        this.streaming.ready = true;
+        if (this.textroom.ready) {
           this.eventBus.$emit('JanusReady', null);
         }
       },
@@ -193,6 +193,7 @@
                   success: function (pluginHandle) {
                     i.setStreamingHandle(pluginHandle);
                     Janus.log('Plugin attached! (' + pluginHandle.getPlugin() + ', id=' + pluginHandle.getId() + ')');
+                    i.setStreamingReady();
                   },
                   error: function (error) {
                     Janus.error('Error attaching plugin... ', error);
@@ -243,76 +244,14 @@
                     }
                   },
                   onremotestream: function (stream) {
-                    Janus.error(JSON.stringify(stream));
+                    Janus.error('asd ' + JSON.stringify(stream));
                     eventBus.$emit('janusRemoteStream', {
                       stream,
                       browser: Janus.browser
                     });
-                    // if($('#remotevideo').length > 0) {
-                    //   // Been here already: let's see if anything changed
-                    //   const videoTracks = stream.getVideoTracks();
-                    //   if(videoTracks && videoTracks.length > 0 && !videoTracks[0].muted) {
-                    //     $('#novideo').remove();
-                    //     if($("#remotevideo").get(0).videoWidth)
-                    //       $('#remotevideo').show();
-                    //   }
-                    //   return;
-                    // }
-                    // $('#stream').append('<video class="rounded centered hide" id="remotevideo" width=320 height=240 autoplay/>');
-                    // // Show the stream and hide the spinner when we get a playing event
-                    // $("#remotevideo").bind("playing", function () {
-                    //   $('#waitingvideo').remove();
-                    //   if(this.videoWidth)
-                    //     $('#remotevideo').removeClass('hide').show();
-                    //   if(spinner !== null && spinner !== undefined)
-                    //     spinner.stop();
-                    //   spinner = null;
-                    //   var videoTracks = stream.getVideoTracks();
-                    //   if(videoTracks === null || videoTracks === undefined || videoTracks.length === 0)
-                    //     return;
-                    //   var width = this.videoWidth;
-                    //   var height = this.videoHeight;
-                    //   $('#curres').removeClass('hide').text(width+'x'+height).show();
-                    //   if(adapter.browserDetails.browser === "firefox") {
-                    //     // Firefox Stable has a bug: width and height are not immediately available after a playing
-                    //     setTimeout(function() {
-                    //       var width = $("#remotevideo").get(0).videoWidth;
-                    //       var height = $("#remotevideo").get(0).videoHeight;
-                    //       $('#curres').removeClass('hide').text(width+'x'+height).show();
-                    //     }, 2000);
-                    //   }
-                    // });
-                    // var videoTracks = stream.getVideoTracks();
-                    // if(videoTracks && videoTracks.length &&
-                    //     (adapter.browserDetails.browser === "chrome" ||
-                    //       adapter.browserDetails.browser === "firefox" ||
-                    //       adapter.browserDetails.browser === "safari")) {
-                    //   $('#curbitrate').removeClass('hide').show();
-                    //   bitrateTimer = setInterval(function() {
-                    //     // Display updated bitrate, if supported
-                    //     var bitrate = streaming.getBitrate();
-                    //     //~ Janus.debug("Current bitrate is " + streaming.getBitrate());
-                    //     $('#curbitrate').text(bitrate);
-                    //     // Check if the resolution changed too
-                    //     var width = $("#remotevideo").get(0).videoWidth;
-                    //     var height = $("#remotevideo").get(0).videoHeight;
-                    //     if(width > 0 && height > 0)
-                    //       $('#curres').removeClass('hide').text(width+'x'+height).show();
-                    //   }, 1000);
-                    // }
-                    // Janus.attachMediaStream($('#remotevideo').get(0), stream);
-                    // var videoTracks = stream.getVideoTracks();
-                    // if(videoTracks === null || videoTracks === undefined || videoTracks.length === 0 || videoTracks[0].muted) {
-                    //   // No remote video
-                    //   $('#remotevideo').hide();
-                    //   $('#stream').append(
-                    //     '<div id="novideo" class="no-video-container">' +
-                    //       '<i class="fa fa-video-camera fa-5 no-video-icon"></i>' +
-                    //       '<span class="no-video-text">No remote video available</span>' +
-                    //     '</div>');
-                    // }
                   },
                   oncleanup: function () {
+                    // TODO
                   }
                 });
                 i.janus.attach({
