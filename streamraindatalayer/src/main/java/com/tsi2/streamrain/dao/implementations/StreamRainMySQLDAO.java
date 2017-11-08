@@ -20,7 +20,7 @@ import org.hibernate.Transaction;
 public class StreamRainMySQLDAO implements IDAOService{
     
 
-    public <T> T save(final T o, final String tenantID){
+    public <T> Integer save(final T o, final String tenantID){
       Session dbSession = DBHibernateUtil.getSessionFactoryGenerator(tenantID);
 //      Transaction tx = dbSession.getTransaction();
 //      try{
@@ -35,7 +35,7 @@ public class StreamRainMySQLDAO implements IDAOService{
 //      }finally{
 //          dbSession.close();
 //      }
-      return (T) dbSession.save(o);
+      return (Integer) dbSession.save(o);
     }
 
     public void delete(final Object object, final String tenantID){

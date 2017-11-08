@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface IDAOService {
     
-    public <T> T save(final T o, final String tenantID);
+    public <T> Integer save(final T o, final String tenantID);
     public <T> T get(final Class<T> type, final Integer id, final String tenantID);
     public <T> T merge(final T o, final String tenantID);
     public <T> boolean saveOrUpdate(final T o, final String tenantID);

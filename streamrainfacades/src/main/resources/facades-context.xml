@@ -22,6 +22,8 @@
 	
 	<bean id="paymentMethodConverter" class="com.tsi2.streamrain.converters.payment.PaymentMethodConverter" />
 	
+	<bean id="janusTokenConverter" class="com.tsi2.streamrain.converters.janus.JanusTokenConverter" />
+	
 	<bean id="daoService" class="com.tsi2.streamrain.dao.implementations.StreamRainMySQLDAO"/>
 		
 </beans>
