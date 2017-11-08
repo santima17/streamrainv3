@@ -61,6 +61,7 @@ public class UserController {
     	if (result.hasErrors()) {
     		return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
     	}
+    	user.setBlocked(false);
         userService.saveUser(user, sessionService.getCurrentTenant());
         return response;
     }

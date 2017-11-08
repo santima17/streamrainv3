@@ -1,6 +1,4 @@
 package com.tsi2.streamrain.model.generator;
-// Generated 04/10/2017 11:03:07 PM by Hibernate Tools 4.3.1
-
 
 import java.util.HashSet;
 import java.util.Set;
@@ -20,7 +18,8 @@ public class Users  implements java.io.Serializable {
      private String city;
      private String facebookUserId;
      private String twitterUserId;
-     private String integratorId;
+     private Integer integratorId;
+     private Boolean blocked;
      private Set userChatMessgeses = new HashSet(0);
      private Set userCommentses = new HashSet(0);
      private Set spoilerMarkses = new HashSet(0);
@@ -39,14 +38,15 @@ public class Users  implements java.io.Serializable {
     }
 
 	
-    public Users(String email, String nickname, String password, String country, String city) {
+    public Users(String email, String nickname, String password, String country, String city, boolean blocked) {
         this.email = email;
         this.nickname = nickname;
         this.password = password;
         this.country = country;
         this.city = city;
+        this.blocked = blocked;
     }
-    public Users(String email, String nickname, String password, Boolean isBanned, String country, String city, String facebookUserId, String twitterUserId, String integratorId, Set userChatMessgeses, Set userCommentses, Set spoilerMarkses, Set userFavses, Set userViewses, Set sharedCollectionsesForDestinationUserId, Set userChatMessgeses_1, Set sharedCollectionsesForUserId, Set sharedContentsesForDestinationUserId, Set sharedContentsesForUserId, Set userRatingses, Set userPpvses, Set userSubscriptionses) {
+    public Users(String email, String nickname, String password, Boolean isBanned, String country, String city, String facebookUserId, String twitterUserId, Integer integratorId, boolean blocked, Set userChatMessgeses, Set userCommentses, Set spoilerMarkses, Set userFavses, Set userViewses, Set sharedCollectionsesForDestinationUserId, Set userChatMessgeses_1, Set sharedCollectionsesForUserId, Set sharedContentsesForDestinationUserId, Set sharedContentsesForUserId, Set userRatingses, Set userPpvses, Set userSubscriptionses) {
        this.email = email;
        this.nickname = nickname;
        this.password = password;
@@ -56,6 +56,7 @@ public class Users  implements java.io.Serializable {
        this.facebookUserId = facebookUserId;
        this.twitterUserId = twitterUserId;
        this.integratorId = integratorId;
+       this.blocked = blocked;
        this.userChatMessgeses = userChatMessgeses;
        this.userCommentses = userCommentses;
        this.spoilerMarkses = spoilerMarkses;
@@ -134,12 +135,19 @@ public class Users  implements java.io.Serializable {
     public void setTwitterUserId(String twitterUserId) {
         this.twitterUserId = twitterUserId;
     }
-    public String getIntegratorId() {
+    public Integer getIntegratorId() {
         return this.integratorId;
     }
     
-    public void setIntegratorId(String integratorId) {
+    public void setIntegratorId(Integer integratorId) {
         this.integratorId = integratorId;
+    }
+    public Boolean isBlocked() {
+        return this.blocked;
+    }
+    
+    public void setBlocked(Boolean blocked) {
+        this.blocked = blocked;
     }
     public Set getUserChatMessgeses() {
         return this.userChatMessgeses;

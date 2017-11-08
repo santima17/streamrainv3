@@ -34,7 +34,8 @@ public class UserSecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers("/user/*").authenticated().and()
 				// Las peticiones /login pasaran previamente por este filtro
 				.addFilterBefore(new LoginFilter("/user/login", authenticationManager()),
-						UsernamePasswordAuthenticationFilter.class);
+						UsernamePasswordAuthenticationFilter.class)
+				.addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class);
 	}
 
 	@Override

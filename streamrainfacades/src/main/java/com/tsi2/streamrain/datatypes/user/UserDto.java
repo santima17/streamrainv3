@@ -12,7 +12,9 @@ public class UserDto {
     private String city;
     private String facebookUserId;
     private String twitterUserId;
-    private String integratorId;
+    private Integer integratorId;
+    private Boolean blocked;
+    
 	public Integer getId() {
 		return id;
 	}
@@ -67,10 +69,10 @@ public class UserDto {
 	public void setTwitterUserId(String twitterUserId) {
 		this.twitterUserId = twitterUserId;
 	}
-	public String getIntegratorId() {
+	public Integer getIntegratorId() {
 		return integratorId;
 	}
-	public void setIntegratorId(String integratorId) {
+	public void setIntegratorId(Integer integratorId) {
 		this.integratorId = integratorId;
 	}
 	public String getConfirmPass() {
@@ -79,5 +81,10 @@ public class UserDto {
 	public void setConfirmPass(String confirmPass) {
 		this.confirmPass = confirmPass;
 	}
-    
+	public Boolean getBlocked() {
+		return blocked;
+	}
+	public void setBlocked(Boolean blocked) {
+		this.blocked = blocked;
+	}    
 }

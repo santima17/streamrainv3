@@ -1,6 +1,4 @@
 package com.tsi2.streamrain.model.generator;
-// Generated 04/10/2017 11:03:07 PM by Hibernate Tools 4.3.1
-
 
 import java.util.HashSet;
 import java.util.Set;
@@ -19,6 +17,7 @@ public class Contents  implements java.io.Serializable {
      private String coverPictureUrl;
      private String storageUrl;
      private Boolean isPayPerView;
+     private boolean blocked;
      private Set categorieses = new HashSet(0);
      private Set userFavses = new HashSet(0);
      private Set contentCollectionses = new HashSet(0);
@@ -37,13 +36,14 @@ public class Contents  implements java.io.Serializable {
     }
 
 	
-    public Contents(String name, String type, String coverPictureUrl, String storageUrl) {
+    public Contents(String name, String type, String coverPictureUrl, String storageUrl, boolean blocked) {
         this.name = name;
         this.type = type;
         this.coverPictureUrl = coverPictureUrl;
         this.storageUrl = storageUrl;
+        this.blocked = blocked;
     }
-    public Contents(String name, String description, String type, Double ranking, String coverPictureUrl, String storageUrl, Boolean isPayPerView, Set categorieses, Set userFavses, Set contentCollectionses, Set sharedContentses, Set contentCastses, AlwaysAvailableContents alwaysAvailableContents, Set contentsesForIdContent2, Set userViewses, Set contentsesForIdContent1, Set userPpvses, LiveOnlyContents liveOnlyContents, Set featuredContentses, Set userRatingses) {
+    public Contents(String name, String description, String type, Double ranking, String coverPictureUrl, String storageUrl, Boolean isPayPerView, boolean blocked, Set categorieses, Set userFavses, Set contentCollectionses, Set sharedContentses, Set contentCastses, AlwaysAvailableContents alwaysAvailableContents, Set contentsesForIdContent2, Set userViewses, Set contentsesForIdContent1, Set userPpvses, LiveOnlyContents liveOnlyContents, Set featuredContentses, Set userRatingses) {
        this.name = name;
        this.description = description;
        this.type = type;
@@ -51,6 +51,7 @@ public class Contents  implements java.io.Serializable {
        this.coverPictureUrl = coverPictureUrl;
        this.storageUrl = storageUrl;
        this.isPayPerView = isPayPerView;
+       this.blocked = blocked;
        this.categorieses = categorieses;
        this.userFavses = userFavses;
        this.contentCollectionses = contentCollectionses;
@@ -121,6 +122,13 @@ public class Contents  implements java.io.Serializable {
     
     public void setIsPayPerView(Boolean isPayPerView) {
         this.isPayPerView = isPayPerView;
+    }
+    public boolean isBlocked() {
+        return this.blocked;
+    }
+    
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
     }
     public Set getCategorieses() {
         return this.categorieses;

@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Nov 7, 2017 8:12:38 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.tsi2.streamrain.model.generator.JanusCreationTokens" table="janus_creation_tokens"   optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <property name="janusToken" type="string">
+            <column name="janus_token" length="128" not-null="true" />
+        </property>
+        <property name="streamrainRestBackend" type="string">
+            <column name="streamrain_rest_backend" length="250" not-null="true" />
+        </property>
+        <property name="dateCreation" type="timestamp">
+            <column name="date_creation" length="19" not-null="true" />
+        </property>
+        <property name="dateExpiration" type="timestamp">
+            <column name="date_expiration" length="19" not-null="true" />
+        </property>
+        <property name="dateUsage" type="timestamp">
+            <column name="date_usage" length="19" />
+        </property>
+        <set name="janusServerses" table="janus_servers" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="janus_creation_token_id" not-null="true" />
+            </key>
+            <one-to-many class="com.tsi2.streamrain.model.generator.JanusServers" />
+        </set>
+    </class>
+</hibernate-mapping>

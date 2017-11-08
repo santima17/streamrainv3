@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 04/10/2017 11:03:07 PM by Hibernate Tools 4.3.1 -->
+<!-- Generated Nov 7, 2017 8:12:38 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-    <class name="com.tsi2.streamrain.model.generator.Contents" table="contents" optimistic-lock="version">
+    <class name="com.tsi2.streamrain.model.generator.Contents" table="contents"   optimistic-lock="version">
         <id name="id" type="java.lang.Integer">
             <column name="id" />
             <generator class="identity" />
@@ -29,6 +29,9 @@
         <property name="isPayPerView" type="java.lang.Boolean">
             <column name="is_pay_per_view" />
         </property>
+        <property name="blocked" type="boolean">
+            <column name="blocked" not-null="true" />
+        </property>
         <set name="categorieses" table="content_categories" inverse="false" lazy="true" fetch="select" cascade="all">
             <key>
                 <column name="id_content" not-null="true" />
@@ -49,7 +52,7 @@
             </key>
             <one-to-many class="com.tsi2.streamrain.model.generator.ContentCollections" />
         </set>
-        <set name="sharedContentses" table="shared_contents" inverse="true" lazy="true" fetch="select" >
+        <set name="sharedContentses" table="shared_contents" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="content_id" not-null="true" />
             </key>

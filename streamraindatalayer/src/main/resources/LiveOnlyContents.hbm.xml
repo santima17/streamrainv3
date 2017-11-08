@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 04/10/2017 11:03:07 PM by Hibernate Tools 4.3.1 -->
+<!-- Generated Nov 7, 2017 8:12:38 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-    <class name="com.tsi2.streamrain.model.generator.LiveOnlyContents" table="live_only_contents" optimistic-lock="version">
+    <class name="com.tsi2.streamrain.model.generator.LiveOnlyContents" table="live_only_contents"   optimistic-lock="version">
         <id name="contentId" type="int">
             <column name="content_id" />
             <generator class="foreign">
@@ -16,6 +16,33 @@
         </property>
         <property name="estimatedDuraction" type="java.lang.Integer">
             <column name="estimated_duraction" />
+        </property>
+        <property name="janusPin" type="string">
+            <column name="janus_pin" length="128" />
+        </property>
+        <property name="janusAudio" type="boolean">
+            <column name="janus_audio" not-null="true" />
+        </property>
+        <property name="janusAudioPort" type="java.lang.Integer">
+            <column name="janus_audio_port" />
+        </property>
+        <property name="janusAudioPt" type="java.lang.Integer">
+            <column name="janus_audio_pt" />
+        </property>
+        <property name="janusAudioRtpMap" type="string">
+            <column name="janus_audio_rtp_map" length="45" />
+        </property>
+        <property name="janusVideo" type="boolean">
+            <column name="janus_video" not-null="true" />
+        </property>
+        <property name="janusVideoPort" type="java.lang.Integer">
+            <column name="janus_video_port" />
+        </property>
+        <property name="janusVideoPt" type="java.lang.Integer">
+            <column name="janus_video_pt" />
+        </property>
+        <property name="janusVideoRtpMap" type="string">
+            <column name="janus_video_rtp_map" length="45" />
         </property>
         <set name="userChatMessgeses" table="user_chat_messges" inverse="true" lazy="true" fetch="select">
             <key>

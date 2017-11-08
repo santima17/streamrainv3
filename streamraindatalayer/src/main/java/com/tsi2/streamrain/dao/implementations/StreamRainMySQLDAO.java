@@ -22,20 +22,20 @@ public class StreamRainMySQLDAO implements IDAOService{
 
     public <T> T save(final T o, final String tenantID){
       Session dbSession = DBHibernateUtil.getSessionFactoryGenerator(tenantID);
-      Transaction tx = dbSession.getTransaction();
-      try{
-          tx.begin();
-          T obj = (T) dbSession.save(o);
-          tx.commit();
-          return obj;
-      }catch(Exception e){
-          if(tx!=null)
-              tx.rollback();
-          return null;
-      }finally{
-          dbSession.close();
-      }
-      //return (T) dbSession.save(o);
+//      Transaction tx = dbSession.getTransaction();
+//      try{
+//          tx.begin();
+//          T obj = (T) dbSession.save(o);
+//          tx.commit();
+//          return obj;
+//      }catch(Exception e){
+//          if(tx!=null)
+//              tx.rollback();
+//          return null;
+//      }finally{
+//          dbSession.close();
+//      }
+      return (T) dbSession.save(o);
     }
 
     public void delete(final Object object, final String tenantID){
