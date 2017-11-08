@@ -15,6 +15,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import com.tsi2.streamrain.security.authentication.managers.GeneratorAuthenticationManager;
 import com.tsi2.streamrain.security.authentication.managers.UserAuthenticationManager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -47,6 +49,8 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
 				((UserAuthenticationManager) getAuthenticationManager()).setTwitterLogin(true);
 				((UserAuthenticationManager) getAuthenticationManager()).setTwitterID(user.getTwitterID());
 			}
+		}else if (getAuthenticationManager() instanceof GeneratorAuthenticationManager) {
+			((GeneratorAuthenticationManager) getAuthenticationManager()).getSessionService().setCurrentTenant(tentantID);
 		}
 
 		return getAuthenticationManager().authenticate(userToAuth);

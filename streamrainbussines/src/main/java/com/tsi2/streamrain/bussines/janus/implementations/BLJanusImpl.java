@@ -1,6 +1,8 @@
 package com.tsi2.streamrain.bussines.janus.implementations;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.tsi2.streamrain.bussines.janus.interfaces.IBLJanus;
 import com.tsi2.streamrain.context.StremRainDataContextLoader;
@@ -32,6 +34,24 @@ public class BLJanusImpl implements IBLJanus {
 		}
 		janusServers.setJanusCreationTokens(janusCreationTokens);
 		return (Integer) daoService.save(janusServers, tenantID);
+	}
+
+	public List<String> getAllJanusAdminUrl(String tenantID) {
+		List<String> listResult = new ArrayList<String>();
+		List<JanusServers> listJanus = daoJanusService.getAll(JanusServers.class, tenantID);
+		for (JanusServers janus:listJanus) {
+			listResult.add(janus.getAdminUrl());
+		}
+		return listResult;
+	}
+	
+	public List<String> getAllJanusUrl(String tenantID){
+		List<String> listResult = new ArrayList<String>();
+		List<JanusServers> listJanus = daoJanusService.getAll(JanusServers.class, tenantID);
+		for (JanusServers janus:listJanus) {
+			listResult.add(janus.getJanusUrl());
+		}
+		return listResult;
 	}
 
 }

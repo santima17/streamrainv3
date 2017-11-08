@@ -1,5 +1,7 @@
 package com.tsi2.streamrain.services.janus.implementations;
 
+import java.util.List;
+
 import com.tsi2.streamrain.bussines.janus.implementations.BLJanusImpl;
 import com.tsi2.streamrain.bussines.janus.interfaces.IBLJanus;
 import com.tsi2.streamrain.context.StremRainFacadesContextLoader;
@@ -36,6 +38,14 @@ public class JanusServiceImpl implements IJanusService{
 		JanusServers janusServers = janusServerConverter.deConverter(janusServerDto);
 		Integer idJanusServer = janusBussines.saveJanusServer(janusServers, janusServerDto.getTokenJanusCreationTokens(), tenantID);
 		return idJanusServer != null;
+	}
+	
+	public List<String> getAllJanusAdminUrl(final String tenantID){
+		return janusBussines.getAllJanusAdminUrl(tenantID);
+	}
+	
+	public List<String> getAllJanusUrl(final String tenantID){
+		return janusBussines.getAllJanusUrl(tenantID);
 	}
 
 }

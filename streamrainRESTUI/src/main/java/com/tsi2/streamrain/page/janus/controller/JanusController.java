@@ -1,6 +1,7 @@
 package com.tsi2.streamrain.page.janus.controller;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import javax.validation.Valid;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.tsi2.streamrain.datatypes.janus.JanusCreateTokenDto;
 import com.tsi2.streamrain.datatypes.janus.JanusServerDto;
 import com.tsi2.streamrain.datatypes.payment.UserSubscriptionDto;
+import com.tsi2.streamrain.datatypes.user.UserDto;
 import com.tsi2.streamrain.services.janus.interfaces.IJanusService;
 import com.tsi2.streamrain.services.session.interfaces.ISessionService;
 import com.tsi2.streamrain.utils.Utils;
@@ -65,5 +67,14 @@ public class JanusController {
 		return response;
     }
 	
+	@RequestMapping(value = "/adminUrl", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<String> getAllJanusAdminUrl() {
+        return janusService.getAllJanusAdminUrl(sessionService.getCurrentTenant());
+    }
+	
+	@RequestMapping(value = "/janusUrl", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<String> getAllJanusUrl() {
+        return janusService.getAllJanusUrl(sessionService.getCurrentTenant());
+    }
 
 }
