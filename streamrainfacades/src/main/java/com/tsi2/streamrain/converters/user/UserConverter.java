@@ -11,7 +11,17 @@ public class UserConverter implements IConverter<UserDto, Users>{
 
 	public UserDto converter(Users source) {
 		UserDto userDto = new UserDto();
-		//set de user 
+		userDto.setCity(source.getCity());
+		userDto.setCountry(source.getCountry());
+		userDto.setEmail(source.getEmail());
+		userDto.setIsBanned(source.getIsBanned());
+		userDto.setPassword(source.getPassword());
+		userDto.setNickname(source.getNickname());
+		userDto.setFacebookUserId(source.getFacebookUserId());
+		userDto.setId(source.getId());
+		userDto.setIntegratorId(source.getIntegratorId());
+		userDto.setTwitterUserId(source.getTwitterUserId());
+		userDto.setBlocked(source.isBlocked()); 
 		return userDto;
 	}
 

@@ -18,8 +18,8 @@ public interface IBLUser {
 
 	boolean findUserXTwitterId(final String twitterId, final String tenantID);
 
-	void updateUser(final Users deConverter, final String currentTenant);
+	void updateUser(final Users user, Users oldUser, final String currentTenant);
 
-	void deleteUser(final String userNickname, final String currentTenant);
+	void deleteUser(Users oldUser, final String currentTenant);
 
 }

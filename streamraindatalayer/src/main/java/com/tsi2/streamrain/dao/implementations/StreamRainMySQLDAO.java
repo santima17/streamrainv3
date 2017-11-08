@@ -55,7 +55,7 @@ public class StreamRainMySQLDAO implements IDAOService{
 
     public <T> boolean saveOrUpdate(final T o, final String tenantID){
       Session dbSession = DBHibernateUtil.getSessionFactoryGenerator(tenantID);
-      dbSession.saveOrUpdate(o);
+      dbSession.update(o);
       return true;
     }
 

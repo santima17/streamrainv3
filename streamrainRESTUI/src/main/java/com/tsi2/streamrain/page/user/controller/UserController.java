@@ -34,6 +34,8 @@ import com.tsi2.streamrain.utils.Utils;
 
 public class UserController {
 	
+	private static final String BAD_REQUEST_MSG = "Los datos del usuario no fueron correctamente ingresados";
+
 	@Resource(name="userService")
 	IUserService userService;
 	
@@ -62,11 +64,11 @@ public class UserController {
         return response;
     }
     
-    @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<BindingResult> insertUser(@RequestBody @Valid UserDto user, BindingResult result) {
-    	ResponseEntity<BindingResult> response = new ResponseEntity<>(HttpStatus.CREATED);
+    @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> insertUser(@RequestBody @Valid UserDto user, BindingResult result) {
+    	ResponseEntity<String> response = new ResponseEntity<>(HttpStatus.CREATED);
     	if (result.hasErrors()) {
-    		return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+    		return new ResponseEntity<>(BAD_REQUEST_MSG, HttpStatus.BAD_REQUEST);
     	}
     	user.setBlocked(false);
         userService.saveUser(user, sessionService.getCurrentTenant());
@@ -74,26 +76,27 @@ public class UserController {
     }
     
         
-    @RequestMapping(value = "/{userNickname}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{userNickname}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<BindingResult> updateUser(@PathVariable String userNickname, @RequestBody @Valid UserDto user, BindingResult result) {
-    	ResponseEntity<BindingResult> response = new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<String> updateUser(@PathVariable String userNickname, @RequestBody UserDto user, BindingResult result) {
+    	ResponseEntity<String> response = new ResponseEntity<>(HttpStatus.CREATED);
     	if (result.hasErrors()) {
-    		return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+    		return new ResponseEntity<>(BAD_REQUEST_MSG, HttpStatus.BAD_REQUEST);
     	}
         UserDto userOld = userService.getUserByNickname(userNickname, sessionService.getCurrentTenant());
         if (userOld == null) {
         	return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }else {
-            userService.updateUser(userNickname, user, sessionService.getCurrentTenant());
+            userService.updateUser(user, userOld, sessionService.getCurrentTenant());
         }
         return response;
     }
     
-    @RequestMapping(value = "/{userNickname}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/{userNickname}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable String userNickname) {
-        userService.deleteUser(userNickname, sessionService.getCurrentTenant());
+    	UserDto userOld = userService.getUserByNickname(userNickname, sessionService.getCurrentTenant());
+        userService.deleteUser(userOld, sessionService.getCurrentTenant());
     }
 	
 				
