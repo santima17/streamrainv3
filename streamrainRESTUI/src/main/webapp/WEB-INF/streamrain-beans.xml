@@ -28,7 +28,7 @@
 
 	<bean id="contentService"
 		class="com.tsi2.streamrain.services.content.implementations.ContentServiceImpl" />
-		
+
 	<bean id="paymentService"
 		class="com.tsi2.streamrain.services.payment.implementations.PaymentServiceImpl" />
 		
@@ -49,6 +49,5 @@
 
 	<bean id="userAuthenticationManager"
 		class="com.tsi2.streamrain.security.authentication.managers.UserAuthenticationManager" />
-
 
 </beans>
