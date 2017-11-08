@@ -18,3 +18,21 @@ target/
 *.metadata
 *Servers
 
+streamrainfrontend/users-streamrainfrontend/.DS_Store
+streamrainfrontend/users-streamrainfrontend/node_modules/
+streamrainfrontend/users-streamrainfrontend/dist/
+streamrainfrontend/users-streamrainfrontend/npm-debug.log
+streamrainfrontend/users-streamrainfrontend/yarn-error.log
+
+streamrainfrontend/generators-streamrainfrontend/.DS_Store
+streamrainfrontend/generators-streamrainfrontend/node_modules/
+streamrainfrontend/generators-streamrainfrontend/dist/
+streamrainfrontend/generatorsusers-streamrainfrontend/npm-debug.log
+streamrainfrontend/generators-streamrainfrontend/yarn-error.log
+
+# Editor directories and files
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln

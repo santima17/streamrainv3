@@ -1,0 +1,7 @@
+{
+  "backend": "http://localhost:3000",
+  "tenant": {
+    "id": 1,
+    "name": "Default Tenant"
+  }
+}
