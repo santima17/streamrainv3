@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.tsi.streamrain.datatypes.category.CategoryDto;
+import com.tsi2.streamrain.datatypes.category.CategoryDto;
 import com.tsi2.streamrain.datatypes.content.ContentCastDto;
 import com.tsi2.streamrain.datatypes.content.ContentDto;
 import com.tsi2.streamrain.datatypes.user.UserDto;

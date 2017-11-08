@@ -24,10 +24,6 @@ public class BLContentImpl implements IBLContent {
 		
 	public boolean saveContent(final Contents contents, final String tenantID) {
 		daoService.save(contents, tenantID);
-		/*for(Iterator it = contents.getContentCastses().iterator(); it.hasNext();) {
-		    ContentCasts x = (ContentCasts)it.next();
-		    daoService.save(x, tenantID);
-		}*/
 		return true; 
 	}
 

@@ -3,8 +3,8 @@ package com.tsi2.streamrain.converters.category;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.tsi.streamrain.datatypes.category.CategoryDto;
 import com.tsi2.streamrain.converters.interfaces.IConverter;
+import com.tsi2.streamrain.datatypes.category.CategoryDto;
 import com.tsi2.streamrain.datatypes.user.UserDto;
 import com.tsi2.streamrain.model.generator.Categories;
 import com.tsi2.streamrain.model.generator.Users;

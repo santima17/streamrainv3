@@ -2,8 +2,8 @@ package com.tsi2.streamrain.converters.janus;
 
 import java.util.List;
 
-import com.tsi.streamrain.datatypes.janus.JanusCreateTokenDto;
 import com.tsi2.streamrain.converters.interfaces.IConverter;
+import com.tsi2.streamrain.datatypes.janus.JanusCreateTokenDto;
 import com.tsi2.streamrain.model.generator.JanusCreationTokens;
 
 public class JanusTokenConverter implements IConverter<JanusCreateTokenDto, JanusCreationTokens> {
