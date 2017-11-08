@@ -16,7 +16,7 @@
               <input v-model="password" class="form-control" type="password" value="Password">
             </div>
             <div class="form-group">
-              <button class="btn btn-primary btn-lg">Log In</button>
+              <button v-on:click="login" class="btn btn-primary btn-lg">Log In</button>
             </div>
           </div>
         </div>
@@ -30,12 +30,41 @@
 
 <script>
   export default {
-    data () {
-      return {
-        username: null,
-        password: null
+  props: [
+    'config',
+    'eventBus'
+  ],
+  data () {
+    return {
+      username: null,
+      password: null
+    }
+  },
+  methods: {
+    login: function () {
+      const i = this;
+      const username = this.username;
+      const password = this.password;
+      if (username.trim() !== '' && password.trim() !== '') {
+        this.$http.post(`${this.config.backendPOSTA}/generator/login`,
+          {
+            username,
+            password,
+            twitter: false,
+            twitterID: ''
+          },
+          {
+            headers: {
+              'Access-Control-Expose-Headers': 'Authorization'
+            }
+          },
+          ).then((response) => {
+            console.log(response.headers.get('Authorization'));
+            console.log(JSON.stringify(response));
+            i.eventBus.$emit('setToken', response.headers.get('Authorization'));
+          });
+        }
       }
-    },
+    }
   }
 </script>
-

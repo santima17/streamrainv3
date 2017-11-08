@@ -14,6 +14,7 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
             <li><router-link to="/">Home</router-link></li>
+            <li><router-link to="/categories">Categories</router-link></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li><router-link to="/login">Log In</router-link></li>
@@ -25,6 +26,7 @@
     <router-view 
       :config="config"
       :eventBus="eventBus"
+      :token="token"
     >
     </router-view>
     <footer class="container-fluid text-center">
@@ -42,13 +44,15 @@
     ],
     data () {
       return {
+        token: null
       }
     },
     created () {
-    //   const updateJanusAlert = this.updateJanusAlert;
-    //   this.eventBus.$on('setJanusAlert', function (janusAlert) {
-    //     updateJanusAlert(janusAlert);
-    //   });
+      // const updateJanusAlert = this.updateJanusAlert;
+      const i = this;
+      i.eventBus.$on('setToken', function (token) {
+        i.token = token;
+      });
     },
     // methods: {
     //   updateJanusAlert: function (janusAlert) {

@@ -10,6 +10,8 @@ import Home from './vue/nav/Home.vue';
 import Login from './vue/session/Login.vue';
 import Logout from './vue/session/Logout.vue';
 import Signup from './vue/session/Signup.vue';
+// Content
+import Category from './vue/category/Category.vue';
 
 Vue.use(VueRouter);
 Vue.use(VueResource);
@@ -21,6 +23,13 @@ const config = require('./assets/config');
 const eventBus = new Vue();
 
 const routes = [
+  {
+    path: '/categories',
+    component: Category,
+    meta: {
+      title: `${config.tenant.name} | Categories`
+    }
+  },
   {
     path: '/notFound',
     component: NotFound,
