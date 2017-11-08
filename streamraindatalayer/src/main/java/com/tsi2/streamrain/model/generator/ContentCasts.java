@@ -1,6 +1,4 @@
 package com.tsi2.streamrain.model.generator;
-// Generated 04/10/2017 11:03:07 PM by Hibernate Tools 4.3.1
-
 
 
 /**
@@ -9,7 +7,7 @@ package com.tsi2.streamrain.model.generator;
 public class ContentCasts  implements java.io.Serializable {
 
 
-	 private Integer id;
+     private Integer id;
      private Contents contents;
      private String firstName;
      private String lastName;
@@ -21,6 +19,11 @@ public class ContentCasts  implements java.io.Serializable {
     }
 
 	
+    public ContentCasts(Contents contents, String firstName, String lastName) {
+        this.contents = contents;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
     public ContentCasts(Contents contents, String firstName, String lastName, String coverPhotoUrl, Boolean isActor, Boolean isDirector) {
        this.contents = contents;
        this.firstName = firstName;
@@ -30,43 +33,33 @@ public class ContentCasts  implements java.io.Serializable {
        this.isDirector = isDirector;
     }
    
-    
     public Integer getId() {
-		return id;
-	}
-
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	
-	public String getFirstName() {
-		return firstName;
-	}
-
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-
-	public String getLastName() {
-		return lastName;
-	}
-
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-
-	public Contents getContents() {
+        return this.id;
+    }
+    
+    public void setId(Integer id) {
+        this.id = id;
+    }
+    public Contents getContents() {
         return this.contents;
     }
     
     public void setContents(Contents contents) {
         this.contents = contents;
+    }
+    public String getFirstName() {
+        return this.firstName;
+    }
+    
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+    public String getLastName() {
+        return this.lastName;
+    }
+    
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
     public String getCoverPhotoUrl() {
         return this.coverPhotoUrl;

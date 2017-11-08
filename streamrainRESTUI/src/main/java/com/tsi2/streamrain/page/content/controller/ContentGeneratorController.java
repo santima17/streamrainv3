@@ -38,7 +38,7 @@ import com.tsi2.streamrain.services.content.interfaces.IContentService;
 import com.tsi2.streamrain.services.session.interfaces.ISessionService;
 
 @RestController
-@RequestMapping("/generador")
+@RequestMapping("/generador/createContent")
 public class ContentGeneratorController {
 	
 	@Value("${location.file.path}")

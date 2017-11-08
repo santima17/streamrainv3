@@ -1,6 +1,4 @@
 package com.tsi2.streamrain.model.generator;
-// Generated 04/10/2017 11:03:07 PM by Hibernate Tools 4.3.1
-
 
 import java.util.Date;
 
@@ -16,16 +14,18 @@ public class UserSubscriptions  implements java.io.Serializable {
      private Date datePayment;
      private Date dateStart;
      private Date dateFinish;
+     private String janusUserToken;
 
     public UserSubscriptions() {
     }
 
-    public UserSubscriptions(PaymentMethods paymentMethods, Users users, Date datePayment, Date dateStart, Date dateFinish) {
+    public UserSubscriptions(PaymentMethods paymentMethods, Users users, Date datePayment, Date dateStart, Date dateFinish, String janusUserToken) {
        this.paymentMethods = paymentMethods;
        this.users = users;
        this.datePayment = datePayment;
        this.dateStart = dateStart;
        this.dateFinish = dateFinish;
+       this.janusUserToken = janusUserToken;
     }
    
     public Integer getId() {
@@ -69,6 +69,13 @@ public class UserSubscriptions  implements java.io.Serializable {
     
     public void setDateFinish(Date dateFinish) {
         this.dateFinish = dateFinish;
+    }
+    public String getJanusUserToken() {
+        return this.janusUserToken;
+    }
+    
+    public void setJanusUserToken(String janusUserToken) {
+        this.janusUserToken = janusUserToken;
     }
 
 

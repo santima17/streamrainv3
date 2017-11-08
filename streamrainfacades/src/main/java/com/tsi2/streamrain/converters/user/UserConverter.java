@@ -27,6 +27,7 @@ public class UserConverter implements IConverter<UserDto, Users>{
 		user.setId(source.getId());
 		user.setIntegratorId(source.getIntegratorId());
 		user.setTwitterUserId(source.getTwitterUserId());
+		user.setBlocked(source.getBlocked());
 		return user;
 	}
 

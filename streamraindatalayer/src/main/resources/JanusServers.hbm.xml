@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Nov 7, 2017 8:12:38 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.tsi2.streamrain.model.generator.JanusServers" table="janus_servers"   optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="janusCreationTokens" class="com.tsi2.streamrain.model.generator.JanusCreationTokens" fetch="select">
+            <column name="janus_creation_token_id" not-null="true" />
+        </many-to-one>
+        <property name="name" type="string">
+            <column name="name" length="150" not-null="true" />
+        </property>
+        <property name="isEnable" type="boolean">
+            <column name="is_enable" not-null="true" />
+        </property>
+        <property name="janusUrl" type="string">
+            <column name="janus_url" length="250" not-null="true" />
+        </property>
+        <property name="adminUrl" type="string">
+            <column name="admin_url" length="250" not-null="true" />
+        </property>
+        <property name="stunServer" type="string">
+            <column name="stun_server" length="250" not-null="true" />
+        </property>
+        <property name="adminSecret" type="string">
+            <column name="admin_secret" length="128" not-null="true" />
+        </property>
+        <property name="adminKey" type="string">
+            <column name="admin_key" length="128" not-null="true" />
+        </property>
+        <property name="streamrainRestToken" type="string">
+            <column name="streamrain_rest_token" length="128" />
+        </property>
+        <property name="dateLastUpdateRequest" type="date">
+            <column name="date_last_update_request" length="10" />
+        </property>
+    </class>
+</hibernate-mapping>

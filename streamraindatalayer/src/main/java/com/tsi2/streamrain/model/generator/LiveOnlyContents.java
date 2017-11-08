@@ -1,6 +1,4 @@
 package com.tsi2.streamrain.model.generator;
-// Generated 04/10/2017 11:03:07 PM by Hibernate Tools 4.3.1
-
 
 import java.util.Date;
 import java.util.HashSet;
@@ -16,20 +14,40 @@ public class LiveOnlyContents  implements java.io.Serializable {
      private Contents contents;
      private Date dateStart;
      private Integer estimatedDuraction;
+     private String janusPin;
+     private boolean janusAudio;
+     private Integer janusAudioPort;
+     private Integer janusAudioPt;
+     private String janusAudioRtpMap;
+     private boolean janusVideo;
+     private Integer janusVideoPort;
+     private Integer janusVideoPt;
+     private String janusVideoRtpMap;
      private Set userChatMessgeses = new HashSet(0);
 
     public LiveOnlyContents() {
     }
 
 	
-    public LiveOnlyContents(Contents contents, Date dateStart) {
+    public LiveOnlyContents(Contents contents, Date dateStart, boolean janusAudio, boolean janusVideo) {
         this.contents = contents;
         this.dateStart = dateStart;
+        this.janusAudio = janusAudio;
+        this.janusVideo = janusVideo;
     }
-    public LiveOnlyContents(Contents contents, Date dateStart, Integer estimatedDuraction, Set userChatMessgeses) {
+    public LiveOnlyContents(Contents contents, Date dateStart, Integer estimatedDuraction, String janusPin, boolean janusAudio, Integer janusAudioPort, Integer janusAudioPt, String janusAudioRtpMap, boolean janusVideo, Integer janusVideoPort, Integer janusVideoPt, String janusVideoRtpMap, Set userChatMessgeses) {
        this.contents = contents;
        this.dateStart = dateStart;
        this.estimatedDuraction = estimatedDuraction;
+       this.janusPin = janusPin;
+       this.janusAudio = janusAudio;
+       this.janusAudioPort = janusAudioPort;
+       this.janusAudioPt = janusAudioPt;
+       this.janusAudioRtpMap = janusAudioRtpMap;
+       this.janusVideo = janusVideo;
+       this.janusVideoPort = janusVideoPort;
+       this.janusVideoPt = janusVideoPt;
+       this.janusVideoRtpMap = janusVideoRtpMap;
        this.userChatMessgeses = userChatMessgeses;
     }
    
@@ -60,6 +78,69 @@ public class LiveOnlyContents  implements java.io.Serializable {
     
     public void setEstimatedDuraction(Integer estimatedDuraction) {
         this.estimatedDuraction = estimatedDuraction;
+    }
+    public String getJanusPin() {
+        return this.janusPin;
+    }
+    
+    public void setJanusPin(String janusPin) {
+        this.janusPin = janusPin;
+    }
+    public boolean isJanusAudio() {
+        return this.janusAudio;
+    }
+    
+    public void setJanusAudio(boolean janusAudio) {
+        this.janusAudio = janusAudio;
+    }
+    public Integer getJanusAudioPort() {
+        return this.janusAudioPort;
+    }
+    
+    public void setJanusAudioPort(Integer janusAudioPort) {
+        this.janusAudioPort = janusAudioPort;
+    }
+    public Integer getJanusAudioPt() {
+        return this.janusAudioPt;
+    }
+    
+    public void setJanusAudioPt(Integer janusAudioPt) {
+        this.janusAudioPt = janusAudioPt;
+    }
+    public String getJanusAudioRtpMap() {
+        return this.janusAudioRtpMap;
+    }
+    
+    public void setJanusAudioRtpMap(String janusAudioRtpMap) {
+        this.janusAudioRtpMap = janusAudioRtpMap;
+    }
+    public boolean isJanusVideo() {
+        return this.janusVideo;
+    }
+    
+    public void setJanusVideo(boolean janusVideo) {
+        this.janusVideo = janusVideo;
+    }
+    public Integer getJanusVideoPort() {
+        return this.janusVideoPort;
+    }
+    
+    public void setJanusVideoPort(Integer janusVideoPort) {
+        this.janusVideoPort = janusVideoPort;
+    }
+    public Integer getJanusVideoPt() {
+        return this.janusVideoPt;
+    }
+    
+    public void setJanusVideoPt(Integer janusVideoPt) {
+        this.janusVideoPt = janusVideoPt;
+    }
+    public String getJanusVideoRtpMap() {
+        return this.janusVideoRtpMap;
+    }
+    
+    public void setJanusVideoRtpMap(String janusVideoRtpMap) {
+        this.janusVideoRtpMap = janusVideoRtpMap;
     }
     public Set getUserChatMessgeses() {
         return this.userChatMessgeses;
