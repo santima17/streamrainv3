@@ -3,15 +3,22 @@ import VueRouter  from 'vue-router';
 import VueResource from 'vue-resource'
 // Header & footer
 import Streamrain from './vue/Streamrain.vue'
+// Content
+import AlwaysAvailable from './vue/content/AlwaysAvailable.vue';
+import Casts from './vue/content/Casts.vue';
+import Categories from './vue/content/Categories.vue';
+import Featured from './vue/content/Featured.vue';
+import LiveOnly from './vue/content/LiveOnly.vue';
+import Similar from './vue/content/Similar.vue';
+// Resources
+import Janus from './vue/resources/janus/Janus.vue';
+import JanusServer from './vue/resources/janus/JanusServer.vue';
 // Nav
 import NotFound from './vue/nav/NotFound.vue';
 import Home from './vue/nav/Home.vue'; 
 // Session
 import Login from './vue/session/Login.vue';
 import Logout from './vue/session/Logout.vue';
-import Signup from './vue/session/Signup.vue';
-// Content
-import Category from './vue/category/Category.vue';
 
 Vue.use(VueRouter);
 Vue.use(VueResource);
@@ -23,13 +30,65 @@ const config = require('./assets/config');
 const eventBus = new Vue();
 
 const routes = [
+  // Content
   {
-    path: '/categories',
-    component: Category,
+    path: '/content/alwaysAvailable',
+    component: AlwaysAvailable,
+    meta: {
+      title: `${config.tenant.name} | Always Available Content`
+    }
+  },
+  {
+    path: '/content/casts',
+    component: Casts,
+    meta: {
+      title: `${config.tenant.name} | Casts`
+    }
+  },
+  {
+    path: '/content/categories',
+    component: Categories,
     meta: {
       title: `${config.tenant.name} | Categories`
     }
   },
+  {
+    path: '/content/featured',
+    component: Featured,
+    meta: {
+      title: `${config.tenant.name} | Featured Content`
+    }
+  },
+  {
+    path: '/content/liveOnly',
+    component: LiveOnly,
+    meta: {
+      title: `${config.tenant.name} | Live Only Content`
+    }
+  },
+  {
+    path: '/content/similar',
+    component: Similar,
+    meta: {
+      title: `${config.tenant.name} | Similar Content`
+    }
+  },
+  // Resources
+  {
+    path: '/resources/janus',
+    component: Janus,
+    meta: {
+      title: `${config.tenant.name} | Janus Resources`
+    }
+  },
+  {
+    path: '/resources/janus/:id',
+    component: JanusServer,
+    meta: {
+      title: `${config.tenant.name} | Janus Server`
+    }
+  },
+  // Nav
   {
     path: '/notFound',
     component: NotFound,
@@ -44,6 +103,7 @@ const routes = [
       title: `${config.tenant.name} | Home`
     }
   },
+  // Session
   {
     path: '/login',
     component: Login,
@@ -56,13 +116,6 @@ const routes = [
     component: Logout,
     meta: {
       title: `${config.tenant.name} | Log Out`
-    }
-  },
-  {
-    path: '/signup',
-    component: Signup,
-    meta: {
-      title: `${config.tenant.name} | Sign Up!`
     }
   }
 ];

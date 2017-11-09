@@ -4,7 +4,7 @@
       <div class="col-sm-2 sidenav">
       </div>
       <div class="col-sm-8 text-left"> 
-        <h1>Sign Up</h1>
+        <h1>Casts</h1>
         <hr>
       </div>
       <div class="col-sm-2 sidenav">

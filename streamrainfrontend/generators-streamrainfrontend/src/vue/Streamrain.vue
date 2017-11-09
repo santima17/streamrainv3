@@ -14,11 +14,32 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
             <li><router-link to="/">Home</router-link></li>
-            <li><router-link to="/categories">Categories</router-link></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">Content <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><router-link to="/content/alwaysAvailable">Always Available</router-link></li>
+                <li><router-link to="/content/liveOnly">Live Only</router-link></li>
+                <li class="divider"></li>
+                <li><router-link to="/content/similar">Similar</router-link></li>
+                <li><router-link to="/content/featured">Featured</router-link></li>
+                <li class="divider"></li>
+                <li><router-link to="/content/categories">Categories</router-link></li>
+                <li><router-link to="/content/casts">Casts</router-link></li>
+              </ul>
+            </li>
+            <li><router-link to="/">Users</router-link></li>
+            <li><router-link to="/">Payments</router-link></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">Resources <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><router-link to="/">Nginx</router-link></li>
+                <li><router-link to="/resources/janus">Janus</router-link></li>
+              </ul>
+            </li>
+            <li><router-link to="/"><span class="text-info">Statistics</span></router-link></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li><router-link to="/login">Log In</router-link></li>
-            <li><router-link to="/signup"><span class="text-danger">Sign Up!</span></router-link></li>
+            <li><router-link to="/login"><span class="text-danger">Log In</span></router-link></li>
           </ul>
         </div>
       </div>
@@ -26,7 +47,6 @@
     <router-view 
       :config="config"
       :eventBus="eventBus"
-      :token="token"
     >
     </router-view>
     <footer class="container-fluid text-center">
@@ -48,16 +68,13 @@
       }
     },
     created () {
-      // const updateJanusAlert = this.updateJanusAlert;
-      const i = this;
-      i.eventBus.$on('setToken', function (token) {
-        i.token = token;
-      });
-    },
-    // methods: {
-    //   updateJanusAlert: function (janusAlert) {
-    //     this.janusAlert = janusAlert;
-    //   }
-    // }
+      this.eventBus.$on('setToken', (token) => {
+        this.token = token;
+      }, this);
+    }
   }
 </script>
+
+<style>
+body    {overflow-y:scroll;}
+</style>
