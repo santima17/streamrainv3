@@ -79,7 +79,7 @@ public class ContentGeneratorController {
         return response;
     }
     
-    @RequestMapping(value = "/uploadPicture", method = RequestMethod.POST)
+    /*@RequestMapping(value = "/uploadPicture", method = RequestMethod.POST)
     public ResponseEntity<BindingResult> uploadImagen(@RequestParam("picture") MultipartFile picture, @RequestParam("video") MultipartFile video, @RequestPart("datos") String datos) {
     	ResponseEntity<BindingResult> result = new ResponseEntity<>(HttpStatus.CREATED);
     	ContentDto content;
@@ -91,7 +91,7 @@ public class ContentGeneratorController {
     	    MultipartFile video = request.getFile(itr.next());
     	    MultipartFile data = request.getFile(itr.next());*/ 
     	        	    
-			String pictureName = recordFile(picture);
+			/*String pictureName = recordFile(picture);
 			String videoName = recordFile(video);
 		} catch (JsonParseException e1) {
 			e1.printStackTrace();
@@ -103,7 +103,7 @@ public class ContentGeneratorController {
 			e.printStackTrace();
 		}
     	return result;
-    }
+    }*/
     
 	@RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<BindingResult> insertContent(@RequestParam("picture") MultipartFile picture, @RequestParam("video") MultipartFile video, @RequestPart("datos") String datos, BindingResult result) {
