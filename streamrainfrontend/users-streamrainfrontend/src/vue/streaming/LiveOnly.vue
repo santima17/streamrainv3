@@ -77,7 +77,8 @@
     props: [
       'config',
       'eventBus',
-      'janusAlert'
+      'janusAlert',
+      'session'
     ],
     data () {
       return {
@@ -99,6 +100,7 @@
     created () {
       const i = this;
       const streamId = this.$route.params.streamId;
+      const session = this.session;
 
       this.eventBus.$once('JanusReady', function (result) {
         i.eventBus.$emit('getJanusLiveContent', streamId);
@@ -277,6 +279,19 @@
       });
 
       this.eventBus.$emit('JanusReady?', null);
+
+      this.$http.get(`${this.config.backend}/user/content/${streamId}`,
+      {
+        headers: {
+          'Authorization': session.userToken
+        }
+      }).then((response) => {
+        console.log(JSON.stringify(response));
+        i.updateCatalog(response.body);
+      }).catch((error) => {
+        console.log(JSON.stringify(error));       
+      });
+
     },
     beforeDestroy () {
       this.eventBus.$emit('leaveStreaming', null);

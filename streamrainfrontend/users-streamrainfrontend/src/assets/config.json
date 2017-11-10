@@ -1,8 +1,6 @@
 {
-  "backend": "http://localhost:3000",
-  "backendPOSTA": "http://generator1.192.168.1.6.nip.io:8080/streamrainRESTUI",
+  "backend": "http://hbo.192.168.1.6.nip.io:8080/streamrainRESTUI",
   "tenant": {
-    "id": 1,
     "name": "Default Tenant"
   }
 }

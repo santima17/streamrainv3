@@ -20,13 +20,15 @@
             <li v-for="(streaming, index) in catalog" :key="index">
               <div class="panel panel-info">
                 <div class="panel-heading">
-                  <h2 class="panel-title">{{ streaming.description }}</h2>
-                  <strong class="panel-title text-right">{{ (streaming.type).toUpperCase() }}</strong>
+                  <h2 class="panel-title">{{ streaming.name }}</h2>
+                  <b v-if="streaming.alwaysAvailable" class="panel-title text-right">VOD</b>
+                  <b v-if="!streaming.alwaysAvailable" class="panel-title text-right">LIVE</b>
                 </div>
                 <div class="panel-body text-center">
                   <p>Image</p>
                   <hr>
-                  <router-link :to="`/live/${streaming.id}`"><div class="btn btn-info">Watch now!</div></router-link>
+                  <router-link v-if="streaming.alwaysAvailable" :to="`/vod/${streaming.id}`"><div class="btn btn-info">Watch now!</div></router-link>
+                  <router-link v-if="!streaming.alwaysAvailable" :to="`/live/${streaming.id}`"><div class="btn btn-info">Watch now!</div></router-link>
                 </div>
               </div>
             </li>
@@ -45,7 +47,8 @@
     props: [
       'config',
       'eventBus',
-      'janusAlert'
+      'janusAlert',
+      'session'
     ],
     data () {
       return {
@@ -54,17 +57,32 @@
     },
     created () {
       const eventBus = this.eventBus;
+      const session = this.session;
+      const i = this;
 
-      this.eventBus.$once('JanusReady', function () {
-        eventBus.$emit('getJanusStreamsList', null);
+      // this.eventBus.$once('JanusReady', function () {
+      //   eventBus.$emit('getJanusStreamsList', null);
+      // });
+
+      // const updateCatalog = this.updateCatalog;
+      // this.eventBus.$once('setJanusStreamsList', function (result) {
+      //   updateCatalog(result);
+      // });
+
+      // this.eventBus.$emit('JanusReady?', null);
+
+      this.$http.get(`${this.config.backend}/user/content`,
+      {
+        headers: {
+          'Authorization': session.userToken
+        }
+      }).then((response) => {
+        console.log(JSON.stringify(response));
+        i.updateCatalog(response.body);
+      }).catch((error) => {
+        console.log(JSON.stringify(error));       
       });
 
-      const updateCatalog = this.updateCatalog;
-      this.eventBus.$once('setJanusStreamsList', function (result) {
-        updateCatalog(result);
-      });
-
-      this.eventBus.$emit('JanusReady?', null);
     },
     methods: {
       updateCatalog: function (catalog) {

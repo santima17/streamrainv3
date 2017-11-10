@@ -17,7 +17,8 @@
             <li><router-link to="/catalog">Catalog</router-link></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li><router-link to="/login">Log In</router-link></li>
+            <li v-if="!session"><router-link to="/login">Log In</router-link></li>
+            <li v-if="session"><router-link to="/logout">Log Out</router-link></li>
             <li><router-link to="/signup"><span class="text-danger">Sign Up!</span></router-link></li>
           </ul>
         </div>
@@ -27,13 +28,14 @@
       :config="config"
       :eventBus="eventBus"
       :janusAlert="janusAlert"
+      :session="session"
     >
     </router-view>
-    <streamrain-janus 
+    <!-- <streamrain-janus 
       :config="config"
       :eventBus="eventBus"
     >
-    </streamrain-janus>
+    </streamrain-janus> -->
     <footer class="container-fluid text-center">
       <p>Streamrain {{ config.tenant.name }} footer</p>
     </footer>
@@ -53,18 +55,29 @@
     },
     data () {
       return {
-        janusAlert: null
+        janusAlert: null,
+        session: null
       }
     },
     created () {
-      const updateJanusAlert = this.updateJanusAlert;
+      const updateSession = this.updateSession;
+      const removeSession = this.removeSession;
       this.eventBus.$on('setJanusAlert', function (janusAlert) {
-        updateJanusAlert(janusAlert);
-      });
+        this.janusAlert = janusAlert;
+      }, this);
+      this.eventBus.$on('setSession', function (session) {
+        updateSession(session);
+      }, this);
+      this.eventBus.$on('removeSession', function () {
+        removeSession();
+      }, this);
     },
     methods: {
-      updateJanusAlert: function (janusAlert) {
-        this.janusAlert = janusAlert;
+      updateSession: function (session) {
+        this.session = session;
+      },
+      removeSession: function () {
+        this.session = null;
       }
     }
   }
