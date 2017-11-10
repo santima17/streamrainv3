@@ -2,7 +2,9 @@ package com.tsi2.streamrain.bussines.content.implementations;
 
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.tsi2.streamrain.bussines.content.interfaces.IBLContent;
 import com.tsi2.streamrain.context.StremRainDataContextLoader;
@@ -10,6 +12,7 @@ import com.tsi2.streamrain.dao.implementations.StreamRainMySQLDAO;
 import com.tsi2.streamrain.dao.implementations.StreamRainMySQLUserDAO;
 import com.tsi2.streamrain.dao.interfaces.IDAOService;
 import com.tsi2.streamrain.dao.interfaces.IDAOUserService;
+import com.tsi2.streamrain.model.generator.Categories;
 import com.tsi2.streamrain.model.generator.Contents;
 import com.tsi2.streamrain.model.generator.UserComments;
 import com.tsi2.streamrain.model.generator.UserFavs;
@@ -22,7 +25,20 @@ public class BLContentImpl implements IBLContent {
 	
 	IDAOUserService daoUserService = (StreamRainMySQLUserDAO) StremRainDataContextLoader.contextLoader().getBean("daoUserService");
 		
-	public boolean saveContent(final Contents contents, final String tenantID) {
+	public boolean saveContent(final Contents contents, final List<Integer> idCategories, final List<Integer> idSimilarContent, final String tenantID) {
+		Set<Categories> categories = new HashSet<Categories>();
+		for(Integer idCategory : idCategories) {
+			Categories cat = daoService.get(Categories.class, idCategory, tenantID);
+			categories.add(cat);
+		}
+		contents.setCategorieses(categories);
+		Set<Contents> similarContents = new HashSet<Contents>();
+		for(Integer idSimilarCont : idSimilarContent) {
+			Contents content = daoService.get(Contents.class, idSimilarCont, tenantID);
+			similarContents.add(content);
+		}
+		contents.setContentsesForIdContent1(similarContents);
+		
 		daoService.save(contents, tenantID);
 		return true; 
 	}

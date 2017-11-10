@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Formatter;
@@ -290,6 +291,28 @@ public class Utils {
 	      calendar.setTime(fecha); 
 	      calendar.add(Calendar.DAY_OF_YEAR, dias);  	
 	      return calendar.getTime(); 
+	 }
+	 
+	 public static String obtainPathTokenVOD(String nameFile, Integer days) {
+		try {
+	        String secret = "campeondelsiglo";
+	        String path = "/dash/"+nameFile;
+	        String expire = ""+((System.currentTimeMillis()/1000)+(days * 24 * 60 * 60));
+	        String token = secret+path+expire;
+   
+	        MessageDigest digester = MessageDigest.getInstance("MD5");
+            digester.update(token.getBytes());
+            byte[] md5Bytes = digester.digest();
+            String hash3 =  new String(Base64.getEncoder().encode(md5Bytes));
+            
+            String tokenAcces = hash3.replaceAll("\\+", "-").replaceAll("/", "_").replace("=", "");
+            
+            return path+"/manifest.mpd?st="+tokenAcces+"&e="+expire;
+            
+		} catch (Exception e) {
+		    e.printStackTrace();
+		    return null;
+		}
 	 }
 
 }

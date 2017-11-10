@@ -22,6 +22,7 @@ import com.tsi2.streamrain.datatypes.content.UserContentViewDto;
 import com.tsi2.streamrain.services.category.interfaces.ICategoryService;
 import com.tsi2.streamrain.services.content.interfaces.IContentService;
 import com.tsi2.streamrain.services.session.interfaces.ISessionService;
+import com.tsi2.streamrain.utils.Utils;
 
 @RestController
 @RequestMapping("/user/content")

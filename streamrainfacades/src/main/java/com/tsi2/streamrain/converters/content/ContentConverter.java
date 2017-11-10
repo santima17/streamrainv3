@@ -6,10 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.tsi2.streamrain.context.StremRainDataContextLoader;
 import com.tsi2.streamrain.converters.interfaces.IConverter;
-import com.tsi2.streamrain.dao.implementations.StreamRainMySQLDAO;
-import com.tsi2.streamrain.dao.interfaces.IDAOService;
 import com.tsi2.streamrain.datatypes.content.ContentCastDto;
 import com.tsi2.streamrain.datatypes.content.ContentDto;
 import com.tsi2.streamrain.model.generator.AlwaysAvailableContents;
@@ -22,7 +19,7 @@ import com.tsi2.streamrain.model.generator.LiveOnlyContents;
 public class ContentConverter implements IConverter<ContentDto, Contents>{
 
 	//IConverter<ContentCastDto, ContentCasts> contentCastConverter = (ContentCastConverter)StremRainFacadesContextLoader.contextLoader().getBean("contentCastConverter");
-	IDAOService daoService = (StreamRainMySQLDAO) StremRainDataContextLoader.contextLoader().getBean("daoService");
+	//IDAOService daoService = (StreamRainMySQLDAO) StremRainDataContextLoader.contextLoader().getBean("daoService");
 	
 	public ContentCastDto converter(ContentCasts source) {
 		ContentCastDto contentsCast = new ContentCastDto();
@@ -120,12 +117,12 @@ public class ContentConverter implements IConverter<ContentDto, Contents>{
 		}
 		contents.setContentCastses(actors);
 		
-		Set<Categories> categories = new HashSet<Categories>();
+		/*Set<Categories> categories = new HashSet<Categories>();
 		for(Integer idCategory : source.getIdCategories()) {
 			Categories cat = daoService.get(Categories.class, idCategory, source.getTenantId());
 			categories.add(cat);
 		}
-		contents.setCategorieses(categories);
+		contents.setCategorieses(categories);*/
 		
 		if (source.getAlwaysAvailable()) {
 			AlwaysAvailableContents alwaysAvailableContents = new AlwaysAvailableContents();
@@ -150,12 +147,12 @@ public class ContentConverter implements IConverter<ContentDto, Contents>{
 			contents.setFeaturedContentses(featuresList);
 		}
 		
-		Set<Contents> similarContents = new HashSet<Contents>();
+		/*Set<Contents> similarContents = new HashSet<Contents>();
 		for(Integer idSimilarCont : source.getIdSimilarContents()) {
 			Contents content = daoService.get(Contents.class, idSimilarCont, source.getTenantId());
 			similarContents.add(content);
 		}
-		contents.setContentsesForIdContent1(similarContents);
+		contents.setContentsesForIdContent1(similarContents);*/
 				
 		return contents;
 	}

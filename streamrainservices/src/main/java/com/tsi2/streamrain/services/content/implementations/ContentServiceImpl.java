@@ -23,7 +23,7 @@ public class ContentServiceImpl implements IContentService {
 			.getBean("contentConverter");
 
 	public boolean saveContent(final ContentDto content, final String tenantID) {
-		contentBussines.saveContent((Contents) contentConverter.deConverter(content), tenantID);
+		contentBussines.saveContent((Contents) contentConverter.deConverter(content), content.getIdCategories(), content.getIdSimilarContents(), tenantID);
 		return true;
 	}
 

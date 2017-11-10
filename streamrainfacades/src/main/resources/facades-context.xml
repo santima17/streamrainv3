@@ -25,7 +25,5 @@
 	<bean id="janusTokenConverter" class="com.tsi2.streamrain.converters.janus.JanusTokenConverter" />
 	
 	<bean id="janusServerConverter" class="com.tsi2.streamrain.converters.janus.JanusServerConverter" />
-	
-	<bean id="daoService" class="com.tsi2.streamrain.dao.implementations.StreamRainMySQLDAO"/>
-		
+			
 </beans>

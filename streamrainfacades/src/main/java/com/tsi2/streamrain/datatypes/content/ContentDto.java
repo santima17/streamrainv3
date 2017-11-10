@@ -41,6 +41,7 @@ public class ContentDto {
     @DateTimeFormat(iso = ISO.DATE)
     private Date featuredDateFinish;
     private String tenantId;
+    private String pathTokenVOD;
     
 	public Integer getId() {
 		return id;
@@ -175,6 +176,12 @@ public class ContentDto {
 	}
 	public void setIdSimilarContents(List<Integer> idSimilarContents) {
 		this.idSimilarContents = idSimilarContents;
+	}
+	public String getPathTokenVOD() {
+		return pathTokenVOD;
+	}
+	public void setPathTokenVOD(String pathTokenVOD) {
+		this.pathTokenVOD = pathTokenVOD;
 	}
 										    
 }
