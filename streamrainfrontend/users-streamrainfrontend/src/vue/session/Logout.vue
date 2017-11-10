@@ -4,11 +4,12 @@
       <div class="col-sm-2 sidenav">
       </div>
       <div class="col-sm-8 text-left"> 
-        <h1>Log Out</h1>
-        <br>
+        <h1>{{ config.tenant.name }}, Log Out</h1>
+        <hr>
         <div class="form-group">
-          <button v-on:click="logout" class="btn btn-primary">Log Out</button>
+          <button v-on:click="logout" class="btn btn-default">Log Out</button>
         </div>
+        <br>
         <hr>
       </div>
       <div class="col-sm-2 sidenav">

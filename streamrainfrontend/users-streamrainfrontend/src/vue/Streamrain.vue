@@ -18,7 +18,7 @@
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li v-if="!session"><router-link to="/login">Log In</router-link></li>
-            <li v-if="session"><router-link to="/logout">Log Out</router-link></li>
+            <li v-if="session"><router-link to="/logout">Welcome, {{ session.username }}</router-link></li>
             <li><router-link to="/signup"><span class="text-danger">Sign Up!</span></router-link></li>
           </ul>
         </div>
@@ -82,3 +82,9 @@
     }
   }
 </script>
+
+<style>
+  body {
+    overflow-y: scroll;
+  }
+</style>

@@ -4,27 +4,32 @@
       <div class="col-sm-2 sidenav">
       </div>
       <div class="col-sm-8 text-left">
-        <div class="row content" v-if="loginError">
-          <div class="alert alert-dismissible alert-warning">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <p><strong>Oops!</strong></p>
-            <p>{{ loginError }}</p>
+        <h1>{{ config.tenant.name }}, Log In</h1>
+        <hr>
+        <div class="row">
+          <div class="col-sm-12" v-if="loginError.show">
+            <div class="alert alert-dismissible alert-warning">
+              <button class="close" v-on:click="loginError.show = false">&times;</button>
+              <p>Oops!</p>
+              <p>{{ loginError.message }}</p>
+            </div>
           </div>
         </div>
-        <h1>Log In</h1>
         <div class="row">
-          <div class="col-sm-4 text-left">
+          <div class="col-sm-6 text-left">
             <div class="form-group">
-              <label class="control-label" for="focusedInput">Username</label>
-              <input v-model="username" class="form-control" type="text" value="Username">
+              <p>Nickname</p>
+              <input v-model="username" class="form-control input-sm" type="text" value="Username">
             </div>
             <div class="form-group">
-              <label class="control-label">Password</label>
-              <input v-model="password" class="form-control" type="password" value="Password">
+              <p>Password</p>
+              <input v-model="password" class="form-control input-sm" type="password" value="Password">
             </div>
+            <br>
             <div class="form-group">
-              <button v-on:click="login" class="btn btn-primary" :disabled="!buttonEnable">Log In</button>
+              <button v-on:click="login" class="btn btn-default" :disabled="!buttonEnable">{{ buttonText }} <i v-if="!buttonEnable" class="fa fa-spinner fa-spin" style="font-size"></i></button>
             </div>
+            <br>
           </div>
         </div>
         <hr>
@@ -44,20 +49,41 @@
       username: '',
       password: '',
       buttonEnable: true,
-      loginError: null
+      buttonText: 'Log In',
+      loginError: {
+        show: false,
+        message: null
+      }
     }
   },
   methods: {
+    validation: function () {
+      if (this.username.length < 1) {
+        this.loginError.message = 'Invalid nickname'
+        this.loginError.show = true;
+        return false;
+      }
+      if (this.password.length < 1) {
+        this.loginError.message = 'Invalid password'
+        this.loginError.show = true;
+        return false;
+      }
+      return true;
+    },
     login: function () {
+      if (!this.buttonEnable) return;
+      if (!this.validation()) return;
       const eventBus = this.eventBus;
       const router = this.$router;
       const username = this.username;
       const password = this.password;
       const updateLoginError = this.updateLoginError;
       const updateButtonEnable = this.updateButtonEnable;
+      const updateButtonText = this.updateButtonText;
       if (username.trim() !== '' && password.trim() !== '') {
         if (this.buttonEnable) {
           updateButtonEnable(false);
+          updateButtonText('Please wait... ');
           this.$http.post(`${this.config.backend}/user/login`,
             {
               username,
@@ -75,8 +101,33 @@
                 userToken: response.headers.get('Authorization')
               });
               router.push('/');
-            }).catch((error) => {
-              updateLoginError('Connection error!');
+            }).catch((response) => {
+              updateButtonText('Log In');
+              switch(response.status) {
+                case 500:
+                  updateLoginError({
+                    show: true,
+                    message: 'Internal server error'
+                  });
+                  break;
+                case 400:
+                  updateLoginError({
+                    show: true,
+                    message: 'Bad Request'
+                  });
+                  break;
+                case 401:
+                  updateLoginError({
+                    show: true,
+                    message: 'Login error, please check nickname and password'
+                  });
+                  break;
+                default:
+                  updateLoginError({
+                    show: true,
+                    message: 'An error has occurred'
+                  });
+              }
               updateButtonEnable(true);              
             });
           }
@@ -87,6 +138,9 @@
       },
       updateButtonEnable: function (buttonEnable) {
         this.buttonEnable = buttonEnable;
+      },
+      updateButtonText: function (buttonText) {
+        this.buttonText = buttonText;
       }
     }
   }
