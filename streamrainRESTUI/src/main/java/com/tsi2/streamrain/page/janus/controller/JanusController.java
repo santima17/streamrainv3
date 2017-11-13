@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tsi2.streamrain.datatypes.janus.JanusAttachedSessionDto;
 import com.tsi2.streamrain.datatypes.janus.JanusBackendTokenDto;
 import com.tsi2.streamrain.datatypes.janus.JanusCreateSessionDto;
 import com.tsi2.streamrain.datatypes.janus.JanusCreateTokenDto;
@@ -133,10 +134,32 @@ public class JanusController extends AbstractController {
 
 		String mySession = sentJSONByPOSTGetResponse(urlToSend, jsonDto);
 		if (mySession != null) {
+			sessionService.setMySession(mySession);
 			return new ResponseEntity<>(HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 		}
 	}
+	
+	// CARGA 4 SEGUN DOCUMENTO
+//	@RequestMapping(value = "/attachedSession/{janusToken}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+//	public ResponseEntity<String> createSession(@PathVariable String janusToken) {
+//
+//		String urlToSend = janusService.getJanusUrlByToken(janusToken, sessionService.getCurrentTenant());
+//		// for por que cosa?
+//		JanusAttachedSessionDto jsonDto = new JanusAttachedSessionDto();
+//		jsonDto.setJanus("create");
+//		jsonDto.setTransaction(String.valueOf(Math.random()));
+//		jsonDto.setToken(janusToken);
+//		jsonDto.setPlugin("janus.plugin.streaming");
+//
+//		String mySession = sentJSONByPOSTGetResponse(urlToSend, jsonDto);
+//		if (mySession != null) {
+//			sessionService.setMySession(mySession);
+//			return new ResponseEntity<>(HttpStatus.OK);
+//		} else {
+//			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+//		}
+//	}
 
 }

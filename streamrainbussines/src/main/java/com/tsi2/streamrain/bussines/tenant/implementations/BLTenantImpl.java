@@ -1,5 +1,7 @@
 package com.tsi2.streamrain.bussines.tenant.implementations;
 
+import java.util.List;
+
 import com.tsi2.streamrain.bussines.tenant.interfaces.IBLTenant;
 import com.tsi2.streamrain.context.StremRainDataContextLoader;
 import com.tsi2.streamrain.dao.implementations.StreamRainMySQLMainDAO;
@@ -20,6 +22,16 @@ public class BLTenantImpl implements IBLTenant{
 
 	public boolean existsUser(final String nickname, final String password) {
 		return daoTenant.findByNicknamePassword(nickname, password); 
+	}
+
+	public Tenants getTenantByName(final String name) {
+		Tenants example = new Tenants();
+		example.setName(name);
+		return daoTenant.getAllByExample(Tenants.class, example, null).get(0);
+	}
+
+	public List<Tenants> getAllTenant() {
+		return daoTenant.getAll(Tenants.class, null);
 	}
 
 }
