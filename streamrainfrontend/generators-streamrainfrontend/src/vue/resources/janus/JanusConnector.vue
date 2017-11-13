@@ -4,33 +4,32 @@
 <script>
   export default {
     props: [
-      'eventBus',
-      'selectedServer'
+      'eventBus'
     ],
     created () {
       const i = this;
-      this.eventBus.$on('getJanusServerInfo', () => {
-        this.getJanusServerInfo();
+      this.eventBus.$on('getJanusServerInfo', (selectedServer) => {
+        this.getJanusServerInfo(selectedServer);
       }, this);
-      this.eventBus.$on('getJanusAuthTokens', () => {
-        this.getJanusAuthTokens();
+      this.eventBus.$on('getJanusAuthTokens', (selectedServer) => {
+        this.getJanusAuthTokens(selectedServer);
       }, this);
     },
     methods: {
-      getJanusServerInfo: function () {
-        this.$http.get(`${this.selectedServer.admin_url}/info`)
+      getJanusServerInfo: function (selectedServer) {
+        this.$http.get(`${selectedServer.admin_url}/info`)
         .then((result) => { 
           this.eventBus.$emit('setJanusServerInfo', result.body);
         }, this);
       },
-      getJanusAuthTokens: function () {
+      getJanusAuthTokens: function (selectedServer) {
         const request = {
           janus: 'list_tokens',
           transaction: randomString(12),
-          admin_secret: this.selectedServer.admin_secret
+          admin_secret: selectedServer.admin_secret
         };
-        this.$http.post(this.selectedServer.admin_url, request)
-        .then((result) => { 
+        this.$http.post(selectedServer.admin_url, request)
+        .then((result) => {
           this.eventBus.$emit('setJanusAuthTokens', result.body.data.tokens);
         }, this)
         .catch((error) => {
