@@ -13,51 +13,57 @@
           <div class="tab-pane fade active in" id="servers">
             <h2 class="text-left text-info">Servers</h2>
             <br>
-            <div v-for="(server, index) in janusServers" :key="index">
-              <table class="table table-striped table-hover ">
-                <tbody>
-                  <tr>
-                    <td><b>ID</b></td>
-                    <td>{{ server.id }}</td>
-                  </tr>
-                  <tr>
-                    <td><b>Enable</b></td>
-                    <td>
-                      <span v-if="!server.is_enable" class="text-danger">
-                        {{ (server.is_enable).toString().toUpperCase() }}
-                      </span>
-                      <span v-if="server.is_enable" class="text-success">
-                        {{ (server.is_enable).toString().toUpperCase() }}
-                      </span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><b>Name</b></td>
-                    <td>{{ server.name }}</td>
-                  </tr>
-                  <tr>
-                    <td><b>Last Update Request</b></td>
-                    <td>{{ server.date_last_update_request }}</td>
-                  </tr>
-                  <tr>
-                    <td><b>Janus URL</b></td>
-                    <td>{{ server.janus_url }}</td>
-                  </tr>
-                  <tr class="text-right">
-                    <td></td>
-                    <td v-if="server.is_enable">
-                      <router-link :to="`/resources/janus/${server.id}`">
-                        <div><b>Show more...</b></div>
-                      </router-link>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+            <div v-if="janusServers != []">
+              <div v-for="(server, index) in janusServers" :key="index">
+                <table class="table table-striped table-hover ">
+                  <tbody>
+                    <tr>
+                      <td><b>ID</b></td>
+                      <td>{{ server.id }}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Enable</b></td>
+                      <td>
+                        <span v-if="!server.is_enable" class="text-danger">
+                          {{ (server.is_enable).toString().toUpperCase() }}
+                        </span>
+                        <span v-if="server.is_enable" class="text-success">
+                          {{ (server.is_enable).toString().toUpperCase() }}
+                        </span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><b>Name</b></td>
+                      <td>{{ server.name }}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Last Update Request</b></td>
+                      <td>{{ server.date_last_update_request }}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Janus URL</b></td>
+                      <td>{{ server.janus_url }}</td>
+                    </tr>
+                    <tr class="text-right">
+                      <td></td>
+                      <td v-if="server.is_enable">
+                        <router-link :to="`/resources/janus/${server.id}`">
+                          <div><b>Show more...</b></div>
+                        </router-link>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
           <div class="tab-pane fade" id="creation-tokens">
             <h2 class="text-left text-info">Creation Tokens</h2>
-            <div class="text-right"><button v-on:click="eventBus.$emit('getJanusAuthTokens', null)" class="btn btn-primary">New Token</button></div>
+            <div class="text-right">
+              <button v-on:click="eventBus.$emit('getJanusAuthTokens', null)" class="btn btn-primary">
+                New Token
+              </button>
+            </div>
             <br>
             <div v-for="(token, index) in janusCreationTokens" :key="index">
               <table class="table table-striped table-hover ">
@@ -108,8 +114,8 @@
     ],
     data () {
       return {
-        janusServers: null,
-        janusCreationTokens: null,
+        janusServers: [],
+        janusCreationTokens: [],
       }
     },
     created () {
@@ -117,51 +123,16 @@
     },
     methods: {
       getJanusServers: function () {
-        // Acá iría algo así:
-        // this.$http.get(`${this.config.backend}/janus_servers`)
-        // .then((result) => { 
-        //   console.error(JSON.stringify(result));
-        // });
-        // HARDCODEADO
-        this.janusServers = [
-          {
-            id: 1,
-            name: 'Streamrain Live Only Janus Server 1',
-            is_enable: true,
-            date_last_update_request: '2017-11-09',
-            janus_url: 'http://localhost:8088/janus',
-            admin_url: 'http://localhost:7088/admin',
-            admin_secret: 'strn123'
-          },
-          {
-            id: 2,
-            name: 'Streamrain Live Only Janus Server 2',
-            is_enable: false,
-            date_last_update_request: '2017-11-09',
-            janus_url: 'http://localhost:8088/janus',
-            admin_url: 'http://localhost:7088/admin',
-            admin_secret: 'strn123'
-          }
-        ];
-        this.janusCreationTokens = [
-          {
-            id: 1,
-            janus_token: 'shncm58y8wryjashdnc38yc789w6rtf9674hasicrnt3f29j56',
-            streamrain_rest_backend: true,
-            date_creation: '2017-11-09',
-            date_expiration: '2017-11-10',
-            date_usage: null,
-          },
-          {
-            id: 2,
-            janus_token: 'mcnjyhrufayhjui53vf3n89adyfhcvf3m4yo8umcy832y4hmja',
-            streamrain_rest_backend: true,
-            date_creation: '2017-11-09',
-            date_expiration: '2017-11-10',
-            date_usage: null,
-          }
-        ];
-        // HARDCODEADO
+        // Obtenemos los servidores Janus del Generator
+        this.$http.get(`${this.config.backend}/generator/janus_servers`)
+        .then((result) => { 
+          this.janusServers.push(result.body);
+        }, this);
+        // Obtenemos los Janus Creation Token del Generator
+        this.$http.get(`${this.config.backend}/generator/janus_creation_tokens`)
+        .then((result) => { 
+          this.janusCreationTokens = result.body;
+        }, this);
       },
       getJanusServerInfo: function () {
         this.eventBus.$emit('getJanusServerInfo', null);

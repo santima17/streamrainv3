@@ -89,7 +89,7 @@
           <div class="tab-pane fade" id="auth-tokens">
             <h2 class="text-left text-info">Auth Tokens</h2>
             <div class="text-right">
-              <button v-on:click="eventBus.$emit('getJanusAuthTokens', null)" class="btn btn-primary">
+              <button v-on:click="eventBus.$emit('getJanusAuthTokens', selectedServer)" class="btn btn-primary">
                 Refresh
               </button>
             </div>
@@ -118,7 +118,7 @@
         </div>
         <hr>
       </div>
-      <janus-connector :eventBus="eventBus" :selectedServer="selectedServer"></janus-connector>
+      <janus-connector :eventBus="eventBus"></janus-connector>
       <div class="col-sm-2 sidenav">
       </div>
     </div>
@@ -130,7 +130,7 @@
   export default {
     props: [
       'config',
-      'eventBus',
+      'eventBus'
     ],
     components: {
       'janus-connector': JanusConnector
@@ -144,32 +144,19 @@
       }
     },
     created () {
-      // Acá iría algo así:
-      // this.$http.get(`${this.config.backend}/janus_servers/${this.id}`)
-      // .then((result) => { 
-      //   console.error(JSON.stringify(result));
-      // });
-      // HARDCODEADO
-      this.selectedServer = {
-        id: 1,
-        name: 'Streamrain Live Only Janus Server 1',
-        is_enable: true,
-        date_last_update_request: '2017-11-09',
-        janus_url: 'http://localhost:8088/janus',
-        admin_url: 'http://localhost:7088/admin',
-        admin_secret: 'strn123'
-      };
-      // HARDCODEADO
       this.eventBus.$on('setJanusServerInfo', (result) => {
         this.janusInfo = result;
       }, this);
       this.eventBus.$on('setJanusAuthTokens', (result) => {
         this.authTokens = result;
       }, this);
-    },
-    mounted () {
-      this.eventBus.$emit('getJanusServerInfo', null);
-      this.eventBus.$emit('getJanusAuthTokens', null);
+      // Obtenemos la información del Janus Server
+      this.$http.get(`${this.config.backend}/generator/janus_servers/${this.id}`)
+      .then((result) => { 
+        this.selectedServer = result.body;
+        this.eventBus.$emit('getJanusServerInfo', result.body);
+        this.eventBus.$emit('getJanusAuthTokens', result.body);
+      }, this);
     }
   }
 </script>
