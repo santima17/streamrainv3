@@ -19,6 +19,8 @@ import Home from './vue/nav/Home.vue';
 // Session
 import Login from './vue/session/Login.vue';
 import Logout from './vue/session/Logout.vue';
+// Statistics
+import Statistics from './vue/statistics/Statistics.vue';
 
 Vue.use(VueRouter);
 Vue.use(VueResource);
@@ -117,6 +119,14 @@ const routes = [
     meta: {
       title: `${config.tenant.name} | Log Out`
     }
+  },
+  // Statistics  
+  {
+    path: '/statistics/Statistics',
+    component: Statistics,
+    meta: {
+      title: `${config.tenant.name} | Reportes`
+    }
   }
 ];
 
@@ -128,9 +138,20 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   if (!to.matched.length) {
     next('/notFound');
-  } else {
+  } 
+  else { // para cada pagina solicitada
     document.title = to.meta.title;
-    next();
+    if(to.path != '/login') { // si la pagina solicitada no es la de login
+      var token = localStorage.getItem("token"); //obtengo token de localstorage
+        if(token) { // si tengo un token muestro la pagina solicitada
+            next();
+        } else { // si no tengo token redirecciono a login
+            next('/login');
+        }
+    } else { // si la pagina solicitada es login borro el token de localstorage y muesto la pagina login
+      localStorage.removeItem("token");
+      next();
+    }
   }
 });
 

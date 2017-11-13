@@ -1,31 +1,36 @@
 <template>
-  <div class="container-fluid text-center">    
-    <div class="row content">
-      <div class="col-sm-2 sidenav">
-      </div>
-      <div class="col-sm-8 text-left">
-        <h1>Log In</h1>
-        <div class="row">
-          <div class="col-sm-4 text-left">
-            <div class="form-group">
-              <label class="control-label" for="focusedInput">Username</label>
-              <input v-model="username" class="form-control" type="text" value="Username">
-            </div>
-            <div class="form-group">
-              <label class="control-label">Password</label>
-              <input v-model="password" class="form-control" type="password" value="Password">
-            </div>
-            <div class="form-group">
-              <button v-on:click="login" class="btn btn-primary btn-lg">Log In</button>
-            </div>
-          </div>
-        </div>
-        <hr>
-      </div>
-      <div class="col-sm-2 sidenav">
-      </div>
-    </div>
-  </div>
+ 	<div id="wrapper" >
+		<div class="vertical-align-wrap" v-bind:style="{ backgroundImage: 'url(dist/fondo.jpg)' }">
+			<div class="vertical-align-middle">
+				<div class="auth-box">
+					<div class="content">
+						<div class="header">
+						<div class="logo text-center"><img src="../../assets/img/foccsmint.png" alt="sonnny"></div>
+						<p class="lead">Portal de Administracion</p>
+						</div>
+						<form class="form-auth-small" v-on:submit.prevent="login">
+						<div class="form-group">
+							<div class="input-group">
+								<span class="input-group-addon"><i class="fa fa-user"></i></span>
+								<input class="form-control" placeholder="Username" type="text" v-model="username" required="">
+							</div>
+							</div>
+							<div class="form-group">
+								<div class="input-group">
+								<span class="input-group-addon"><i class="fa fa-key"></i></span>
+								<input class="form-control" placeholder="Password" type="password" v-model="password"  required="">
+							</div>
+							</div>
+							<button type="submit" class="btn btn-primary btn-lg btn-block">INICIAR SESION</button>
+						</form>
+					</div>
+					<div class="logo text-right"><img src="../../assets/img/logomint.png" alt="sr"></div>
+          <div class="logo text-center" style="color:red;padding:10"><span class="lead">{{errores}}</span></div> 
+				</div>
+        
+			</div>
+		</div>
+	</div>
 </template>
 
 <script>
@@ -37,7 +42,8 @@
   data () {
     return {
       username: null,
-      password: null
+      password: null,
+      errores: ''
     }
   },
   methods: {
@@ -62,9 +68,16 @@
             console.log(response.headers.get('Authorization'));
             console.log(JSON.stringify(response));
             i.eventBus.$emit('setToken', response.headers.get('Authorization'));
+            this.$router.push("/");
           });
-        }
+          //sacar esto inicio
+          i.eventBus.$emit('setToken','adsfasdfasddsfadf');
+          this.$router.push("/");
+          //sacar esto fin
+          this.errores = 'Error durante la verificación. Las credenciales aportadas no son correctas.'
+        } 
       }
     }
   }
 </script>
+
