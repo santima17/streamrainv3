@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tsi2.streamrain.datatypes.janus.JanusBackendTokenDto;
 import com.tsi2.streamrain.datatypes.janus.JanusCreateSessionDto;
+import com.tsi2.streamrain.datatypes.janus.JanusCreateSessionResponseDto;
 
 public class AbstractController {
 
@@ -102,12 +103,12 @@ public class AbstractController {
 				responseBody += line;
 			}
 			connection.disconnect();
-//			JanusCreateSessionResponseDto response = 
+			JanusCreateSessionResponseDto response = gson.fromJson(responseBody, JanusCreateSessionResponseDto.class);
+			return response.getId();
 		} catch (IOException e) {
 			System.out.print("Open connection failed");
 			return "ERROR";
 		}
-		return "";
 	}
 
 }

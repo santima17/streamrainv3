@@ -5,6 +5,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Example;
 
 import com.tsi2.streamrain.context.DBHibernateUtil;
 import com.tsi2.streamrain.dao.interfaces.IDAOService;
@@ -46,9 +47,11 @@ public class StreamRainMySQLMainDAO implements IDAOService {
 		return crit.list();
 	}
 
-	public <T> List<T> getAllByExample(Class<T> type, T objectQuery, String tenantID) {
-		// TODO Auto-generated method stub
-		return null;
+	public <T> List<T> getAllByExample(final Class<T> type, final T objectQuery, final String tenantID) {
+		Session dbSession = DBHibernateUtil.getSessionFactoryMain();
+		Example objectExample = Example.create(objectQuery);
+		final Criteria crit = dbSession.createCriteria(type).add(objectExample);
+		return crit.list();
 	}
 
 }

@@ -6,4 +6,9 @@ public interface ISessionService {
 	void setCurrentTenant(final String currentTenant);
 	String getUserNickname();
 	void setUserNickname(final String nickname);
+	public String getMySession();
+	public void setMySession(String mySession);
+	public String getMySessionHandler();
+	public void setMySessionHandler(String mySessionHandler);
+	
 }

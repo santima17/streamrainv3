@@ -6,6 +6,9 @@ public class SessionServiceImpl implements ISessionService{
 	
 	private String currentTenant;
 	private String userNickname;
+	private String mySession;
+	private String mySessionHandler;
+	
 	
 	public String getCurrentTenant() {
 		return currentTenant;
@@ -21,6 +24,22 @@ public class SessionServiceImpl implements ISessionService{
 
 	public void setUserNickname(final String userNickname) {
 		this.userNickname = userNickname;
+	}
+
+	public String getMySession() {
+		return mySession;
+	}
+
+	public void setMySession(String mySession) {
+		this.mySession = mySession;
+	}
+
+	public String getMySessionHandler() {
+		return mySessionHandler;
+	}
+
+	public void setMySessionHandler(String mySessionHandler) {
+		this.mySessionHandler = mySessionHandler;
 	}
 
 }
