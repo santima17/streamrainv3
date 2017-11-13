@@ -18,6 +18,8 @@ import com.tsi2.streamrain.dao.interfaces.IDAOService;
 import com.tsi2.streamrain.dao.interfaces.IDAOUserService;
 import com.tsi2.streamrain.model.generator.Categories;
 import com.tsi2.streamrain.model.generator.Contents;
+import com.tsi2.streamrain.model.generator.SpoilerMarks;
+import com.tsi2.streamrain.model.generator.SpoilerMarksId;
 import com.tsi2.streamrain.model.generator.UserComments;
 import com.tsi2.streamrain.model.generator.UserFavs;
 import com.tsi2.streamrain.model.generator.UserFavsId;
@@ -160,6 +162,25 @@ public class BLContentImpl implements IBLContent {
 		// TODO Auto-generated method stub
 		Set<UserViews> views = daoService.get(Contents.class, contentID, tenantID).getUserViewses();
 		return views.iterator().next();
+	}
+
+	public boolean spolierMarkComment(final String userNickName, final Integer userCommentId, final String tenantID) {
+		try {
+			Users user = daoUserService.getUserByNickname(userNickName, tenantID);
+			UserComments userComments = daoService.get(UserComments.class, userCommentId, tenantID);
+			SpoilerMarks spoilerMarks = new SpoilerMarks();
+			SpoilerMarksId id = new SpoilerMarksId();
+			id.setUserId(user.getId());
+			id.setUserCommentId(userComments.getId());
+			spoilerMarks.setUserComments(userComments);
+			spoilerMarks.setUsers(user);
+			spoilerMarks.setDate(new Date());
+			spoilerMarks.setId(id);
+			return true;
+		}catch(Exception ex){
+			ex.printStackTrace();
+			return false;
+		}
 	}
 	
 

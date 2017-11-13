@@ -35,4 +35,6 @@ public interface IContentService {
 	
 	UserContentViewDto getLastViewToContent(final UserContentViewDto userContentViewDto, final String tenantID);
 
+	boolean spolierMarkComment(final String userNickName, final Integer userCommentId, final String tenantID);
+
 }

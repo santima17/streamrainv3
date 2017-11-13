@@ -37,4 +37,6 @@ public interface IBLContent {
 
 	UserViews getLastViewToContent(Integer contentID, String userNickname, String tenantID);
 
+	boolean spolierMarkComment(final String userNickName, final Integer userCommentId, final String tenantID);
+
 }

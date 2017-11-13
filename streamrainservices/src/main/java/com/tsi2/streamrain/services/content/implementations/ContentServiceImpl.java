@@ -104,4 +104,8 @@ public class ContentServiceImpl implements IContentService {
 
 	}
 
+	public boolean spolierMarkComment(final String userNickName, final Integer userCommentId, final String tenantID) {
+		return contentBussines.spolierMarkComment(userNickName, userCommentId, tenantID);
+	}
+
 }
