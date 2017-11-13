@@ -1,14 +1,21 @@
 package com.tsi2.streamrain.page.user.controller;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,8 +32,11 @@ import com.tsi2.streamrain.utils.Utils;
 
 @RestController
 @RequestMapping("/user")
+
 public class UserController {
 	
+	private static final String BAD_REQUEST_MSG = "Los datos del usuario no fueron correctamente ingresados";
+
 	@Resource(name="userService")
 	IUserService userService;
 	
@@ -55,38 +65,43 @@ public class UserController {
         return response;
     }
     
-    @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<BindingResult> insertUser(@RequestBody @Valid UserDto user, BindingResult result) {
-    	ResponseEntity<BindingResult> response = new ResponseEntity<>(HttpStatus.CREATED);
+    @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> insertUser(@RequestBody @Valid UserDto user, BindingResult result, HttpServletRequest request) {
+    	
+    	String url = request.getRequestURL().toString();
+		String tentantID = url.substring(7,url.indexOf("."));
+		
+    	ResponseEntity<String> response = new ResponseEntity<>(HttpStatus.CREATED);
     	if (result.hasErrors()) {
-    		return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+    		return new ResponseEntity<>(BAD_REQUEST_MSG, HttpStatus.BAD_REQUEST);
     	}
     	user.setBlocked(false);
-        userService.saveUser(user, sessionService.getCurrentTenant());
+        userService.saveUser(user, tentantID);
         return response;
     }
     
         
-    @RequestMapping(value = "/{userNickname}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{userNickname}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<BindingResult> updateUser(@PathVariable String userNickname, @RequestBody @Valid UserDto user, BindingResult result) {
-    	ResponseEntity<BindingResult> response = new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<String> updateUser(@PathVariable String userNickname, @RequestBody UserDto user, BindingResult result) {
+    	ResponseEntity<String> response = new ResponseEntity<>(HttpStatus.CREATED);
     	if (result.hasErrors()) {
-    		return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+    		return new ResponseEntity<>(BAD_REQUEST_MSG, HttpStatus.BAD_REQUEST);
     	}
         UserDto userOld = userService.getUserByNickname(userNickname, sessionService.getCurrentTenant());
         if (userOld == null) {
         	return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }else {
-            userService.updateUser(userNickname, user, sessionService.getCurrentTenant());
+            userService.updateUser(user, userOld, sessionService.getCurrentTenant());
         }
         return response;
     }
     
-    @RequestMapping(value = "/{userNickname}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/{userNickname}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable String userNickname) {
-        userService.deleteUser(userNickname, sessionService.getCurrentTenant());
+    	UserDto userOld = userService.getUserByNickname(userNickname, sessionService.getCurrentTenant());
+        userService.deleteUser(userOld, sessionService.getCurrentTenant());
     }
 	
 				

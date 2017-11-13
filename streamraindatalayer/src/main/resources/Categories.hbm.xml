@@ -17,7 +17,7 @@
         <property name="coverPictureUrl" type="string">
             <column name="cover_picture_url" length="150" />
         </property>
-        <set name="contentses" table="content_categories" inverse="false" lazy="true" fetch="select">
+        <set name="contentses" table="content_categories" inverse="true" lazy="true" fetch="select" cascade="all">
             <key>
                 <column name="id_categorie" not-null="true" />
             </key>

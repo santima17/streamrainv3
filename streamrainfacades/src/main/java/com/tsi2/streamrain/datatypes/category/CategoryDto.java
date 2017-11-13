@@ -1,4 +1,4 @@
-package com.tsi.streamrain.datatypes.category;
+package com.tsi2.streamrain.datatypes.category;
 
 public class CategoryDto {
 	

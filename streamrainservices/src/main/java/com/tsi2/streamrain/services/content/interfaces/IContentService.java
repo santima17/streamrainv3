@@ -20,11 +20,21 @@ public interface IContentService {
 	void deleteContent(final Integer contentID, final String tenantID);
 
 	boolean voteContent(final Integer contentID, final String userNickname, final Integer rank, final String tenantID);
+	
+	Double getContentRaiting(final Integer contentID, final String tenantID);
 
 	boolean addContentToFav(final UserContentFavDto userContentFavDto, final String tenantID);
+	
+	boolean removeContentOfFav(final UserContentFavDto userContentFavDto, final String tenantID);
 
 	boolean addCommentToContent(final UserContentCommentDto userContentCommentDto, final String tenantID);
+	
+	boolean getCommentsOfContent(final UserContentCommentDto userContentCommentDto, final String tenantID);
 
 	boolean addViewToContent(final UserContentViewDto userContentViewDto, final String tenantID);
+	
+	UserContentViewDto getLastViewToContent(final UserContentViewDto userContentViewDto, final String tenantID);
+
+	boolean spolierMarkComment(final String userNickName, final Integer userCommentId, final String tenantID);
 
 }

@@ -11,12 +11,12 @@ import com.tsi2.streamrain.dao.interfaces.IDAOService;
 
 public class StreamRainMySQLMainDAO implements IDAOService {
 
-	public <T> T save(final T o, final String tenantID) {
+	public <T> Integer save(final T o, final String tenantID) {
 		Session dbSession = DBHibernateUtil.getSessionFactoryMain();
 		Transaction tx = dbSession.beginTransaction();
 		dbSession.persist(o);
 		tx.commit();
-		return null;
+		return 1;
 	}
 
 	public void delete(final Object object, final String tenantID) {
@@ -44,6 +44,11 @@ public class StreamRainMySQLMainDAO implements IDAOService {
 		Session dbSession = DBHibernateUtil.getSessionFactoryMain();
 		final Criteria crit = dbSession.createCriteria(type);
 		return crit.list();
+	}
+
+	public <T> List<T> getAllByExample(Class<T> type, T objectQuery, String tenantID) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

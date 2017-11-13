@@ -19,6 +19,10 @@
 			<param-name>contextConfigLocation</param-name>
 			<param-value></param-value>
 		</init-param>
+		<init-param>
+			<param-name>dispatchOptionsRequest</param-name>
+			<param-value>true</param-value>
+		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 
@@ -27,47 +31,47 @@
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 
+	<!-- Spring Security -->
+	<filter>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>INCLUDE</dispatcher>
+		<dispatcher>ASYNC</dispatcher>
+		<dispatcher>ERROR</dispatcher>
+	</filter-mapping>
+
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
-	
-	<!-- Spring Security -->
-    <filter>
-        <filter-name>springSecurityFilterChain</filter-name>
-        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>springSecurityFilterChain</filter-name>
-        <url-pattern>/*</url-pattern>
-        <dispatcher>REQUEST</dispatcher>
-	    <dispatcher>FORWARD</dispatcher>
-	    <dispatcher>INCLUDE</dispatcher>
-	    <dispatcher>ASYNC</dispatcher>
-	    <dispatcher>ERROR</dispatcher>
-    </filter-mapping>
-    
-    <!-- Rewrite -->
-    <listener>
-	   <listener-class>org.ocpsoft.rewrite.servlet.impl.RewriteServletRequestListener</listener-class>
-	</listener>
-	
+
+	<!-- Rewrite -->
 	<listener>
-	   <listener-class>org.ocpsoft.rewrite.servlet.impl.RewriteServletContextListener</listener-class>
+		<listener-class>org.ocpsoft.rewrite.servlet.impl.RewriteServletRequestListener</listener-class>
 	</listener>
-	
+
+	<listener>
+		<listener-class>org.ocpsoft.rewrite.servlet.impl.RewriteServletContextListener</listener-class>
+	</listener>
+
 	<filter>
-	   <filter-name>OCPsoft Rewrite Filter</filter-name>
-	   <filter-class>org.ocpsoft.rewrite.servlet.RewriteFilter</filter-class>
-	   <async-supported>true</async-supported>
+		<filter-name>OCPsoft Rewrite Filter</filter-name>
+		<filter-class>org.ocpsoft.rewrite.servlet.RewriteFilter</filter-class>
+		<async-supported>true</async-supported>
 	</filter>
 	<filter-mapping>
-	   <filter-name>OCPsoft Rewrite Filter</filter-name>
-	   <url-pattern>/*</url-pattern>
-	   <dispatcher>FORWARD</dispatcher>
-	   <dispatcher>REQUEST</dispatcher>
-	   <dispatcher>INCLUDE</dispatcher>
-	   <dispatcher>ASYNC</dispatcher>
-	   <dispatcher>ERROR</dispatcher>
+		<filter-name>OCPsoft Rewrite Filter</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>INCLUDE</dispatcher>
+		<dispatcher>ASYNC</dispatcher>
+		<dispatcher>ERROR</dispatcher>
 	</filter-mapping>
 
 </web-app>

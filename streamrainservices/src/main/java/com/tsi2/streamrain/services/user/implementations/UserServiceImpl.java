@@ -44,12 +44,12 @@ public class UserServiceImpl implements IUserService{
 		return userBussines.findUserXTwitterId(twitterId, tenantID);
 	}
 
-	public void updateUser(final String userNickname, final UserDto user, final String tenantID) {
-		userBussines.updateUser((Users)userConverter.deConverter(user), tenantID);
+	public void updateUser(final UserDto user, UserDto userOld, final String tenantID) {
+		userBussines.updateUser((Users)userConverter.deConverter(user), (Users)userConverter.deConverter(userOld), tenantID);
 	}
 
-	public void deleteUser(final String userNickname, final String tenantID) {
-		userBussines.deleteUser(userNickname, tenantID);
+	public void deleteUser(UserDto userOld, final String tenantID) {
+		userBussines.deleteUser((Users)userConverter.deConverter(userOld), tenantID); 
 	}
 
 

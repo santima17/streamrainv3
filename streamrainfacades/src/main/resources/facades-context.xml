@@ -14,6 +14,8 @@
 	
 	<bean id="contentConverter" class="com.tsi2.streamrain.converters.content.ContentConverter" />
 	
+	<bean id="userContentViewConverter" class="com.tsi2.streamrain.converters.content.UserContentViewConverter" />
+	
 	<bean id="contentCastConverter" class="com.tsi2.streamrain.converters.content.ContentCastConverter" />
 	
 	<bean id="subscribePaymentConverter" class="com.tsi2.streamrain.converters.payment.SubscribePaymentConverter" />
@@ -22,6 +24,8 @@
 	
 	<bean id="paymentMethodConverter" class="com.tsi2.streamrain.converters.payment.PaymentMethodConverter" />
 	
-	<bean id="daoService" class="com.tsi2.streamrain.dao.implementations.StreamRainMySQLDAO"/>
-		
+	<bean id="janusTokenConverter" class="com.tsi2.streamrain.converters.janus.JanusTokenConverter" />
+	
+	<bean id="janusServerConverter" class="com.tsi2.streamrain.converters.janus.JanusServerConverter" />
+			
 </beans>

@@ -18,8 +18,8 @@ public interface IUserService {
 	
 	boolean existsUserXTwitterId (final String twitterId, final String tenantID);
 
-	void updateUser(final String userNickname, final UserDto user, final String currentTenant);
+	void updateUser(final UserDto user, UserDto userOld, final String currentTenant);
 	
-	void deleteUser(final String userNickname, final String currentTenant);
+	void deleteUser(UserDto userOld, final String currentTenant);
 
 }

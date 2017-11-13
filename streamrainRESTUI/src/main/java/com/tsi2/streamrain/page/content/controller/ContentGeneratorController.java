@@ -6,12 +6,15 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -25,11 +28,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.tsi.streamrain.datatypes.category.CategoryDto;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tsi2.streamrain.datatypes.category.CategoryDto;
 import com.tsi2.streamrain.datatypes.content.ContentCastDto;
 import com.tsi2.streamrain.datatypes.content.ContentDto;
 import com.tsi2.streamrain.datatypes.user.UserDto;
@@ -38,7 +47,7 @@ import com.tsi2.streamrain.services.content.interfaces.IContentService;
 import com.tsi2.streamrain.services.session.interfaces.ISessionService;
 
 @RestController
-@RequestMapping("/generador/createContent")
+@RequestMapping("/generator/createContent")
 public class ContentGeneratorController {
 	
 	@Value("${location.file.path}")
@@ -70,17 +79,47 @@ public class ContentGeneratorController {
         return response;
     }
     
+    /*@RequestMapping(value = "/uploadPicture", method = RequestMethod.POST)
+    public ResponseEntity<BindingResult> uploadImagen(@RequestParam("picture") MultipartFile picture, @RequestParam("video") MultipartFile video, @RequestPart("datos") String datos) {
+    	ResponseEntity<BindingResult> result = new ResponseEntity<>(HttpStatus.CREATED);
+    	ContentDto content;
+    	try {
+			content =  new ObjectMapper().readValue(datos, ContentDto.class);
+			/*Iterator<String> itr =  request.getFileNames();
+
+    	    MultipartFile picture = request.getFile(itr.next());
+    	    MultipartFile video = request.getFile(itr.next());
+    	    MultipartFile data = request.getFile(itr.next());*/ 
+    	        	    
+			/*String pictureName = recordFile(picture);
+			String videoName = recordFile(video);
+		} catch (JsonParseException e1) {
+			e1.printStackTrace();
+		} catch (JsonMappingException e1) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();    		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    	return result;
+    }*/
+    
 	@RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<BindingResult> insertContent(@RequestBody @Valid ContentDto contentDto, BindingResult result) {
+    public ResponseEntity<BindingResult> insertContent(@RequestParam("picture") MultipartFile picture, @RequestParam("video") MultipartFile video, @RequestPart("datos") String datos, BindingResult result) {
     	ResponseEntity<BindingResult> response = new ResponseEntity<>(HttpStatus.CREATED);
+    	    	
     	if (result.hasErrors()) {
     		return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
     	}
-    	contentDto.setTenantId(sessionService.getCurrentTenant());
+    	ContentDto contentDto;
 		try {
-			String pictureName = recordFile(contentDto.getPicture());
+			contentDto =  new ObjectMapper().readValue(datos, ContentDto.class);
+			
+			contentDto.setTenantId(sessionService.getCurrentTenant());
+			String pictureName = recordFile(picture);
 			contentDto.setCoverPictureUrl(pictureName);
-			String videoName = recordFile(contentDto.getVideo());
+			String videoName = recordFile(video);
 			contentDto.setStorageUrl(videoName);
 			if ("1".equals(contentDto.getType())) {
 				contentDto.setType("Pelicula");
@@ -97,7 +136,17 @@ public class ContentGeneratorController {
 			}
 			contentService.saveContent(contentDto, sessionService.getCurrentTenant());
 			return response;
+		} catch (JsonParseException e1) {
+			e1.printStackTrace();
+			return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+		} catch (JsonMappingException e1) {
+			e1.printStackTrace();
+			return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+		} catch (IOException e1) {
+			e1.printStackTrace();    		
+			return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 		}
     }

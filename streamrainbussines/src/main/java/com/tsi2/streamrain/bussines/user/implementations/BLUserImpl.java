@@ -37,14 +37,26 @@ public class BLUserImpl implements IBLUser {
 		return daoService.findByTwitterId(twitterId, tenantID);
 	}
 
-	public void updateUser(final Users user, final String tenantID) {
-		daoService.saveOrUpdate(user, tenantID);
-	}
+	public void updateUser(final Users user, Users userOld, final String tenantID) {
+		userOld.setCity(user.getCity());
+		userOld.setCountry(user.getCountry());
+		userOld.setEmail(user.getEmail());
+		userOld.setIsBanned(user.getIsBanned());
+		if(user.getPassword() != null) {
+			userOld.setPassword(user.getPassword());
+		}
+		userOld.setNickname(user.getNickname());
+		userOld.setFacebookUserId(user.getFacebookUserId());
+		userOld.setId(user.getId());
+		userOld.setIntegratorId(user.getIntegratorId());
+		userOld.setTwitterUserId(user.getTwitterUserId());
+		userOld.setBlocked(user.isBlocked());
+		daoService.saveOrUpdate(userOld, tenantID);
+	} 
 
-	public void deleteUser(final String userNickname, final String tenantID) {
-		Users user = getUserByNickname(userNickname, tenantID);
-		// set baja logica true
-		daoService.saveOrUpdate(user, tenantID);
+	public void deleteUser(Users userOld, final String tenantID) {
+		userOld.setBlocked(true);
+		daoService.saveOrUpdate(userOld, tenantID);
 	}
 
 }

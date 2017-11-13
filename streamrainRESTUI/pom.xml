@@ -136,13 +136,13 @@
 			<artifactId>jackson-annotations</artifactId>
 			<version>2.9.2</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
 			<version>2.9.2</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
@@ -198,7 +198,14 @@
 			<artifactId>rewrite-servlet</artifactId>
 			<version>3.4.1.Final</version>
 		</dependency>
-		
+
+		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.2</version>
+		</dependency>
+
 		<!-- Upload File -->
 		<dependency>
 			<groupId>commons-fileupload</groupId>
@@ -209,7 +216,7 @@
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>2.0</version>
-		</dependency>		
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>streamrainRESTUI</finalName>
