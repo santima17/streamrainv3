@@ -1,6 +1,7 @@
 package com.tsi2.streamrain.bussines.content.implementations;
 
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -25,17 +26,21 @@ public class BLContentImpl implements IBLContent {
 	
 	IDAOUserService daoUserService = (StreamRainMySQLUserDAO) StremRainDataContextLoader.contextLoader().getBean("daoUserService");
 		
-	public boolean saveContent(final Contents contents, final List<Integer> idCategories, final List<Integer> idSimilarContent, final String tenantID) {
+	public boolean saveContent(Contents contents, final List<Integer> idCategories, final List<Integer> idSimilarContent, final String tenantID) {
 		Set<Categories> categories = new HashSet<Categories>();
-		for(Integer idCategory : idCategories) {
-			Categories cat = daoService.get(Categories.class, idCategory, tenantID);
-			categories.add(cat);
+		if (idCategories != null) {
+			for(Integer idCategory : idCategories) {
+				Categories cat = daoService.get(Categories.class, idCategory, tenantID);
+				categories.add(cat);
+			}
 		}
 		contents.setCategorieses(categories);
 		Set<Contents> similarContents = new HashSet<Contents>();
-		for(Integer idSimilarCont : idSimilarContent) {
-			Contents content = daoService.get(Contents.class, idSimilarCont, tenantID);
-			similarContents.add(content);
+		if (idSimilarContent != null) {
+			for(Integer idSimilarCont : idSimilarContent) {
+				Contents content = daoService.get(Contents.class, idSimilarCont, tenantID);
+				similarContents.add(content);
+			}
 		}
 		contents.setContentsesForIdContent1(similarContents);
 		
