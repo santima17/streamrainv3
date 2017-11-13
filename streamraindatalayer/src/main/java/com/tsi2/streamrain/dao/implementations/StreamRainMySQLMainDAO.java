@@ -46,4 +46,9 @@ public class StreamRainMySQLMainDAO implements IDAOService {
 		return crit.list();
 	}
 
+	public <T> List<T> getAllByExample(Class<T> type, T objectQuery, String tenantID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

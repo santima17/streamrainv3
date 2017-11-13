@@ -19,9 +19,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import com.tsi2.streamrain.security.filters.JwtFilter;
 import com.tsi2.streamrain.security.filters.LoginFilter;
 
-//@Configuration
-//@EnableWebSecurity
-//@Order(1)
+@Configuration
+@EnableWebSecurity
+@Order(1)
 public class UserSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
@@ -39,7 +39,7 @@ public class UserSecurityConfig extends WebSecurityConfigurerAdapter {
 		.cors().and()
 		.csrf().disable().authorizeRequests()
 		.antMatchers("/index.jsp").permitAll()
-		.antMatchers("/user/registerUser").permitAll()
+		.antMatchers(HttpMethod.POST, "/user").permitAll()
 		.antMatchers(HttpMethod.POST, "/user/login").permitAll()
 		.antMatchers(HttpMethod.OPTIONS, "/user/login").permitAll()
 		.antMatchers("/user/*").authenticated().and()

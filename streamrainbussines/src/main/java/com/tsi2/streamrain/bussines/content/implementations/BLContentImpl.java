@@ -8,7 +8,10 @@ import java.util.List;
 import java.util.Set;
 
 import com.tsi2.streamrain.bussines.content.interfaces.IBLContent;
+import com.tsi2.streamrain.bussines.user.implementations.BLUserImpl;
+import com.tsi2.streamrain.bussines.user.interfaces.IBLUser;
 import com.tsi2.streamrain.context.StremRainDataContextLoader;
+import com.tsi2.streamrain.context.StremRainUserBussinesContextLoader;
 import com.tsi2.streamrain.dao.implementations.StreamRainMySQLDAO;
 import com.tsi2.streamrain.dao.implementations.StreamRainMySQLUserDAO;
 import com.tsi2.streamrain.dao.interfaces.IDAOService;
@@ -17,8 +20,13 @@ import com.tsi2.streamrain.model.generator.Categories;
 import com.tsi2.streamrain.model.generator.Contents;
 import com.tsi2.streamrain.model.generator.UserComments;
 import com.tsi2.streamrain.model.generator.UserFavs;
+import com.tsi2.streamrain.model.generator.UserFavsId;
 import com.tsi2.streamrain.model.generator.UserRatings;
+import com.tsi2.streamrain.model.generator.UserRatingsId;
 import com.tsi2.streamrain.model.generator.UserViews;
+import com.tsi2.streamrain.model.generator.Users;
+
+import javassist.tools.web.Viewer;
 
 public class BLContentImpl implements IBLContent {
 
@@ -71,17 +79,49 @@ public class BLContentImpl implements IBLContent {
 		userRatings.setRate(rank);
 		userRatings.setUseForRecommendations(true);
 		userRatings.setContents(daoService.get(Contents.class, contentID, tenantID));
-		userRatings.setUsers(daoUserService.getUserByNickname(userNickname, tenantID));
+		Users user = daoUserService.getUserByNickname(userNickname, tenantID);
+		userRatings.setUsers(user);
+		UserRatingsId uID = new UserRatingsId();
+		uID.setContentId(contentID);
+		uID.setUserId(user.getId());
+		uID.setDate(new Date());
+		userRatings.setId(uID);
 		daoService.save(userRatings, tenantID);
 		return true;
+	}
+	
+	public Double getContentRaiting(Integer contentID, String tenantID) {
+		Contents content = daoService.get(Contents.class, contentID, tenantID);
+		return content.getRanking();
 	}
 
 	public boolean addContentToFav(Integer contentID, String userNickname, boolean isFav, String tenantID) {
 		UserFavs userFavs = new UserFavs();
 		userFavs.setContents(daoService.get(Contents.class, contentID, tenantID));
 		userFavs.setFav(isFav);
-		userFavs.setUsers(daoUserService.getUserByNickname(userNickname, tenantID));
-		//userFavs.setDate(new Date());
+		Users user = daoUserService.getUserByNickname(userNickname, tenantID);
+		userFavs.setUsers(user);
+		UserFavsId uID = new UserFavsId();
+		uID.setContentId(contentID);
+		uID.setDate(new Date());
+		uID.setUserId(user.getId());
+		userFavs.setId(uID);
+		daoService.save(userFavs, tenantID);
+		return true;
+	}
+	
+
+	public boolean removeContentOfFav(Integer contentID, String userNickname, boolean isFav, String tenantID) {
+		UserFavs userFavs = new UserFavs();
+		userFavs.setContents(daoService.get(Contents.class, contentID, tenantID));
+		userFavs.setFav(isFav);
+		Users user = daoUserService.getUserByNickname(userNickname, tenantID);
+		userFavs.setUsers(user);
+		UserFavsId uID = new UserFavsId();
+		uID.setContentId(contentID);
+		uID.setDate(new Date());
+		uID.setUserId(user.getId());
+		userFavs.setId(uID);
 		daoService.save(userFavs, tenantID);
 		return true;
 	}
@@ -98,17 +138,28 @@ public class BLContentImpl implements IBLContent {
 		return true;
 		
 	}
+	
+	public boolean getCommentsOfContent(Integer contentID, String userNickname, String tenantID) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 	public boolean addViewToContent(Integer contentID, String userNickname, Date dateStart, Date dateFinish, int second,
 			String tenantID) {
 		UserViews userViews = new UserViews();
-		userViews.getDateStart();
+		userViews.setDateStart(dateStart);
 		userViews.setDateFinish(dateFinish);
 		userViews.setSecond(second);
 		userViews.setUsers(daoUserService.getUserByNickname(userNickname, tenantID));
 		userViews.setContents(daoService.get(Contents.class, contentID, tenantID));
 		daoService.save(userViews, tenantID);
 		return true;
+	}
+
+	public UserViews getLastViewToContent(Integer contentID, String userNickname, String tenantID) {
+		// TODO Auto-generated method stub
+		Set<UserViews> views = daoService.get(Contents.class, contentID, tenantID).getUserViewses();
+		return views.iterator().next();
 	}
 	
 

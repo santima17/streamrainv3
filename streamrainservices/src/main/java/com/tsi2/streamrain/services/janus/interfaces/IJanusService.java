@@ -7,14 +7,18 @@ import com.tsi2.streamrain.datatypes.janus.JanusServerDto;
 
 public interface IJanusService {
 
-	JanusCreateTokenDto createJanusToken(JanusCreateTokenDto janusCreateTokenDto, final String tenantID);
+	JanusCreateTokenDto createJanusToken(final JanusCreateTokenDto janusCreateTokenDto, final String tenantID);
 	
-	boolean updateJanusToken(JanusCreateTokenDto janusCreateTokenDto, final String tenantID);
+	boolean updateJanusToken(final JanusCreateTokenDto janusCreateTokenDto, final String tenantID);
 
-	boolean createJanusServer(JanusServerDto janusServerDto, final String tenantID);
+	boolean createJanusServer(final JanusServerDto janusServerDto, final String tenantID);
 
 	List<String> getAllJanusAdminUrl(final String tenantID);
 
 	List<String> getAllJanusUrl(final String currentTenant);
+
+	String getJanusAdminUrlByToken(final String backendToken, final String currentTenant);
+
+	String getJanusUrlByToken(final String janusToken, final String currentTenant);
 
 }

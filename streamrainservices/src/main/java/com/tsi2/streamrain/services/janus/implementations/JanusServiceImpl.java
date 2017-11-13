@@ -48,4 +48,16 @@ public class JanusServiceImpl implements IJanusService{
 		return janusBussines.getAllJanusUrl(tenantID);
 	}
 
+	@Override
+	public String getJanusAdminUrlByToken(final String backendToken, final String currentTenant) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getJanusUrlByToken(String janusToken, String currentTenant) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

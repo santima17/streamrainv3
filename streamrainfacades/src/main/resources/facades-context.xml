@@ -14,6 +14,8 @@
 	
 	<bean id="contentConverter" class="com.tsi2.streamrain.converters.content.ContentConverter" />
 	
+	<bean id="userContentViewConverter" class="com.tsi2.streamrain.converters.content.UserContentViewConverter" />
+	
 	<bean id="contentCastConverter" class="com.tsi2.streamrain.converters.content.ContentCastConverter" />
 	
 	<bean id="subscribePaymentConverter" class="com.tsi2.streamrain.converters.payment.SubscribePaymentConverter" />

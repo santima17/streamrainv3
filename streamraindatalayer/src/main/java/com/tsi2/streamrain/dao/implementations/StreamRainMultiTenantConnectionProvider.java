@@ -12,7 +12,6 @@ import com.tsi2.streamrain.model.main.Tenants;
 
 public class StreamRainMultiTenantConnectionProvider extends AbstractMultiTenantConnectionProvider {
 
-	private static final String TENANT_ID_PREFIX = "generator";
 	private HashMap<String, StreamRainConnectionProvider> connectionsMap = new HashMap<String, StreamRainConnectionProvider>();
 
 	public StreamRainMultiTenantConnectionProvider() {
@@ -20,7 +19,7 @@ public class StreamRainMultiTenantConnectionProvider extends AbstractMultiTenant
 		Session dbSession = DBHibernateUtil.getSessionFactoryMain();
 		Criteria search = dbSession.createCriteria(Tenants.class);
 		for (Tenants tenant : (List<Tenants>)search.list()) {
-			connectionsMap.put(String.valueOf(TENANT_ID_PREFIX+tenant.getId()), new StreamRainConnectionProvider(tenant));
+			connectionsMap.put(String.valueOf(tenant.getName()), new StreamRainConnectionProvider(tenant));
 		}
 
 	}

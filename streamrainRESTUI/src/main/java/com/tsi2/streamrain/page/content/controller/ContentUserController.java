@@ -39,7 +39,7 @@ public class ContentUserController {
 
 	
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<ContentDto> getAllUsers() {
+    public List<ContentDto> getAllContent() {
         return contentService.getAllContents(sessionService.getCurrentTenant());
     }
 	
@@ -50,7 +50,7 @@ public class ContentUserController {
         if (content == null) {
             response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
-            response = new ResponseEntity<>(content, HttpStatus.OK);
+            response = new ResponseEntity<ContentDto>(content, HttpStatus.OK);
         }
         return response;
     }
@@ -67,11 +67,29 @@ public class ContentUserController {
 		return response;
     }
     
+    @RequestMapping(value = "/rank/{contentID}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Double> rank(@PathVariable Integer contentID) {
+    	Double rank = contentService.getContentRaiting(contentID, sessionService.getCurrentTenant());
+        return new ResponseEntity<Double>(rank, HttpStatus.OK);
+    }
+    
     @RequestMapping(value = "/addContentToFav", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserContentFavDto> voteContent(@RequestBody UserContentFavDto userContentFavDto) {
-    	boolean voteOk = contentService.addContentToFav(userContentFavDto, sessionService.getCurrentTenant());
+    	boolean addOk = contentService.addContentToFav(userContentFavDto, sessionService.getCurrentTenant());
         ResponseEntity<UserContentFavDto> response;
-        if (voteOk) {
+        if (addOk) {
+            response = new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+		return response;
+    }
+    
+    @RequestMapping(value = "/removeContentToFav", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserContentFavDto> removeVoteContent(@RequestBody UserContentFavDto userContentFavDto) {
+    	boolean removeOk = contentService.removeContentOfFav(userContentFavDto, sessionService.getCurrentTenant());
+        ResponseEntity<UserContentFavDto> response;
+        if (removeOk) {
             response = new ResponseEntity<>(HttpStatus.OK);
         } else {
             response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -103,6 +121,10 @@ public class ContentUserController {
 		return response;
     }
     
-    
+    @RequestMapping(value = "/getLastViewOfContent", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserContentViewDto> getLastViewOfContent(@RequestBody UserContentViewDto userContentViewDto) {
+    	UserContentViewDto lastViewDto = contentService.getLastViewToContent(userContentViewDto, sessionService.getCurrentTenant());
+        return new ResponseEntity<UserContentViewDto>(lastViewDto, HttpStatus.OK);
+    }
     
 }

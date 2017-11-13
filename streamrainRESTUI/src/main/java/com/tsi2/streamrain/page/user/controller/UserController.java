@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.http.HttpHeaders;
@@ -65,13 +66,17 @@ public class UserController {
     }
     
     @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> insertUser(@RequestBody @Valid UserDto user, BindingResult result) {
+    public ResponseEntity<String> insertUser(@RequestBody @Valid UserDto user, BindingResult result, HttpServletRequest request) {
+    	
+    	String url = request.getRequestURL().toString();
+		String tentantID = url.substring(7,url.indexOf("."));
+		
     	ResponseEntity<String> response = new ResponseEntity<>(HttpStatus.CREATED);
     	if (result.hasErrors()) {
     		return new ResponseEntity<>(BAD_REQUEST_MSG, HttpStatus.BAD_REQUEST);
     	}
     	user.setBlocked(false);
-        userService.saveUser(user, sessionService.getCurrentTenant());
+        userService.saveUser(user, tentantID);
         return response;
     }
     

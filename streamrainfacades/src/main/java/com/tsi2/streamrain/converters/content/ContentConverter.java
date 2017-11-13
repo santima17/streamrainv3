@@ -67,6 +67,7 @@ public class ContentConverter implements IConverter<ContentDto, Contents>{
 	    }else if (source.getLiveOnlyContents() != null){
 	    	contentDto.setDateStart(source.getLiveOnlyContents().getDateStart());
 	    	contentDto.setEstimatedDuraction(source.getLiveOnlyContents().getEstimatedDuraction());
+	    	contentDto.setAlwaysAvailable(false); 	
 	    }
 	    
 	    Iterator<FeaturedContents> iter = source.getFeaturedContentses().iterator();
