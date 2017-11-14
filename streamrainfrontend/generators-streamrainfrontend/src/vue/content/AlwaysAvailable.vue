@@ -116,20 +116,26 @@
 	</div>
 
 	<div class="form-group" v-if="featured">
-		<label>Desde</label>
-		<div class='input-group date' id='featuredDateStart'>
-			<input type='text' class="form-control" v-model="featuredDateStart" />
-			<span class="input-group-addon">
-				<i class="fa fa-calendar"></i>
-			</span>
+
+		<label for="start-picker" class="col-sm-3 control-label">Desde: </label>
+		<div class='input-group date'>
+			<datetime v-model="featuredDateStart" name="start-picker"
+				type="datetime"
+				input-format="DD-MM-YYYY HH:mm"
+				placeholder=""
+				locale="es"
+				required ></datetime>
 		</div>
-		<label>Hasta</label>
-		<div class='input-group date' id='featuredDateFinish'>
-			<input type='text' class="form-control" :value="featuredDateFinish" />
-			<span class="input-group-addon">
-				<i class="fa fa-calendar"></i>
-			</span>
-		</div>
+
+		<label for="end-picker" class="col-sm-3 control-label">	Hasta: </label>
+		<div class='input-group date'>
+			<datetime v-model="featuredDateFinish" name="end-picker" 
+			type="datetime"
+			input-format="DD-MM-YYYY HH:mm"
+			placeholder=""
+			locale="es"
+			required ></datetime>
+    	</div>
 	</div>
 	
 		name {{name}} <br><br>
@@ -156,9 +162,13 @@
 </template>
 
 <script>
-import _ from 'lodash'
-import { MultiSelect } from 'vue-search-select'
+import _ from 'lodash';
+import { MultiSelect } from 'vue-search-select';
+
 export default {
+	components: {
+     MultiSelect
+  },
 	props: [
     'config',
     'eventBus'
@@ -171,19 +181,15 @@ export default {
 			type: '',
 			duration: 0,
 			idCategories: [],
-      directors: [],
-      actors: [],
-      idSimilarContents: [],
-      isPayPerView: false,
-      featured: false,
-      featuredDateStart: new Date(),  
-			featuredDateFinish: new Date(),
-			//formatoFecha: {
-      //    format: 'YYYY-MM-DDTHH:MM:SS',
-      //    useCurrent: false,
-      //  },
+			directors: [],
+			actors: [],
+			idSimilarContents: [],
+			isPayPerView: false,
+			featured: false,
+			featuredDateStart: '',  
+			featuredDateFinish: '',
 			//picture, video
-			formData: null,
+			formData: new FormData(),
 
 			// datos auxiliares
 			categorias: [],
@@ -201,10 +207,10 @@ export default {
 			this.getContents();
     },
 	mounted () {
-		this.efectosForm();
+		//this.efectosForm();
 	},
 	updated () {
-		this.efectosForm();
+		//this.efectosForm();
 	},
 	methods: {
 		getContents () {
@@ -275,27 +281,25 @@ export default {
       selectOption () {
         this.idSimilarContents = _.unionWith(this.idSimilarContents, [this.options[0]], _.isEqual)
       },
-		subirArchivo(fieldName, fileList) {
-				if (this.formData === null ) {
-					this.formData = new FormData();
-				}		    
-        this.formData.append(fieldName, fileList[0], fileList[0].name);
+		subirArchivo(fieldName, fileList) {	    
+        	this.formData.append(fieldName, fileList[0], fileList[0].name);
       	},
 		crearContenido() {
 			const datos = JSON.parse('{'
-					+'"name":"Batman2",'
-					+'"description":"vive en una cueva mas grande",'
-					+'"type":"1",'
-					+'"duration":170,'
-					+'"idCategories":[1,2],'
-					+'"directors": [{"firstName": "JAmes", "lastName": "Cameron", "isActor":false, "isDirector":true}],'
-					+'"actors": [{"firstName": "JAck", "lastName": "Nic", "isActor":true, "isDirector":false},{"firstName": "Kim", "lastName": "Bas", "isActor":true, "isDirector":false}],'
-					+'"idSimilarContents": [1,2],'
-					+'"isPayPerView":false,'
-					+'"featured": true,'
-					+'"featuredDateStart":"2017-11-05T10:20:10",'
-					+'"featuredDateFinish":"2017-11-06T10:20:10"'
+					+`"name":"${this.name}",`
+					+`"description":"${this.description}",`
+					+`"type":"${this.type}",`
+					+`"duration":${this.duration},`
+					+`"idCategories":${JSON.stringify(this.idCategories)},`
+					+`"directors":${JSON.stringify(this.directors)},`
+					+`"actors":${JSON.stringify(this.actors)},`
+					+`"idSimilarContents":${JSON.stringify(this.idSimilarContents)},`
+					+`"isPayPerView":${this.isPayPerView},`
+					+`"featured":${this.featured},`
+					+`"featuredDateStart":"${this.featuredDateStart}",`
+					+`"featuredDateFinish":"${this.featuredDateFinish}"`
 					+'}');
+					console.log(datos);
 			this.formData.append('datos', new Blob([JSON.stringify(datos)],{type: "application/json"}));
 			const url = `${this.config.backendPOSTA}/generator/createContent`;
 			this.$http.post(url, this.formData,
@@ -311,10 +315,6 @@ export default {
 							console.log(item[0]+ ', ' +item[1]); 
 					}	
 			});
-		},
-		efectosForm: function () {
-			$('#featuredDateStart').datetimepicker();
-			$('#featuredDateFinish').datetimepicker();
 		},
 		guardarDirector: function (nombre,apellido) {
 			if (nombre.trim() !== '' && apellido.trim() !== '') {
@@ -344,9 +344,6 @@ export default {
 			var index = this.actors.indexOf(a)
 			this.actors.splice(index, 1)
 		}
-	},
-	components: {
-     MultiSelect
-  }
+	}
 }
 </script>

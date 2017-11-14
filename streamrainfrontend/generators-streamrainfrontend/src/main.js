@@ -21,7 +21,9 @@ import Login from './vue/session/Login.vue';
 import Logout from './vue/session/Logout.vue';
 // Statistics
 import Statistics from './vue/statistics/Statistics.vue';
+import Datetime from 'vue-datetime';
 
+Vue.use(Datetime);
 Vue.use(VueRouter);
 Vue.use(VueResource);
 
