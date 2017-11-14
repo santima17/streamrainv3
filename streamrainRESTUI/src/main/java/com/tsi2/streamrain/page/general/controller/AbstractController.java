@@ -19,7 +19,7 @@ import com.tsi2.streamrain.datatypes.janus.JanusBackendTokenDto;
 import com.tsi2.streamrain.datatypes.janus.JanusCreateSessionDto;
 import com.tsi2.streamrain.datatypes.janus.JanusCreateSessionResponseDto;
 
-public class AbstractController {
+public class AbstractController { 
 
 	private static final String CONTENT_TYPE = "Content-Type";
 	private static final String APPLICATION_TYPE_JSON = "application/json";
@@ -105,7 +105,7 @@ public class AbstractController {
 			}
 			connection.disconnect();
 			JanusCreateSessionResponseDto response = gson.fromJson(responseBody, JanusCreateSessionResponseDto.class);
-			return response.getId();
+			return response.getData().getId();
 		} catch (IOException e) {
 			System.out.print("Open connection failed");
 			return "ERROR";

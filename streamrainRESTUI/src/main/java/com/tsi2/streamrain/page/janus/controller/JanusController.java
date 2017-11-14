@@ -34,13 +34,11 @@ import com.tsi2.streamrain.services.session.interfaces.ISessionService;
 import com.tsi2.streamrain.utils.Utils;
 
 @RestController
-@RequestMapping("/user/janus")
+@RequestMapping("/generator/janus")
 public class JanusController extends AbstractController {
 
 	@Value("${janus.chatRoom.url}")
 	private String JANUS_CHAT_ROOM_URL;
-
-	private static final String SECRET = "secret";
 
 	private static final String ADD_TOKEN = "add_token";
 
@@ -62,9 +60,16 @@ public class JanusController extends AbstractController {
 	IContentService contentService;
 	
 
+	@RequestMapping(value = "/getUpdates", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> getUpdates() {
+		return new ResponseEntity<>("", HttpStatus.OK);
+	}
 	@RequestMapping(value = "/createToken", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<JanusCreateTokenDto> createToken() {
+	public ResponseEntity<JanusCreateTokenDto> createToken(HttpServletRequest request) {
 
+		String url = request.getRequestURL().toString();
+		String tentantID = url.substring(7,url.indexOf("."));
+		
 		JanusCreateTokenDto janusCreateTokenDto = new JanusCreateTokenDto();
 		Date now = new Date();
 		UUID token = UUID.randomUUID();
@@ -73,7 +78,7 @@ public class JanusController extends AbstractController {
 		janusCreateTokenDto.setDateCreation(now);
 		janusCreateTokenDto.setDateExpiration(Utils.sumarRestarDiasFecha(now, 1));
 		JanusCreateTokenDto tokenGenerated = janusService.createJanusToken(janusCreateTokenDto,
-				sessionService.getCurrentTenant());
+				tentantID);
 
 		ResponseEntity<JanusCreateTokenDto> response;
 		if (tokenGenerated != null) {
@@ -91,17 +96,20 @@ public class JanusController extends AbstractController {
 		String siteURL = request.getRequestURL().toString();
 		siteURL += JANUS_CHAT_ROOM_URL; 
 		
+		String urlTenant = request.getRequestURL().toString();
+		String tentantID = urlTenant.substring(7,urlTenant.indexOf("."));
+		
 		UUID token = UUID.randomUUID();
 		janusServerDto.setStreamrainRestToken(token.toString());
-		boolean ok = janusService.createJanusServer(janusServerDto, sessionService.getCurrentTenant());
+		boolean ok = janusService.createJanusServer(janusServerDto, tentantID);
 
 		// JANUS PROCESS
-		ok = sendBackendToken(janusServerDto.getStreamrainRestToken(), janusServerDto.getAdminUrl());
+		ok = sendBackendToken(janusServerDto.getStreamrainRestToken(), janusServerDto.getAdminUrl(), janusServerDto.getAdminSecret());
 
-		List<String> tokenAvailablesList = janusService.getAllAvailablesUserTokens(sessionService.getCurrentTenant());
+		List<String> tokenAvailablesList = janusService.getAllAvailablesUserTokens(tentantID);
 
 		for (String janusUserToken : tokenAvailablesList) {
-			ok = sendUserTokens(janusUserToken, janusServerDto.getAdminUrl());
+			ok = sendUserTokens(janusUserToken, janusServerDto.getAdminUrl(), janusServerDto.getAdminSecret());
 		}
 
 		ok = createSession(janusServerDto.getStreamrainRestToken(), janusServerDto.getJanusUrl());
@@ -112,10 +120,11 @@ public class JanusController extends AbstractController {
 			ok = attachedSessionTextroom(janusServerDto.getStreamrainRestToken(), janusServerDto.getJanusUrl());
 		}
 		
-		List<JanusLiveOnlyInfoDto> liveOnlyContents = contentService.getAllLiveOnlyContents(sessionService.getCurrentTenant());
+		List<JanusLiveOnlyInfoDto> liveOnlyContents = contentService.getAllLiveOnlyContents(tentantID);
 		for (JanusLiveOnlyInfoDto liveOnlyInfo : liveOnlyContents) {
-			ok = liveOnly(janusServerDto.getStreamrainRestToken(), janusServerDto.getJanusUrl(), liveOnlyInfo);
-			ok = chatRoom(janusServerDto.getStreamrainRestToken(), janusServerDto.getJanusUrl(), fillChatRoomInformation(liveOnlyInfo));
+			ok = liveOnly(janusServerDto.getStreamrainRestToken(), janusServerDto.getJanusUrl(), liveOnlyInfo, janusServerDto.getAdminKey());
+			
+			ok = chatRoom(janusServerDto.getStreamrainRestToken(), janusServerDto.getJanusUrl(), fillChatRoomInformation(liveOnlyInfo), janusServerDto.getAdminKey());
 		}
 		//END JANUS PROCESS
 		
@@ -139,7 +148,7 @@ public class JanusController extends AbstractController {
 	}
 
 	// CARGA 1 SEGUN DOCUMENTO
-	public boolean sendBackendToken(final String backendToken, final String url) {
+	public boolean sendBackendToken(final String backendToken, final String url, final String secret) {
 
 		// String urlToSend = janusService.getJanusAdminUrlByToken(backendToken,
 		// sessionService.getCurrentTenant());
@@ -147,7 +156,7 @@ public class JanusController extends AbstractController {
 
 		jsonDto.setJanus(ADD_TOKEN);
 		jsonDto.setTransaction(String.valueOf(Math.random()));
-		jsonDto.setAdmin_secret(SECRET);
+		jsonDto.setAdmin_secret(secret);
 		jsonDto.setToken(backendToken);
 
 		return sentJSONByPOST(url, jsonDto);
@@ -155,12 +164,12 @@ public class JanusController extends AbstractController {
 	}
 
 	// CARGA 2 SEGUN DOCUMENTO
-	public boolean sendUserTokens(String janusToken, final String url) {
+	public boolean sendUserTokens(String janusToken, final String url, final String secret) {
 
 		JanusBackendTokenDto jsonDto = new JanusBackendTokenDto();
 		jsonDto.setJanus(ADD_TOKEN);
 		jsonDto.setTransaction(String.valueOf(Math.random()));
-		jsonDto.setAdmin_secret(SECRET);
+		jsonDto.setAdmin_secret(secret);
 		jsonDto.setToken(janusToken);
 
 		return sentJSONByPOST(url, jsonDto);
@@ -222,12 +231,15 @@ public class JanusController extends AbstractController {
 	}
 
 	// CARGA 6 SEGUN DOCUMENTO
-	public boolean liveOnly(final String backendToken, final String url, final JanusLiveOnlyInfoDto liveOnlyInfo) {
+	public boolean liveOnly(final String backendToken, final String url, final JanusLiveOnlyInfoDto liveOnlyInfo, final String admin_key) {
 
 		JanusLiveOnlyDto jsonDto = new JanusLiveOnlyDto();
-		jsonDto.setJanus(ATTACH);
+		jsonDto.setJanus("message");
 		jsonDto.setTransaction(String.valueOf(Math.random()));
 		jsonDto.setToken(backendToken);
+		liveOnlyInfo.setRequest(CREATE);
+		liveOnlyInfo.setType("rtp");
+		liveOnlyInfo.setAdminkey(admin_key);
 		jsonDto.setBody(liveOnlyInfo);
 
 		sentJSONByPOST(url + "/" + sessionService.getMySession() + "/" + sessionService.getMySessionHandler(),
@@ -236,15 +248,17 @@ public class JanusController extends AbstractController {
 	}
 
 	// CARGA 6 SEGUN DOCUMENTO
-	public boolean chatRoom(final String backendToken, final String url, final JanusChatRoomInfoDto chatRoomInfo) {
+	public boolean chatRoom(final String backendToken, final String url, final JanusChatRoomInfoDto chatRoomInfo, final String admin_key) {
 
 		JanusChatRoomDto jsonDto = new JanusChatRoomDto();
-		jsonDto.setJanus(ATTACH);
+		jsonDto.setJanus("message");
 		jsonDto.setTransaction(String.valueOf(Math.random()));
 		jsonDto.setToken(backendToken);
+		chatRoomInfo.setRequest(CREATE);
+		chatRoomInfo.setAdmin_key(admin_key);
 		jsonDto.setBody(chatRoomInfo);
 
-		sentJSONByPOST(url + "/" + sessionService.getMySession() + "/" + sessionService.getMySessionHandler(),
+		sentJSONByPOST(url + "/" + sessionService.getMySession() + "/" + sessionService.getMyTextroomHandle(),
 				jsonDto);
 		return true;
 	}

@@ -52,6 +52,7 @@ public class JanusChatRoomInfoDto{
 	public void setAdmin_key(String admin_key) {
 		this.admin_key = admin_key;
 	}
+
     
     
 
