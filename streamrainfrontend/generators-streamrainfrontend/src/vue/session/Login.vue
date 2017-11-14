@@ -71,8 +71,8 @@
             this.$router.push("/");
           });
           //sacar esto inicio
-          i.eventBus.$emit('setToken','adsfasdfasddsfadf');
-          this.$router.push("/");
+          // i.eventBus.$emit('setToken','adsfasdfasddsfadf');
+          // this.$router.push("/");
           //sacar esto fin
           this.errores = 'Error durante la verificación. Las credenciales aportadas no son correctas.'
         } 

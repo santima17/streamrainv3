@@ -7,42 +7,42 @@
 	<div id="basic-form" >
 		<div class="form-group">
 			<label>Nombre</label>
-			<input type="text" class="form-control" required>
+			<input type="text" class="form-control" v-model="name" required>
 		</div>
 	</div>
 
 	<div class="form-group">
 		<label>Descripcion</label>
-		<textarea class="form-control" rows="5" cols="30" required></textarea>
+		<textarea class="form-control" rows="5" cols="30" v-model="description" required></textarea>
 	</div>
 
 	<div class="form-group">
 		<label>Tipo</label>
 		<br />
 		<label class="fancy-radio">
-			<input type="radio" name="tipo" value="1">
+			<input type="radio" name="tipo" value="1" v-model="type">
 			<span><i></i>Pelicula</span>
 		</label>
 
 		<label class="fancy-radio">
-			<input type="radio" name="tipo" value="2">
+			<input type="radio" name="tipo" value="2" v-model="type">
 			<span><i></i>Serie</span>
 		</label>
 
 		<label class="fancy-radio">
-			<input type="radio" name="tipo" value="3">
+			<input type="radio" name="tipo" value="3" v-model="type">
 			<span><i></i>Evento Deportivo</span>
 		</label>
 
 		<label class="fancy-radio">
-			<input type="radio" name="tipo" value="4">
+			<input type="radio" name="tipo" value="4" v-model="type">
 			<span><i></i>Evento Espectaculo</span>
 		</label>
 	</div>
 
 	<div class="form-group">
 		<label>Duracion (minutos)</label>
-		<input type="number" class="form-control" required>
+		<input type="number" class="form-control" v-model="duration" required>
 	</div>
 
 	<div class="form-group">
@@ -57,14 +57,8 @@
 
 	<div class="form-group">
 		<label>Categorias</label>
-		<div class="fancy-checkbox">
-			<label><input type="checkbox"><span>Cat 1</span></label>
-		</div>
-		<div class="fancy-checkbox">
-		<label><input type="checkbox" ><span>Cat 2</span></label>
-		</div>
-		<div class="fancy-checkbox">
-		<label><input type="checkbox"><span>Cat 3</span></label>
+		<div v-for = "c in categorias">
+			<label><input type="checkbox" :value="c.id" v-model="idCategories"><span> {{ c.name }}</span></label>
 		</div>
 	</div>
 
@@ -77,10 +71,10 @@
 	</div>
 
 	<div class="form-group">
-		<ul v-for="d in directores" class="list-group">
+		<ul v-for="d in directors" class="list-group">
 			<li class="list-group-item">
 				<a class="fa fa-times" aria-hidden="true"  @click="eliminarDirector(d)"></a>
-				{{d.nombre}}  {{d.apellido}}
+				{{d.firstName}}  {{d.lastName}}
 			</li>
 		</ul> 
 	</div>
@@ -94,49 +88,64 @@
 	</div>
 
 	<div class="form-group">
-		<ul v-for="a in actores" class="list-group">
+		<ul v-for="a in actors" class="list-group">
 			<li class="list-group-item">
 				<a class="fa fa-times" aria-hidden="true"  @click="eliminarActor(a)"></a>
-				{{a.nombre}}  {{a.apellido}}
+				{{a.firstName}}  {{a.lastName}}
 			</li>
 		</ul> 
 	</div>
 
 	<div class="form-group">
-		<label>Pay Per View (PPV)</label>
-		<br />
-		<label class="fancy-radio">
-			<input type="radio" name="ppv" value="1">
-			<span><i></i>Es PPV</span>
-		</label>
+		<label>Contenidos Similares</label>
+		<multi-select :options="options"
+			:selected-options="idSimilarContents"
+			placeholder="seleccionar contenidos similares"
+			@select="onSelect">
+		</multi-select>
+	</div>		
+
+	<div class="form-group">
+		<label>Pay Per View (PPV)  </label>
+		<input type="checkbox" v-model="isPayPerView">
 	</div>
 
 	<div class="form-group">
-		<label>Destacado</label>
-		<br />
-		<label class="fancy-radio">
-			<input type="radio" name="destacado" value="1" >
-			<span><i></i>Es destacado</span>
-		</label> 
+		<label>Destacado </label>
+		<input type="checkbox"  v-model="featured" >
 	</div>
 
-	<div class="form-group">
+	<div class="form-group" v-if="featured">
 		<label>Desde</label>
-		<div class='input-group date' id='datetimepicker2'>
-			<input type='text' class="form-control" />
+		<div class='input-group date' id='featuredDateStart'>
+			<input type='text' class="form-control" v-model="featuredDateStart" />
 			<span class="input-group-addon">
 				<i class="fa fa-calendar"></i>
 			</span>
 		</div>
 		<label>Hasta</label>
-		<div class='input-group date' id='datetimepicker3'>
-			<input type='text' class="form-control" />
+		<div class='input-group date' id='featuredDateFinish'>
+			<input type='text' class="form-control" :value="featuredDateFinish" />
 			<span class="input-group-addon">
 				<i class="fa fa-calendar"></i>
 			</span>
 		</div>
 	</div>
 	
+		name {{name}} <br><br>
+		description	{{description}} <br><br>
+		type	{{type}} <br><br>
+		duration	{{duration}} <br><br>
+		idCategories	{{idCategories}} <br><br>
+    directors  {{directors}} <br><br>
+    actors  {{actors}} <br><br>
+     idSimilarContents {{idSimilarContents}} <br><br>
+     isPayPerView {{isPayPerView}} <br><br>
+     featured {{featured}} <br><br>
+    featuredDateStart  {{featuredDateStart}} <br><br>
+		featuredDateFinish	{{featuredDateFinish}} <br><br>
+
+
 	<div style="text-align:right">
 		<button type="submit" class="btn btn-primary">Guardar</button>
 	</div>
@@ -147,6 +156,8 @@
 </template>
 
 <script>
+import _ from 'lodash'
+import { MultiSelect } from 'vue-search-select'
 export default {
 	props: [
     'config',
@@ -154,21 +165,41 @@ export default {
   ],
 	data () {
 		return {
+			// json datos
+			name:'',
+			description: '',
+			type: '',
+			duration: 0,
+			idCategories: [],
+      directors: [],
+      actors: [],
+      idSimilarContents: [],
+      isPayPerView: false,
+      featured: false,
+      featuredDateStart: new Date(),  
+			featuredDateFinish: new Date(),
+			//formatoFecha: {
+      //    format: 'YYYY-MM-DDTHH:MM:SS',
+      //    useCurrent: false,
+      //  },
+			//picture, video
+			formData: null,
+
+			// datos auxiliares
+			categorias: [],
 			nombreDirector: '',
 			apellidoDirector: '',
 			nombreActor: '',
 			apellidoActor: '',
-			categorias: [
-				{id: '1', nombre: 'cat 1'},
-				{id: '2', nombre: 'cat 2'},
-				{id: '3', nombre: 'cat 3'}
-			],
-			directores: [],
-			actores: [],
-			similar: [],
-			formData: null
+			options: [],
+			searchText: '', 
+			lastSelectItem: {}
 		}
 	},
+	created () {
+			this.getCategories();
+			this.getContents();
+    },
 	mounted () {
 		this.efectosForm();
 	},
@@ -176,12 +207,80 @@ export default {
 		this.efectosForm();
 	},
 	methods: {
+		getContents () {
+			const i = this;
+			i.$http.get(`${i.config.backendPOSTA}/generator/createContent`,
+			{
+				headers: {
+					'Authorization': i.token
+				}
+			}
+			)
+			.then((result) => {
+				// [{"id":1,"name":"Pelicula 1",...},{"id":2,"name":"Pelicula 2",..}]	
+			for (var i = 0; i < result.body.length; i++){
+						var content = result.body[i];
+						var idC;
+						var nameC;
+						for (var key in content){
+							var value = content[key];
+							if (key === 'id') {
+									idC = value;
+							}
+							if (key === 'name') {
+									nameC = value;
+							}
+						}
+						this.options.push({value: idC, text: nameC})	
+				}
+			})
+		},		
+		getCategories () {
+			const i = this;
+			i.$http.get(`${i.config.backendPOSTA}/generator/category`,
+			{
+				headers: {
+					'Authorization': i.token
+				}
+			}
+			)
+			.then((result) => {
+				// [{"id":1,"name":"Terror","description":"Me asusto...","coverPictureUrl":null},{"id":2,"name":"Futbol","description":"Copa Mundial de Rusia en vivo","coverPictureUrl":null}]	
+			for (var i = 0; i < result.body.length; i++){
+						var cat = result.body[i];
+						var idC;
+						var nameC;
+						for (var key in cat){
+							var value = cat[key];
+							if (key === 'id') {
+									idC = value;
+							}
+							if (key === 'name') {
+									nameC = value;
+							}
+						}
+						this.categorias.push({id: idC, name: nameC})
+				}
+			})
+		},
+		onSelect (idSimilarContents, lastSelectItem) {
+        	this.idSimilarContents = idSimilarContents
+        	this.lastSelectItem = lastSelectItem
+      	},
+      // deselect option
+      reset () {
+        this.idSimilarContents = [] // reset
+      },
+      // select option from parent component
+      selectOption () {
+        this.idSimilarContents = _.unionWith(this.idSimilarContents, [this.options[0]], _.isEqual)
+      },
 		subirArchivo(fieldName, fileList) {
 				if (this.formData === null ) {
 					this.formData = new FormData();
 				}		    
         this.formData.append(fieldName, fileList[0], fileList[0].name);
-      },
+      	},
 		crearContenido() {
 			const datos = JSON.parse('{'
 					+'"name":"Batman2",'
@@ -191,6 +290,7 @@ export default {
 					+'"idCategories":[1,2],'
 					+'"directors": [{"firstName": "JAmes", "lastName": "Cameron", "isActor":false, "isDirector":true}],'
 					+'"actors": [{"firstName": "JAck", "lastName": "Nic", "isActor":true, "isDirector":false},{"firstName": "Kim", "lastName": "Bas", "isActor":true, "isDirector":false}],'
+					+'"idSimilarContents": [1,2],'
 					+'"isPayPerView":false,'
 					+'"featured": true,'
 					+'"featuredDateStart":"2017-11-05T10:20:10",'
@@ -213,37 +313,40 @@ export default {
 			});
 		},
 		efectosForm: function () {
-			$('#datetimepicker2').datetimepicker();
-			$('#datetimepicker3').datetimepicker();
+			$('#featuredDateStart').datetimepicker();
+			$('#featuredDateFinish').datetimepicker();
 		},
 		guardarDirector: function (nombre,apellido) {
 			if (nombre.trim() !== '' && apellido.trim() !== '') {
-				var idd = this.directores.length + 1
-				this.directores.push(
-					{id: idd, nombre: nombre, apellido:apellido}
+				var idd = this.directors.length + 1
+				this.directors.push(
+					{firstName:nombre, lastName:apellido, isActor:false, isDirector:true}
 				)
 				this.nombreDirector = ''
 				this.apellidoDirector = ''
 			} 
 		},
 		eliminarDirector: function (d) {
-			var index = this.directores.indexOf(d)
-			this.directores.splice(index, 1)
+			var index = this.directors.indexOf(d)
+			this.directors.splice(index, 1)
 		},
 		guardarActor: function (nombre,apellido) {
 			if (nombre.trim() !== '' && apellido.trim() !== '') {
-				var ida = this.actores.length + 1
-				this.actores.push(
-					{id: ida, nombre: nombre, apellido:apellido}
+				var ida = this.actors.length + 1
+				this.actors.push(
+					{firstName:nombre, lastName:apellido, isActor:true, isDirector:false}
 				)
 				this.nombreActor = ''
 				this.apellidoActor = ''
 			} 
 		},
 		eliminarActor: function (a) {
-			var index = this.actores.indexOf(a)
-			this.actores.splice(index, 1)
+			var index = this.actors.indexOf(a)
+			this.actors.splice(index, 1)
 		}
-	}
+	},
+	components: {
+     MultiSelect
+  }
 }
 </script>
