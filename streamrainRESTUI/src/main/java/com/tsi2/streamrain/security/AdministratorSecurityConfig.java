@@ -13,9 +13,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.tsi2.streamrain.security.filters.JwtFilter;
 import com.tsi2.streamrain.security.filters.LoginFilter;
 
-@Configuration
-@EnableWebSecurity
-@Order(3)
+//@Configuration
+//@EnableWebSecurity
+//@Order(3)
 public class AdministratorSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired

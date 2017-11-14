@@ -16,12 +16,14 @@ public class JanusLiveContentConverter implements IConverter<JanusLiveOnlyInfoDt
 		janusLiveOnlyInfoDto.setAudio(source.getLiveOnlyContents().isJanusAudio());
 		janusLiveOnlyInfoDto.setAudioport(source.getLiveOnlyContents().getJanusAudioPort());
 		janusLiveOnlyInfoDto.setAudiopt(source.getLiveOnlyContents().getJanusAudioPt());
+		janusLiveOnlyInfoDto.setAudiortpmap(source.getLiveOnlyContents().getJanusAudioRtpMap());
 		janusLiveOnlyInfoDto.setDescription(source.getDescription());
 		janusLiveOnlyInfoDto.setPermanent(true);
 		janusLiveOnlyInfoDto.setId(source.getId());
 		janusLiveOnlyInfoDto.setPin(source.getLiveOnlyContents().getJanusPin());
 		janusLiveOnlyInfoDto.setType(RTP);
 		janusLiveOnlyInfoDto.setVideo(source.getLiveOnlyContents().isJanusVideo());
+		janusLiveOnlyInfoDto.setVideopt(source.getLiveOnlyContents().getJanusVideoPt());
 		janusLiveOnlyInfoDto.setVideoport(source.getLiveOnlyContents().getJanusVideoPort());
 		janusLiveOnlyInfoDto.setVideortpmap(source.getLiveOnlyContents().getJanusVideoRtpMap());
 		return janusLiveOnlyInfoDto;

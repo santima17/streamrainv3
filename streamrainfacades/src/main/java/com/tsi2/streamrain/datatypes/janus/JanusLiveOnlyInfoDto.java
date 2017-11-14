@@ -22,7 +22,7 @@ public class JanusLiveOnlyInfoDto {
     private String  videortpmap;     
     private String pin; 
     private boolean permanent;
-    private String adminkey;
+    private String admin_key;
     private boolean ppv;
     
     public String getRequest() {	
@@ -87,10 +87,10 @@ public class JanusLiveOnlyInfoDto {
 		this.permanent = permanent;
 	}
 	public String getAdminkey() {
-		return adminkey;
+		return admin_key;
 	}
 	public void setAdminkey(String adminkey) {
-		this.adminkey = adminkey;
+		this.admin_key = adminkey;
 	}
 	public boolean isPpv() {
 		return ppv;

@@ -45,6 +45,9 @@ public class GeneratorSecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers("/index.jsp").permitAll()
 		.antMatchers("/generator/register").permitAll()
 		.antMatchers(HttpMethod.POST, "/generator/login").permitAll()
+		.antMatchers(HttpMethod.POST, "/generator/janus/createServer").permitAll()
+		.antMatchers(HttpMethod.POST, "/generator/janus/createToken").permitAll()
+		.antMatchers(HttpMethod.GET, "/generator/janus/getUpdates").permitAll()
 		.antMatchers(HttpMethod.OPTIONS, "/generator/login").permitAll()
 		.antMatchers("/user/*").authenticated().and()
 				// Las peticiones /login pasaran previamente por este filtro

@@ -23,8 +23,8 @@ public class StreamRainMySQLJanusDAO extends StreamRainMySQLDAO implements IDAOJ
 	public List<UserSubscriptions> getAllAvailablesUserSubscriptions(final String tenantID) {
 		Session dbSession = DBHibernateUtil.getSessionFactoryGenerator(tenantID);
 		List<UserSubscriptions> users = (List<UserSubscriptions>) dbSession
-				.createQuery("select * from UserSubscriptions  where :nowDate < dateFinish")
-				.setDate("nowDate", new Date());
+				.createQuery("select u from UserSubscriptions u where :nowDate < u.dateFinish")
+				.setDate("nowDate", new Date()).list();
 		return users;
 	}
 
