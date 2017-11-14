@@ -8,7 +8,7 @@ import com.tsi2.streamrain.model.generator.UserViews;
 
 public interface IBLContent {
 
-	boolean saveContent(Contents contents, final List<Integer> idCategories, final List<Integer> idSimilarContent, final String tenantID);
+	Integer saveContent(Contents contents, final List<Integer> idCategories, final List<Integer> idSimilarContent, final String tenantID);
 
 	List<Contents> getAllContents(final String tenantID);
 

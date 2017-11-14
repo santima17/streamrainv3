@@ -34,9 +34,8 @@ public class ContentServiceImpl implements IContentService {
 	IConverter<JanusLiveOnlyInfoDto, Contents>  janusLiveContentInfoConverter = (JanusLiveContentConverter) StremRainFacadesContextLoader.contextLoader()
 			.getBean("janusLiveContentInfoConverter");
 
-	public boolean saveContent(final ContentDto content, final String tenantID) {
-		contentBussines.saveContent((Contents) contentConverter.deConverter(content), content.getIdCategories(), content.getIdSimilarContents(), tenantID);
-		return true;
+	public Integer saveContent(final ContentDto content, final String tenantID) {
+		return contentBussines.saveContent((Contents) contentConverter.deConverter(content), content.getIdCategories(), content.getIdSimilarContents(), tenantID);
 	}
 
 	public List<ContentDto> getAllContents(final String tenantID) {

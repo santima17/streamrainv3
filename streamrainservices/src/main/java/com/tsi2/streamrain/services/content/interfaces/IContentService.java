@@ -10,7 +10,7 @@ import com.tsi2.streamrain.datatypes.janus.JanusLiveOnlyInfoDto;
 
 public interface IContentService {
 	
-	boolean saveContent(final ContentDto content, final String tenantID);
+	Integer saveContent(final ContentDto content, final String tenantID);
 	
 	List<ContentDto> getAllContents(final String tenantID);
 	

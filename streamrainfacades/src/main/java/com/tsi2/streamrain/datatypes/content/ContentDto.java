@@ -42,6 +42,13 @@ public class ContentDto {
     private Date featuredDateFinish;
     private String tenantId;
     private String pathTokenVOD;
+    private Integer janus_audio_pt;
+    private String janus_audio_rtp_map;
+    private Integer janus_video_pt;
+    private String janus_video_rtp_map;
+    private String janus_pin;
+    private Integer janus_audio_port;
+    private Integer janus_video_port;
     
 	public Integer getId() {
 		return id;
@@ -183,5 +190,46 @@ public class ContentDto {
 	public void setPathTokenVOD(String pathTokenVOD) {
 		this.pathTokenVOD = pathTokenVOD;
 	}
-										    
+	public Integer getJanus_audio_pt() {
+		return janus_audio_pt;
+	}
+	public void setJanus_audio_pt(Integer janus_audio_pt) {
+		this.janus_audio_pt = janus_audio_pt;
+	}
+	public String getJanus_audio_rtp_map() {
+		return janus_audio_rtp_map;
+	}
+	public void setJanus_audio_rtp_map(String janus_audio_rtp_map) {
+		this.janus_audio_rtp_map = janus_audio_rtp_map;
+	}
+	public Integer getJanus_video_pt() {
+		return janus_video_pt;
+	}
+	public void setJanus_video_pt(Integer janus_video_pt) {
+		this.janus_video_pt = janus_video_pt;
+	}
+	public String getJanus_video_rtp_map() {
+		return janus_video_rtp_map;
+	}
+	public void setJanus_video_rtp_map(String janus_video_rtp_map) {
+		this.janus_video_rtp_map = janus_video_rtp_map;
+	}
+	public String getJanus_pin() {
+		return janus_pin;
+	}
+	public void setJanus_pin(String janus_pin) {
+		this.janus_pin = janus_pin;
+	}
+	public Integer getJanus_audio_port() {
+		return janus_audio_port;
+	}
+	public void setJanus_audio_port(Integer janus_audio_port) {
+		this.janus_audio_port = janus_audio_port;
+	}
+	public Integer getJanus_video_port() {
+		return janus_video_port;
+	}
+	public void setJanus_video_port(Integer janus_video_port) {
+		this.janus_video_port = janus_video_port;
+	}
 }

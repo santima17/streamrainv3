@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -41,9 +42,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tsi2.streamrain.datatypes.category.CategoryDto;
 import com.tsi2.streamrain.datatypes.content.ContentCastDto;
 import com.tsi2.streamrain.datatypes.content.ContentDto;
+import com.tsi2.streamrain.datatypes.janus.JanusLiveOnlyInfoDto;
+import com.tsi2.streamrain.datatypes.janus.JanusServerDto;
 import com.tsi2.streamrain.datatypes.user.UserDto;
 import com.tsi2.streamrain.services.category.interfaces.ICategoryService;
 import com.tsi2.streamrain.services.content.interfaces.IContentService;
+import com.tsi2.streamrain.services.janus.interfaces.IJanusService;
 import com.tsi2.streamrain.services.session.interfaces.ISessionService;
 
 @RestController
@@ -62,6 +66,9 @@ public class ContentGeneratorController {
 	@Autowired
 	ISessionService sessionService;
 	
+	@Autowired
+	IJanusService janusService;
+	
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ContentDto> getAllUsers() {
         return contentService.getAllContents(sessionService.getCurrentTenant());
@@ -79,32 +86,7 @@ public class ContentGeneratorController {
         return response;
     }
     
-    /*@RequestMapping(value = "/uploadPicture", method = RequestMethod.POST)
-    public ResponseEntity<BindingResult> uploadImagen(@RequestParam("picture") MultipartFile picture, @RequestParam("video") MultipartFile video, @RequestPart("datos") String datos) {
-    	ResponseEntity<BindingResult> result = new ResponseEntity<>(HttpStatus.CREATED);
-    	ContentDto content;
-    	try {
-			content =  new ObjectMapper().readValue(datos, ContentDto.class);
-			/*Iterator<String> itr =  request.getFileNames();
-
-    	    MultipartFile picture = request.getFile(itr.next());
-    	    MultipartFile video = request.getFile(itr.next());
-    	    MultipartFile data = request.getFile(itr.next());*/ 
-    	        	    
-			/*String pictureName = recordFile(picture);
-			String videoName = recordFile(video);
-		} catch (JsonParseException e1) {
-			e1.printStackTrace();
-		} catch (JsonMappingException e1) {
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			e1.printStackTrace();    		
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-    	return result;
-    }*/
-    
+        
 	@RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<BindingResult> insertContent(@RequestParam("picture") MultipartFile picture, @RequestParam("video") MultipartFile video, @RequestPart("datos") String datos, BindingResult result) {
     	ResponseEntity<BindingResult> response = new ResponseEntity<>(HttpStatus.CREATED);
@@ -115,26 +97,51 @@ public class ContentGeneratorController {
     	ContentDto contentDto;
 		try {
 			contentDto =  new ObjectMapper().readValue(datos, ContentDto.class);
-			
+			boolean isLiveContent = false;
 			contentDto.setTenantId(sessionService.getCurrentTenant());
-			String pictureName = recordFile(picture);
+			String pictureName = picture.getOriginalFilename();
 			contentDto.setCoverPictureUrl(pictureName);
-			String videoName = recordFile(video);
-			contentDto.setStorageUrl(videoName);
 			if ("1".equals(contentDto.getType())) {
 				contentDto.setType("Pelicula");
 				contentDto.setAlwaysAvailable(true);
+				String videoName = video.getOriginalFilename();
+				contentDto.setStorageUrl(videoName);
 			}else if ("2".equals(contentDto.getType())) {
 				contentDto.setType("Serie");
 				contentDto.setAlwaysAvailable(true);
+				String videoName = video.getOriginalFilename();
+				contentDto.setStorageUrl(videoName);
 			}else if ("3".equals(contentDto.getType())) {
 				contentDto.setType("Evento Deportivo");
 				contentDto.setAlwaysAvailable(false);
+				UUID janus_pin = UUID.randomUUID();
+				contentDto.setJanus_pin(janus_pin.toString());
+				isLiveContent = true;
+				contentDto.setStorageUrl("n/a");
 			}else if ("4".equals(contentDto.getType())) {
 				contentDto.setType("Evento Espectaculo");
 				contentDto.setAlwaysAvailable(false);
+				UUID janus_pin = UUID.randomUUID();
+				contentDto.setJanus_pin(janus_pin.toString());
+				isLiveContent = true;
+				contentDto.setStorageUrl("n/a");
 			}
-			contentService.saveContent(contentDto, sessionService.getCurrentTenant());
+			Integer idContent = contentService.saveContent(contentDto, sessionService.getCurrentTenant());
+			if (idContent != null) {
+				recordFile(picture);
+				if (!isLiveContent) {
+					recordFile(video);
+				}else {
+					ContentDto newContentDto = contentService.getContentById(idContent, sessionService.getCurrentTenant());
+					newContentDto.setJanus_audio_port(5000 + idContent);
+					newContentDto.setJanus_video_port(15000 + idContent);
+					contentService.updateContent(newContentDto, sessionService.getCurrentTenant());
+					JanusLiveOnlyInfoDto janusLiveOnlyInfoDto = createJanusLiveOnlyInfoDto(newContentDto);
+					activateJanusServer(sessionService.getCurrentTenant(), janusLiveOnlyInfoDto);
+				}
+			}else {
+				return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+			}
 			return response;
 		} catch (JsonParseException e1) {
 			e1.printStackTrace();
@@ -151,7 +158,43 @@ public class ContentGeneratorController {
 		}
     }
 	
-    @RequestMapping(value = "/{contentID}", method = RequestMethod.PUT)
+    private JanusLiveOnlyInfoDto createJanusLiveOnlyInfoDto(ContentDto contentDto) {
+		JanusLiveOnlyInfoDto dto = new JanusLiveOnlyInfoDto();
+		dto.setAudio(true);
+		dto.setAudiopt(contentDto.getJanus_audio_pt());
+		dto.setAudiortpmap(contentDto.getJanus_audio_rtp_map());
+		dto.setDescription(contentDto.getDescription());
+		dto.setPin(contentDto.getJanus_pin());
+		dto.setPpv(contentDto.getIsPayPerView());
+		dto.setType(contentDto.getType());
+		dto.setVideo(true);
+		dto.setVideopt(contentDto.getJanus_video_pt());
+		dto.setVideortpmap(contentDto.getJanus_video_rtp_map());
+		dto.setAudioport(contentDto.getJanus_audio_port());
+		dto.setVideoport(contentDto.getJanus_video_port());
+		dto.setPermanent(true);
+		dto.setRequest("create");
+		return dto;
+	}
+
+	private void activateJanusServer(String tenantID, JanusLiveOnlyInfoDto liveOnlyInfo) {
+    	List<JanusServerDto> list = janusService.getAllJanusServerActive(tenantID);
+    	boolean ok;
+		for(JanusServerDto janusServerDto : list) {
+			/*ok = createSession(janusServerDto.getStreamrainRestToken(), janusServerDto.getJanusUrl());
+			if (ok) {
+				ok = attachSessionStreaming(janusServerDto.getStreamrainRestToken(), janusServerDto.getJanusUrl());
+			}
+			if (ok) {
+				ok = attachedSessionTextroom(janusServerDto.getStreamrainRestToken(), janusServerDto.getJanusUrl());
+			}
+			liveOnlyInfo.setAdminkey(janusServerDto.getAdminKey());
+			liveOnly(janusServerDto.getStreamrainRestToken(), janusServerDto.getJanusUrl(), liveOnlyInfo);
+			chatRoom(janusServerDto.getStreamrainRestToken(), janusServerDto.getJanusUrl(), fillChatRoomInformation(liveOnlyInfo));*/
+		}
+	}
+
+	@RequestMapping(value = "/{contentID}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<BindingResult> updateUser(@PathVariable Integer contentID, @RequestBody @Valid ContentDto contentDto, BindingResult result) {
     	ResponseEntity<BindingResult> response = new ResponseEntity<>(HttpStatus.CREATED);

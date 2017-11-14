@@ -23,5 +23,7 @@ public interface IJanusService {
 	String getJanusUrlByToken(final String janusToken, final String currentTenant);
 
 	List<String> getAllAvailablesUserTokens(final String currentTenant);
+	
+	List<JanusServerDto> getAllJanusServerActive(final String currentTenant);
 
 }

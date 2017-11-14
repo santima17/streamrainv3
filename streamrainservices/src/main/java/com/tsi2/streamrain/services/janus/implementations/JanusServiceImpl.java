@@ -67,4 +67,8 @@ public class JanusServiceImpl implements IJanusService{
 		return janusBussines.getAllAvailablesUserTokens(tenantID);
 	}
 
+	public List<JanusServerDto> getAllJanusServerActive(final String tenantID) {
+		return janusServerConverter.convertAll(janusBussines.getAllJanusServerActive(tenantID));
+	}
+
 }

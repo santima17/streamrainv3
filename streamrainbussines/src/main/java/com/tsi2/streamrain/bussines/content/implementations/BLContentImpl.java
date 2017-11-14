@@ -1,17 +1,12 @@
 package com.tsi2.streamrain.bussines.content.implementations;
 
-
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import com.tsi2.streamrain.bussines.content.interfaces.IBLContent;
-import com.tsi2.streamrain.bussines.user.implementations.BLUserImpl;
-import com.tsi2.streamrain.bussines.user.interfaces.IBLUser;
 import com.tsi2.streamrain.context.StremRainDataContextLoader;
-import com.tsi2.streamrain.context.StremRainUserBussinesContextLoader;
 import com.tsi2.streamrain.dao.implementations.StreamRainMySQLDAO;
 import com.tsi2.streamrain.dao.implementations.StreamRainMySQLUserDAO;
 import com.tsi2.streamrain.dao.interfaces.IDAOService;
@@ -28,7 +23,6 @@ import com.tsi2.streamrain.model.generator.UserRatingsId;
 import com.tsi2.streamrain.model.generator.UserViews;
 import com.tsi2.streamrain.model.generator.Users;
 
-import javassist.tools.web.Viewer;
 
 public class BLContentImpl implements IBLContent {
 
@@ -36,26 +30,30 @@ public class BLContentImpl implements IBLContent {
 	
 	IDAOUserService daoUserService = (StreamRainMySQLUserDAO) StremRainDataContextLoader.contextLoader().getBean("daoUserService");
 		
-	public boolean saveContent(Contents contents, final List<Integer> idCategories, final List<Integer> idSimilarContent, final String tenantID) {
-		Set<Categories> categories = new HashSet<Categories>();
-		if (idCategories != null) {
-			for(Integer idCategory : idCategories) {
-				Categories cat = daoService.get(Categories.class, idCategory, tenantID);
-				categories.add(cat);
+	public Integer saveContent(Contents contents, final List<Integer> idCategories, final List<Integer> idSimilarContent, final String tenantID) {
+		try {
+			Set<Categories> categories = new HashSet<Categories>();
+			if (idCategories != null) {
+				for(Integer idCategory : idCategories) {
+					Categories cat = daoService.get(Categories.class, idCategory, tenantID);
+					categories.add(cat);
+				}
 			}
-		}
-		contents.setCategorieses(categories);
-		Set<Contents> similarContents = new HashSet<Contents>();
-		if (idSimilarContent != null) {
-			for(Integer idSimilarCont : idSimilarContent) {
-				Contents content = daoService.get(Contents.class, idSimilarCont, tenantID);
-				similarContents.add(content);
+			contents.setCategorieses(categories);
+			Set<Contents> similarContents = new HashSet<Contents>();
+			if (idSimilarContent != null) {
+				for(Integer idSimilarCont : idSimilarContent) {
+					Contents content = daoService.get(Contents.class, idSimilarCont, tenantID);
+					similarContents.add(content);
+				}
 			}
+			contents.setContentsesForIdContent1(similarContents);
+			return daoService.save(contents, tenantID);
+		}catch(Exception ex) {
+			ex.printStackTrace();
+			return null;
 		}
-		contents.setContentsesForIdContent1(similarContents);
 		
-		daoService.save(contents, tenantID);
-		return true; 
 	}
 
 	public List<Contents> getAllContents(final String tenantID) {

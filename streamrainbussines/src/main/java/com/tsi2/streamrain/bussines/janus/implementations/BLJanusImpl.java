@@ -10,7 +10,6 @@ import com.tsi2.streamrain.dao.implementations.StreamRainMySQLDAO;
 import com.tsi2.streamrain.dao.implementations.StreamRainMySQLJanusDAO;
 import com.tsi2.streamrain.dao.interfaces.IDAOJanusService;
 import com.tsi2.streamrain.dao.interfaces.IDAOService;
-import com.tsi2.streamrain.model.generator.Contents;
 import com.tsi2.streamrain.model.generator.JanusCreationTokens;
 import com.tsi2.streamrain.model.generator.JanusServers;
 import com.tsi2.streamrain.model.generator.UserSubscriptions;
@@ -62,6 +61,12 @@ public class BLJanusImpl implements IBLJanus {
 			tokens.add(us.getJanusUserToken());
 		}
 		return tokens;
+	}
+
+	public List<JanusServers> getAllJanusServerActive(String tenantID) {
+		JanusServers janusServers = new JanusServers();
+		janusServers.setIsEnable(true);
+		return daoJanusService.getAllByExample(JanusServers.class, janusServers, tenantID);
 	}
 
 

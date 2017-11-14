@@ -19,4 +19,6 @@ public interface IBLJanus {
 
 	List<String> getAllAvailablesUserTokens(final String tenantID);
 
+	List<JanusServers> getAllJanusServerActive(final String tenantID);
+
 }

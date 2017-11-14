@@ -17,9 +17,6 @@ import com.tsi2.streamrain.model.generator.FeaturedContents;
 import com.tsi2.streamrain.model.generator.LiveOnlyContents;
 
 public class ContentConverter implements IConverter<ContentDto, Contents>{
-
-	//IConverter<ContentCastDto, ContentCasts> contentCastConverter = (ContentCastConverter)StremRainFacadesContextLoader.contextLoader().getBean("contentCastConverter");
-	//IDAOService daoService = (StreamRainMySQLDAO) StremRainDataContextLoader.contextLoader().getBean("daoService");
 	
 	public ContentCastDto converter(ContentCasts source) {
 		ContentCastDto contentsCast = new ContentCastDto();
@@ -67,6 +64,13 @@ public class ContentConverter implements IConverter<ContentDto, Contents>{
 	    }else if (source.getLiveOnlyContents() != null){
 	    	contentDto.setDateStart(source.getLiveOnlyContents().getDateStart());
 	    	contentDto.setEstimatedDuraction(source.getLiveOnlyContents().getEstimatedDuraction());
+	    	contentDto.setJanus_audio_pt(source.getLiveOnlyContents().getJanusAudioPt());
+	    	contentDto.setJanus_audio_rtp_map(source.getLiveOnlyContents().getJanusAudioRtpMap());
+	    	contentDto.setJanus_video_pt(source.getLiveOnlyContents().getJanusVideoPt());
+	    	contentDto.setJanus_video_rtp_map(source.getLiveOnlyContents().getJanusVideoRtpMap());
+	    	contentDto.setJanus_pin(source.getLiveOnlyContents().getJanusPin());
+	    	contentDto.setJanus_audio_port(source.getLiveOnlyContents().getJanusAudioPort());
+	    	contentDto.setJanus_video_port(source.getLiveOnlyContents().getJanusVideoPort());
 	    	contentDto.setAlwaysAvailable(false); 	
 	    }
 	    
@@ -93,9 +97,11 @@ public class ContentConverter implements IConverter<ContentDto, Contents>{
 	
 	private Set<ContentCasts> deConvertAllContentCasts(Set<ContentCastDto> source) {
 		Set<ContentCasts> dtoList = new HashSet<ContentCasts>();
-		for(ContentCastDto contentCast : source) {
-			if (!"".equals(contentCast.getFirstName()) && (!"".equals(contentCast.getLastName()))){
-				dtoList.add(deConverter(contentCast));
+		if (source != null) {
+			for(ContentCastDto contentCast : source) {
+				if (!"".equals(contentCast.getFirstName()) && (!"".equals(contentCast.getLastName()))){
+					dtoList.add(deConverter(contentCast));
+				}
 			}
 		}
 		return dtoList;
@@ -117,14 +123,7 @@ public class ContentConverter implements IConverter<ContentDto, Contents>{
 			cast.setContents(contents);
 		}
 		contents.setContentCastses(actors);
-		
-		/*Set<Categories> categories = new HashSet<Categories>();
-		for(Integer idCategory : source.getIdCategories()) {
-			Categories cat = daoService.get(Categories.class, idCategory, source.getTenantId());
-			categories.add(cat);
-		}
-		contents.setCategorieses(categories);*/
-		
+				
 		if (source.getAlwaysAvailable()) {
 			AlwaysAvailableContents alwaysAvailableContents = new AlwaysAvailableContents();
 			alwaysAvailableContents.setDuration(source.getDuration());
@@ -134,11 +133,18 @@ public class ContentConverter implements IConverter<ContentDto, Contents>{
 			LiveOnlyContents liveOnlyContents = new LiveOnlyContents();
 			liveOnlyContents.setDateStart(source.getDateStart());
 			liveOnlyContents.setEstimatedDuraction(source.getEstimatedDuraction());
+			liveOnlyContents.setJanusAudioPt(source.getJanus_audio_pt());
+			liveOnlyContents.setJanusAudioRtpMap(source.getJanus_audio_rtp_map());
+			liveOnlyContents.setJanusVideoPt(source.getJanus_video_pt());
+			liveOnlyContents.setJanusVideoRtpMap(source.getJanus_video_rtp_map());
+			liveOnlyContents.setJanusAudio(true);
+			liveOnlyContents.setJanusVideo(true);
+			liveOnlyContents.setJanusPin(source.getJanus_pin());
 			contents.setLiveOnlyContents(liveOnlyContents);
 			liveOnlyContents.setContents(contents);
 		}
 		
-		if (source.getFeatured()) {
+		if (source.getFeatured() != null && source.getFeatured()) {
 			FeaturedContents featuredContents = new FeaturedContents();
 			featuredContents.setDateStart(source.getFeaturedDateStart());
 			featuredContents.setDateFinish(source.getFeaturedDateFinish());
@@ -147,21 +153,16 @@ public class ContentConverter implements IConverter<ContentDto, Contents>{
 			featuresList.add(featuredContents);
 			contents.setFeaturedContentses(featuresList);
 		}
-		
-		/*Set<Contents> similarContents = new HashSet<Contents>();
-		for(Integer idSimilarCont : source.getIdSimilarContents()) {
-			Contents content = daoService.get(Contents.class, idSimilarCont, source.getTenantId());
-			similarContents.add(content);
-		}
-		contents.setContentsesForIdContent1(similarContents);*/
-				
+						
 		return contents;
 	}
 
 	public List<ContentDto> convertAll(List<Contents> source) {
 		List<ContentDto> dtoList = new ArrayList<ContentDto>();
-		for(Contents content : source) {
-			dtoList.add(converter(content));
+		if (source != null) {
+			for(Contents content : source) {
+				dtoList.add(converter(content));
+			}
 		}
 		return dtoList;
 	}
