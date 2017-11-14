@@ -24,6 +24,8 @@ public class JanusServiceImpl implements IJanusService{
 	IConverter<JanusServerDto, JanusServers> janusServerConverter = (JanusServerConverter) StremRainFacadesContextLoader.contextLoader()
 			.getBean("janusServerConverter");
 
+	
+
 	public JanusCreateTokenDto createJanusToken(JanusCreateTokenDto janusCreateTokenDto, String tenantID) {
 		Integer idToken = janusBussines.saveJanusToken((JanusCreationTokens) janusTokentConverter.deConverter(janusCreateTokenDto), tenantID);
 		janusCreateTokenDto.setId(idToken);
@@ -58,6 +60,11 @@ public class JanusServiceImpl implements IJanusService{
 	public String getJanusUrlByToken(String janusToken, String currentTenant) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public List<String> getAllAvailablesUserTokens(final String tenantID) {
+		return janusBussines.getAllAvailablesUserTokens(tenantID);
 	}
 
 }

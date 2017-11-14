@@ -14,6 +14,7 @@ import org.springframework.boot.json.GsonJsonParser;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.tsi2.streamrain.datatypes.janus.AbstractJanusDto;
 import com.tsi2.streamrain.datatypes.janus.JanusBackendTokenDto;
 import com.tsi2.streamrain.datatypes.janus.JanusCreateSessionDto;
 import com.tsi2.streamrain.datatypes.janus.JanusCreateSessionResponseDto;
@@ -24,7 +25,7 @@ public class AbstractController {
 	private static final String APPLICATION_TYPE_JSON = "application/json";
 	private static final String POST = "POST";
 
-	public boolean sentJSONByPOST(final String url, final JanusBackendTokenDto json) {
+	public boolean sentJSONByPOST(final String url, final AbstractJanusDto json) {
 		URL postURL;
 		try {
 			postURL = new URL(url);
@@ -66,7 +67,7 @@ public class AbstractController {
 		return true;
 	}
 	
-	public String sentJSONByPOSTGetResponse(final String url, final JanusCreateSessionDto json) {
+	public String sentJSONByPOSTGetResponse(final String url, final AbstractJanusDto json) {
 		URL postURL;
 		try {
 			postURL = new URL(url);

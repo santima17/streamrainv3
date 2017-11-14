@@ -1,5 +1,6 @@
 package com.tsi2.streamrain.services.content.implementations;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.tsi2.streamrain.bussines.content.implementations.BLContentImpl;
@@ -7,12 +8,14 @@ import com.tsi2.streamrain.bussines.content.interfaces.IBLContent;
 import com.tsi2.streamrain.context.StremRainFacadesContextLoader;
 import com.tsi2.streamrain.context.StremRainUserBussinesContextLoader;
 import com.tsi2.streamrain.converters.interfaces.IConverter;
+import com.tsi2.streamrain.converters.janus.JanusLiveContentConverter;
 import com.tsi2.streamrain.converters.content.ContentConverter;
 import com.tsi2.streamrain.converters.content.UserContentViewConverter;
 import com.tsi2.streamrain.datatypes.content.ContentDto;
 import com.tsi2.streamrain.datatypes.content.UserContentCommentDto;
 import com.tsi2.streamrain.datatypes.content.UserContentFavDto;
 import com.tsi2.streamrain.datatypes.content.UserContentViewDto;
+import com.tsi2.streamrain.datatypes.janus.JanusLiveOnlyInfoDto;
 import com.tsi2.streamrain.model.generator.Contents;
 import com.tsi2.streamrain.model.generator.UserViews;
 import com.tsi2.streamrain.services.content.interfaces.IContentService;
@@ -27,6 +30,9 @@ public class ContentServiceImpl implements IContentService {
 
 	IConverter<UserContentViewDto, UserViews> userContentViewConverter = (UserContentViewConverter) StremRainFacadesContextLoader
 			.contextLoader().getBean("userContentViewConverter");
+	
+	IConverter<JanusLiveOnlyInfoDto, Contents>  janusLiveContentInfoConverter = (JanusLiveContentConverter) StremRainFacadesContextLoader.contextLoader()
+			.getBean("janusLiveContentInfoConverter");
 
 	public boolean saveContent(final ContentDto content, final String tenantID) {
 		contentBussines.saveContent((Contents) contentConverter.deConverter(content), content.getIdCategories(), content.getIdSimilarContents(), tenantID);
@@ -106,6 +112,18 @@ public class ContentServiceImpl implements IContentService {
 
 	public boolean spolierMarkComment(final String userNickName, final Integer userCommentId, final String tenantID) {
 		return contentBussines.spolierMarkComment(userNickName, userCommentId, tenantID);
+	}
+
+	@Override
+	public List<JanusLiveOnlyInfoDto> getAllLiveOnlyContents(String tenantID) {
+		List<Contents> list = contentBussines.getAllContents(tenantID);
+		List<Contents> liveOnlyList = new ArrayList<Contents>();
+		for(Contents content : list) {
+			if(content.getLiveOnlyContents() != null) {
+				liveOnlyList.add(content);
+			}
+		}
+		return janusLiveContentInfoConverter.convertAll(liveOnlyList);
 	}
 
 }

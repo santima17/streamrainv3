@@ -10,23 +10,25 @@ import com.tsi2.streamrain.dao.implementations.StreamRainMySQLDAO;
 import com.tsi2.streamrain.dao.implementations.StreamRainMySQLJanusDAO;
 import com.tsi2.streamrain.dao.interfaces.IDAOJanusService;
 import com.tsi2.streamrain.dao.interfaces.IDAOService;
+import com.tsi2.streamrain.model.generator.Contents;
 import com.tsi2.streamrain.model.generator.JanusCreationTokens;
 import com.tsi2.streamrain.model.generator.JanusServers;
+import com.tsi2.streamrain.model.generator.UserSubscriptions;
 
-public class BLJanusImpl implements IBLJanus {
+public class BLJanusImpl implements IBLJanus { 
 
 	IDAOService daoService = (StreamRainMySQLDAO) StremRainDataContextLoader.contextLoader().getBean("daoService");
 	IDAOJanusService daoJanusService = (StreamRainMySQLJanusDAO) StremRainDataContextLoader.contextLoader().getBean("daoJanusService");
 	
-	public Integer saveJanusToken(JanusCreationTokens janusToken, String tenantID) {
+	public Integer saveJanusToken(final JanusCreationTokens janusToken, final String tenantID) {
 		return (Integer) daoService.save(janusToken, tenantID);
 	}
 
-	public boolean updateJanusToken(JanusCreationTokens janusToken, String tenantID) {
+	public boolean updateJanusToken(final JanusCreationTokens janusToken, final String tenantID) {
 		return daoService.saveOrUpdate(janusToken, tenantID);	
 	}
 
-	public Integer saveJanusServer(JanusServers janusServers, String tokenJanusCreationTokens, String tenantID) {
+	public Integer saveJanusServer(final JanusServers janusServers, final String tokenJanusCreationTokens, final String tenantID) {
 		Date now = new Date();
 		JanusCreationTokens janusCreationTokens = daoJanusService.getJanusByToken(tokenJanusCreationTokens, now, tenantID);
 		if (janusCreationTokens == null) {
@@ -36,7 +38,7 @@ public class BLJanusImpl implements IBLJanus {
 		return (Integer) daoService.save(janusServers, tenantID);
 	}
 
-	public List<String> getAllJanusAdminUrl(String tenantID) {
+	public List<String> getAllJanusAdminUrl(final String tenantID) {
 		List<String> listResult = new ArrayList<String>();
 		List<JanusServers> listJanus = daoJanusService.getAll(JanusServers.class, tenantID);
 		for (JanusServers janus:listJanus) {
@@ -45,7 +47,7 @@ public class BLJanusImpl implements IBLJanus {
 		return listResult;
 	}
 	
-	public List<String> getAllJanusUrl(String tenantID){
+	public List<String> getAllJanusUrl(final String tenantID){
 		List<String> listResult = new ArrayList<String>();
 		List<JanusServers> listJanus = daoJanusService.getAll(JanusServers.class, tenantID);
 		for (JanusServers janus:listJanus) {
@@ -53,5 +55,14 @@ public class BLJanusImpl implements IBLJanus {
 		}
 		return listResult;
 	}
+
+	public List<String> getAllAvailablesUserTokens(final String tenantID) {
+		List<String> tokens = new ArrayList<String>();
+		for(UserSubscriptions us : daoJanusService.getAllAvailablesUserSubscriptions(tenantID)) {
+			tokens.add(us.getJanusUserToken());
+		}
+		return tokens;
+	}
+
 
 }

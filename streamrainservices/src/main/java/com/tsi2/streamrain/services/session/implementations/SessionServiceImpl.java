@@ -8,6 +8,7 @@ public class SessionServiceImpl implements ISessionService{
 	private String userNickname;
 	private String mySession;
 	private String mySessionHandler;
+	private String myTextroomHandle;
 	
 	
 	public String getCurrentTenant() {
@@ -41,5 +42,15 @@ public class SessionServiceImpl implements ISessionService{
 	public void setMySessionHandler(String mySessionHandler) {
 		this.mySessionHandler = mySessionHandler;
 	}
+
+	public String getMyTextroomHandle() {
+		return myTextroomHandle;
+	}
+
+	public void setMyTextroomHandle(String myTextroomHandle) {
+		this.myTextroomHandle = myTextroomHandle;
+	}
+	
+	
 
 }

@@ -6,6 +6,7 @@ import com.tsi2.streamrain.datatypes.content.ContentDto;
 import com.tsi2.streamrain.datatypes.content.UserContentCommentDto;
 import com.tsi2.streamrain.datatypes.content.UserContentFavDto;
 import com.tsi2.streamrain.datatypes.content.UserContentViewDto;
+import com.tsi2.streamrain.datatypes.janus.JanusLiveOnlyInfoDto;
 
 public interface IContentService {
 	
@@ -36,5 +37,7 @@ public interface IContentService {
 	UserContentViewDto getLastViewToContent(final UserContentViewDto userContentViewDto, final String tenantID);
 
 	boolean spolierMarkComment(final String userNickName, final Integer userCommentId, final String tenantID);
+
+	List<JanusLiveOnlyInfoDto> getAllLiveOnlyContents(final String tenantID);
 
 }

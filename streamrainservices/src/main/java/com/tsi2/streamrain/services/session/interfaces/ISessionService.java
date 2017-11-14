@@ -10,5 +10,6 @@ public interface ISessionService {
 	public void setMySession(String mySession);
 	public String getMySessionHandler();
 	public void setMySessionHandler(String mySessionHandler);
-	
+	public String getMyTextroomHandle();
+	public void setMyTextroomHandle(String myTextroomHandle);
 }

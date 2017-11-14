@@ -27,5 +27,7 @@
 	<bean id="janusTokenConverter" class="com.tsi2.streamrain.converters.janus.JanusTokenConverter" />
 	
 	<bean id="janusServerConverter" class="com.tsi2.streamrain.converters.janus.JanusServerConverter" />
+	
+	<bean id="janusLiveContentInfoConverter" class="com.tsi2.streamrain.converters.janus.JanusLiveContentConverter" />
 			
 </beans>
