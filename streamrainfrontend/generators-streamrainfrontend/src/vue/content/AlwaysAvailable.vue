@@ -67,7 +67,7 @@
 		<br>
 		<input type="text"  v-model="nombreDirector"  placeholder="Nombre">
 		<input type="text"  v-model="apellidoDirector"  placeholder="Apellido">
-		<button  @click="guardarDirector(nombreDirector,apellidoDirector)"> Agregar </button>
+		<button type="button" @click="guardarDirector(nombreDirector,apellidoDirector)"> Agregar </button>
 	</div>
 
 	<div class="form-group">
@@ -84,7 +84,7 @@
 		<br>
 		<input type="text"   v-model="nombreActor"  placeholder="Nombre">
 		<input type="text"  v-model="apellidoActor"  placeholder="Apellido">
-		<button  @click="guardarActor(nombreActor,apellidoActor)"> Agregar </button>
+		<button type="button" @click="guardarActor(nombreActor,apellidoActor)"> Agregar </button>
 	</div>
 
 	<div class="form-group">
