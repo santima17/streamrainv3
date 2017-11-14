@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -118,6 +119,8 @@ public class ContentGeneratorController {
 				contentDto.setJanus_pin(janus_pin.toString());
 				isLiveContent = true;
 				contentDto.setStorageUrl("n/a");
+				contentDto.setJanus_audio_port(ThreadLocalRandom.current().nextInt(5000, 14999));
+				contentDto.setJanus_video_port(ThreadLocalRandom.current().nextInt(15000, 25000));
 			}else if ("4".equals(contentDto.getType())) {
 				contentDto.setType("Evento Espectaculo");
 				contentDto.setAlwaysAvailable(false);
@@ -125,6 +128,8 @@ public class ContentGeneratorController {
 				contentDto.setJanus_pin(janus_pin.toString());
 				isLiveContent = true;
 				contentDto.setStorageUrl("n/a");
+				contentDto.setJanus_audio_port(ThreadLocalRandom.current().nextInt(5000, 14999));
+				contentDto.setJanus_video_port(ThreadLocalRandom.current().nextInt(15000, 25000));
 			}
 			Integer idContent = contentService.saveContent(contentDto, sessionService.getCurrentTenant());
 			if (idContent != null) {
@@ -133,9 +138,9 @@ public class ContentGeneratorController {
 					recordFile(video);
 				}else {
 					ContentDto newContentDto = contentService.getContentById(idContent, sessionService.getCurrentTenant());
-					newContentDto.setJanus_audio_port(5000 + idContent);
-					newContentDto.setJanus_video_port(15000 + idContent);
-					contentService.updateContent(newContentDto, sessionService.getCurrentTenant());
+					//newContentDto.setJanus_audio_port(5000 + idContent);
+					//newContentDto.setJanus_video_port(15000 + idContent);
+					//contentService.updateContent(newContentDto, sessionService.getCurrentTenant());
 					JanusLiveOnlyInfoDto janusLiveOnlyInfoDto = createJanusLiveOnlyInfoDto(newContentDto);
 					activateJanusServer(sessionService.getCurrentTenant(), janusLiveOnlyInfoDto);
 				}

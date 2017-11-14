@@ -29,7 +29,7 @@ public class TenantController {
 	ITenantService tenantService;
 	
 		
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(value = "/createGenerator", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BindingResult> insertTenant(@RequestBody TenantDto tenant) {
     	ResponseEntity<BindingResult> response = new ResponseEntity<>(HttpStatus.CREATED);
     	tenantService.saveTenant(tenant);
