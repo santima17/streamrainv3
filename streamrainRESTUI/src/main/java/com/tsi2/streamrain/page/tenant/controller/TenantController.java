@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tsi2.streamrain.datatypes.content.ContentDto;
+import com.tsi2.streamrain.datatypes.content.UserContentFavDto;
 import com.tsi2.streamrain.datatypes.tenant.TenantDto;
 import com.tsi2.streamrain.services.tenants.interfaces.ITenantService;
 
@@ -49,6 +51,30 @@ public class TenantController {
             response = new ResponseEntity<TenantDto>(tenant, HttpStatus.OK);
         }
         return response;
+    }
+    
+    @RequestMapping(value = "/blockUser", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Boolean> blockUser(@RequestParam String userNickName, @RequestParam String tenantId) {
+    	boolean ok = tenantService.blockUser(userNickName, tenantId);
+        ResponseEntity<Boolean> response;
+        if (ok) {
+            response = new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+		return response;
+    }
+    
+    @RequestMapping(value = "/blockContent", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Boolean> blockContent(@RequestParam Integer contentId, @RequestParam String tenantId) {
+    	boolean ok = tenantService.blockContent(contentId, tenantId);
+        ResponseEntity<Boolean> response;
+        if (ok) {
+            response = new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+		return response;
     }
     
 }

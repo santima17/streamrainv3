@@ -4,19 +4,26 @@ import java.util.List;
 
 import com.tsi2.streamrain.bussines.tenant.interfaces.IBLTenant;
 import com.tsi2.streamrain.context.StremRainDataContextLoader;
+import com.tsi2.streamrain.dao.implementations.StreamRainMySQLDAO;
 import com.tsi2.streamrain.dao.implementations.StreamRainMySQLMainDAO;
 import com.tsi2.streamrain.dao.implementations.StreamRainMySQLTenantDAO;
+import com.tsi2.streamrain.dao.implementations.StreamRainMySQLUserDAO;
 import com.tsi2.streamrain.dao.interfaces.IDAOService;
 import com.tsi2.streamrain.dao.interfaces.IDAOTenantService;
+import com.tsi2.streamrain.dao.interfaces.IDAOUserService;
+import com.tsi2.streamrain.model.generator.Contents;
+import com.tsi2.streamrain.model.generator.Users;
 import com.tsi2.streamrain.model.main.Tenants;
 
 public class BLTenantImpl implements IBLTenant{
 
-	IDAOService daoService = (StreamRainMySQLMainDAO) StremRainDataContextLoader.contextLoader().getBean("daoMainService");
+	IDAOService daoMainService = (StreamRainMySQLMainDAO) StremRainDataContextLoader.contextLoader().getBean("daoMainService");
 	IDAOTenantService daoTenant = (StreamRainMySQLTenantDAO) StremRainDataContextLoader.contextLoader().getBean("daoTenant");
+	IDAOUserService daoUserService = (StreamRainMySQLUserDAO) StremRainDataContextLoader.contextLoader().getBean("daoUserService");
+	IDAOService daoService = (StreamRainMySQLDAO) StremRainDataContextLoader.contextLoader().getBean("daoService");
 	
 	public boolean saveTenant(final Tenants tenant) {
-		daoService.save(tenant, null);
+		daoMainService.save(tenant, null);
 		return true; 
 	}
 
@@ -32,6 +39,18 @@ public class BLTenantImpl implements IBLTenant{
 
 	public List<Tenants> getAllTenant() {
 		return daoTenant.getAll(Tenants.class, null);
+	}
+
+	public boolean blockUser(final String userNickName, final String tenantId) {
+		Users users = daoUserService.getUserByNickname(userNickName, tenantId);
+		users.setBlocked(true);
+		return daoUserService.saveOrUpdate(users, tenantId);
+	}
+
+	public boolean blockContent(Integer contentId, String tenantId) {
+		Contents content = daoService.get(Contents.class, contentId, tenantId);
+		content.setBlocked(true);
+		return daoService.saveOrUpdate(content, tenantId);
 	}
 
 }

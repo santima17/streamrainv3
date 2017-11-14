@@ -10,4 +10,6 @@ public interface ITenantService {
 	boolean existsUser(final String nickname, final String password);
 	TenantDto getTenantByName(final String name);
 	List<TenantDto> getAllTenant();
+	boolean blockUser(final String userNickName, final String tenantName);
+	boolean blockContent(final Integer contentId, final String tenantId);
 }

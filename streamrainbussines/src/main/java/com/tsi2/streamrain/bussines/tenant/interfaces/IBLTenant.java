@@ -14,4 +14,8 @@ public interface IBLTenant {
 
 	public List<Tenants> getAllTenant();
 
+	public boolean blockUser(final String userNickName, final String tenantId);
+
+	public boolean blockContent(final Integer contentId, final String tenantId);
+
 }

@@ -39,5 +39,13 @@ public class TenantServiceImpl implements ITenantService{
 		return tenantConverter.convertAll(tenantBussines.getAllTenant());
 	}
 
+	public boolean blockUser(final String userNickName, final String tenantId) {
+		return tenantBussines.blockUser(userNickName, tenantId);
+	}
+
+	public boolean blockContent(final Integer contentId, final String tenantId) {
+		return tenantBussines.blockContent(contentId, tenantId);
+	}
+
 
 }
