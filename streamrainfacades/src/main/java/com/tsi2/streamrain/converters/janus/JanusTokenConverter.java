@@ -1,10 +1,13 @@
 package com.tsi2.streamrain.converters.janus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.tsi2.streamrain.converters.interfaces.IConverter;
 import com.tsi2.streamrain.datatypes.janus.JanusCreateTokenDto;
+import com.tsi2.streamrain.datatypes.payment.PaymentMethodDto;
 import com.tsi2.streamrain.model.generator.JanusCreationTokens;
+import com.tsi2.streamrain.model.generator.PaymentMethods;
 
 public class JanusTokenConverter implements IConverter<JanusCreateTokenDto, JanusCreationTokens> {
 
@@ -31,8 +34,11 @@ public class JanusTokenConverter implements IConverter<JanusCreateTokenDto, Janu
 	}
 
 	public List<JanusCreateTokenDto> convertAll(List<JanusCreationTokens> source) {
-		// TODO Auto-generated method stub
-		return null;
+		List<JanusCreateTokenDto> dtoList = new ArrayList<JanusCreateTokenDto>();
+		for(JanusCreationTokens janusCreationTokens : source) {
+			dtoList.add(converter(janusCreationTokens));
+		}
+		return dtoList;
 	}
 
 	public List<JanusCreationTokens> deConvertAll(List<JanusCreateTokenDto> source) {
