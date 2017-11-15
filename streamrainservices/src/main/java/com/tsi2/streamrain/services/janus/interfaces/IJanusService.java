@@ -3,7 +3,6 @@ package com.tsi2.streamrain.services.janus.interfaces;
 import java.util.List;
 
 import com.tsi2.streamrain.datatypes.janus.JanusCreateTokenDto;
-import com.tsi2.streamrain.datatypes.janus.JanusLiveOnlyInfoDto;
 import com.tsi2.streamrain.datatypes.janus.JanusServerDto;
 
 public interface IJanusService {
@@ -16,14 +15,21 @@ public interface IJanusService {
 
 	List<String> getAllJanusAdminUrl(final String tenantID);
 
-	List<String> getAllJanusUrl(final String currentTenant);
+	List<String> getAllJanusUrl(final String tenantID);
 
-	String getJanusAdminUrlByToken(final String backendToken, final String currentTenant);
+	String getJanusAdminUrlByToken(final String backendToken, final String tenantID);
 
-	String getJanusUrlByToken(final String janusToken, final String currentTenant);
+	String getJanusUrlByToken(final String janusToken, final String tenantID);
 
-	List<String> getAllAvailablesUserTokens(final String currentTenant);
+	List<String> getAllAvailablesUserTokens(final String tenantID);
 	
-	List<JanusServerDto> getAllJanusServerActive(final String currentTenant);
+	List<JanusServerDto> getAllJanusServerActive(final String tenantID);
+	
+	List<JanusServerDto> getAllJanusServer(final String tenantID);
+
+	JanusServerDto getJanusServer(final Integer janusServerId, final String tenantID);
+
+	List<JanusCreateTokenDto> getAllJanusCreationTokens(final String currentTenant);
+	
 
 }

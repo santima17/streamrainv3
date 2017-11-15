@@ -64,6 +64,37 @@ public class JanusController extends AbstractController {
 	public ResponseEntity<String> getUpdates() {
 		return new ResponseEntity<>("", HttpStatus.OK);
 	}
+	
+	@RequestMapping(value = "/janusServers", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<JanusServerDto>> getAllJanusServer() {
+		List<JanusServerDto> listResult = janusService.getAllJanusServer(sessionService.getCurrentTenant());
+		if (listResult.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(listResult, HttpStatus.OK);
+        }
+	}
+	
+	@RequestMapping(value = "/janusServers/{janusServerId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<JanusServerDto> getJanusServerForId(@PathVariable Integer janusServerId) {
+		JanusServerDto result = janusService.getJanusServer(janusServerId, sessionService.getCurrentTenant());
+		if (result == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        }
+	}
+	
+	@RequestMapping(value = "/janusCreationTokens", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<JanusCreateTokenDto>> getAllJanusCreationTokens() {
+		List<JanusCreateTokenDto> listResult = janusService.getAllJanusCreationTokens(sessionService.getCurrentTenant());
+		if (listResult.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(listResult, HttpStatus.OK);
+        }
+	}
+	
 	@RequestMapping(value = "/createToken", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<JanusCreateTokenDto> createToken(HttpServletRequest request) {
 

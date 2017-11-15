@@ -21,4 +21,10 @@ public interface IBLJanus {
 
 	List<JanusServers> getAllJanusServerActive(final String tenantID);
 
+	List<JanusServers> getAllJanusServer(final String tenantID);
+
+	JanusServers getJanusServer(final Integer janusServerId, final String tenantID);
+
+	List<JanusCreationTokens> getAllJanusCreateToken(final String tenantID);
+	
 }
