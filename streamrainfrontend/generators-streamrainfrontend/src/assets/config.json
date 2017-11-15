@@ -1,8 +1,6 @@
 {
-  "backend": "http://localhost:3000",
-  "backendPOSTA": "http://generator4.192.168.1.4.nip.io:8080/streamrainRESTUI",
+  "backend": "http://generator3.127.0.0.1.nip.io:8080/streamrainRESTUI",
   "tenant": {
-    "id": 1,
-    "name": "Default Tenant"
+    "name": "FOCCS"
   }
 }
