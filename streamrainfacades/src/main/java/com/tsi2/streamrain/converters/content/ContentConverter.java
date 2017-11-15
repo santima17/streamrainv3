@@ -139,6 +139,8 @@ public class ContentConverter implements IConverter<ContentDto, Contents>{
 			liveOnlyContents.setJanusVideoRtpMap(source.getJanus_video_rtp_map());
 			liveOnlyContents.setJanusAudio(true);
 			liveOnlyContents.setJanusVideo(true);
+			liveOnlyContents.setJanusAudioPort(source.getJanus_audio_port());
+			liveOnlyContents.setJanusVideoPort(source.getJanus_video_port());
 			liveOnlyContents.setJanusPin(source.getJanus_pin());
 			contents.setLiveOnlyContents(liveOnlyContents);
 			liveOnlyContents.setContents(contents);

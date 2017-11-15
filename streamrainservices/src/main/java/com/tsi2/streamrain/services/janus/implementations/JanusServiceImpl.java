@@ -1,7 +1,20 @@
 package com.tsi2.streamrain.services.janus.implementations;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.tsi2.streamrain.bussines.content.implementations.BLContentImpl;
+import com.tsi2.streamrain.bussines.content.interfaces.IBLContent;
 import com.tsi2.streamrain.bussines.janus.implementations.BLJanusImpl;
 import com.tsi2.streamrain.bussines.janus.interfaces.IBLJanus;
 import com.tsi2.streamrain.context.StremRainFacadesContextLoader;
@@ -9,11 +22,20 @@ import com.tsi2.streamrain.context.StremRainUserBussinesContextLoader;
 import com.tsi2.streamrain.converters.interfaces.IConverter;
 import com.tsi2.streamrain.converters.janus.JanusServerConverter;
 import com.tsi2.streamrain.converters.janus.JanusTokenConverter;
+import com.tsi2.streamrain.datatypes.janus.AbstractJanusDto;
+import com.tsi2.streamrain.datatypes.janus.JanusAttachedSessionDto;
+import com.tsi2.streamrain.datatypes.janus.JanusChatRoomDto;
+import com.tsi2.streamrain.datatypes.janus.JanusChatRoomInfoDto;
+import com.tsi2.streamrain.datatypes.janus.JanusCreateSessionDto;
+import com.tsi2.streamrain.datatypes.janus.JanusCreateSessionResponseDto;
 import com.tsi2.streamrain.datatypes.janus.JanusCreateTokenDto;
+import com.tsi2.streamrain.datatypes.janus.JanusLiveOnlyDto;
+import com.tsi2.streamrain.datatypes.janus.JanusLiveOnlyInfoDto;
 import com.tsi2.streamrain.datatypes.janus.JanusServerDto;
 import com.tsi2.streamrain.model.generator.JanusCreationTokens;
 import com.tsi2.streamrain.model.generator.JanusServers;
 import com.tsi2.streamrain.services.janus.interfaces.IJanusService;
+import com.tsi2.streamrain.services.session.interfaces.ISessionService;
 
 public class JanusServiceImpl implements IJanusService{
 	
@@ -23,9 +45,7 @@ public class JanusServiceImpl implements IJanusService{
 			.getBean("janusTokenConverter");
 	IConverter<JanusServerDto, JanusServers> janusServerConverter = (JanusServerConverter) StremRainFacadesContextLoader.contextLoader()
 			.getBean("janusServerConverter");
-
 	
-
 	public JanusCreateTokenDto createJanusToken(JanusCreateTokenDto janusCreateTokenDto, String tenantID) {
 		Integer idToken = janusBussines.saveJanusToken((JanusCreationTokens) janusTokentConverter.deConverter(janusCreateTokenDto), tenantID);
 		janusCreateTokenDto.setId(idToken);
@@ -70,5 +90,5 @@ public class JanusServiceImpl implements IJanusService{
 	public List<JanusServerDto> getAllJanusServerActive(final String tenantID) {
 		return janusServerConverter.convertAll(janusBussines.getAllJanusServerActive(tenantID));
 	}
-
+	
 }

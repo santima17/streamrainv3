@@ -43,9 +43,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tsi2.streamrain.datatypes.category.CategoryDto;
 import com.tsi2.streamrain.datatypes.content.ContentCastDto;
 import com.tsi2.streamrain.datatypes.content.ContentDto;
+import com.tsi2.streamrain.datatypes.janus.JanusAttachedSessionDto;
+import com.tsi2.streamrain.datatypes.janus.JanusChatRoomDto;
+import com.tsi2.streamrain.datatypes.janus.JanusChatRoomInfoDto;
+import com.tsi2.streamrain.datatypes.janus.JanusCreateSessionDto;
+import com.tsi2.streamrain.datatypes.janus.JanusLiveOnlyDto;
 import com.tsi2.streamrain.datatypes.janus.JanusLiveOnlyInfoDto;
 import com.tsi2.streamrain.datatypes.janus.JanusServerDto;
 import com.tsi2.streamrain.datatypes.user.UserDto;
+import com.tsi2.streamrain.page.general.controller.AbstractController;
 import com.tsi2.streamrain.services.category.interfaces.ICategoryService;
 import com.tsi2.streamrain.services.content.interfaces.IContentService;
 import com.tsi2.streamrain.services.janus.interfaces.IJanusService;
@@ -53,10 +59,23 @@ import com.tsi2.streamrain.services.session.interfaces.ISessionService;
 
 @RestController
 @RequestMapping("/generator/createContent")
-public class ContentGeneratorController {
+public class ContentGeneratorController extends AbstractController {
 	
 	@Value("${location.file.path}")
 	private String location;
+	
+	@Value("${janus.chatRoom.url}")
+	private String JANUS_CHAT_ROOM_URL;
+	
+	private static final String ADD_TOKEN = "add_token";
+
+	private static final String CREATE = "create";
+
+	private static final String ATTACH = "attach";
+
+	private static final String JANUS_PLUGIN_STREAMING = "janus.plugin.streaming";
+
+	private static final String JANUS_PLUGIN_TEXTROOM = "janus.plugin.textroom";
 	
 	@Autowired
 	IContentService contentService;
@@ -186,7 +205,7 @@ public class ContentGeneratorController {
     	List<JanusServerDto> list = janusService.getAllJanusServerActive(tenantID);
     	boolean ok;
 		for(JanusServerDto janusServerDto : list) {
-			/*ok = createSession(janusServerDto.getStreamrainRestToken(), janusServerDto.getJanusUrl());
+			ok = createSession(janusServerDto.getStreamrainRestToken(), janusServerDto.getJanusUrl());
 			if (ok) {
 				ok = attachSessionStreaming(janusServerDto.getStreamrainRestToken(), janusServerDto.getJanusUrl());
 			}
@@ -194,8 +213,8 @@ public class ContentGeneratorController {
 				ok = attachedSessionTextroom(janusServerDto.getStreamrainRestToken(), janusServerDto.getJanusUrl());
 			}
 			liveOnlyInfo.setAdminkey(janusServerDto.getAdminKey());
-			liveOnly(janusServerDto.getStreamrainRestToken(), janusServerDto.getJanusUrl(), liveOnlyInfo);
-			chatRoom(janusServerDto.getStreamrainRestToken(), janusServerDto.getJanusUrl(), fillChatRoomInformation(liveOnlyInfo));*/
+			liveOnly(janusServerDto.getStreamrainRestToken(), janusServerDto.getJanusUrl(), liveOnlyInfo, janusServerDto.getAdminKey());
+			chatRoom(janusServerDto.getStreamrainRestToken(), janusServerDto.getJanusUrl(), fillChatRoomInformation(liveOnlyInfo), janusServerDto.getAdminKey());
 		}
 	}
 
@@ -260,6 +279,108 @@ public class ContentGeneratorController {
 				}
     		}
     	}
+	}
+	
+	// CARGA 3 SEGUN DOCUMENTO
+	public boolean createSession(final String backendToken, final String url) {
+
+		JanusCreateSessionDto jsonDto = new JanusCreateSessionDto();
+		jsonDto.setJanus(CREATE);
+		jsonDto.setTransaction(String.valueOf(Math.random()));
+		jsonDto.setToken(backendToken);
+
+		String mySession = sentJSONByPOSTGetResponse(url, jsonDto);
+
+		if (mySession != null) {
+			sessionService.setMySession(mySession);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	// CARGA 4 SEGUN DOCUMENTO
+	public boolean attachSessionStreaming(final String backendToken, final String url) {
+
+		JanusAttachedSessionDto jsonDto = new JanusAttachedSessionDto();
+		jsonDto.setJanus(ATTACH);
+		jsonDto.setTransaction(String.valueOf(Math.random()));
+		jsonDto.setToken(backendToken);
+		jsonDto.setPlugin(JANUS_PLUGIN_STREAMING);
+	
+		String mySessionHandler = sentJSONByPOSTGetResponse(url + "/" + sessionService.getMySession(), jsonDto);
+		if (mySessionHandler != null) {
+			sessionService.setMySessionHandler(mySessionHandler);
+			return true;
+		} else {
+			return false;
+		}
+
+	}
+
+	// CARGA 5 SEGUN DOCUMENTO
+	public boolean attachedSessionTextroom(final String backendToken, final String url) {
+
+		JanusAttachedSessionDto jsonDto = new JanusAttachedSessionDto();
+		jsonDto.setJanus(ATTACH);
+		jsonDto.setTransaction(String.valueOf(Math.random()));
+		jsonDto.setToken(backendToken);
+		jsonDto.setPlugin(JANUS_PLUGIN_TEXTROOM);
+
+		String myTextroomHandle = sentJSONByPOSTGetResponse(url + "/" + sessionService.getMySession(), jsonDto);
+		if (myTextroomHandle != null) {
+			sessionService.setMyTextroomHandle(myTextroomHandle);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	// CARGA 6 SEGUN DOCUMENTO
+	public boolean liveOnly(final String backendToken, final String url, final JanusLiveOnlyInfoDto liveOnlyInfo, final String admin_key) {
+
+		JanusLiveOnlyDto jsonDto = new JanusLiveOnlyDto();
+		jsonDto.setJanus("message");
+		jsonDto.setTransaction(String.valueOf(Math.random()));
+		jsonDto.setToken(backendToken);
+		liveOnlyInfo.setRequest(CREATE);
+		liveOnlyInfo.setType("rtp");
+		liveOnlyInfo.setAdminkey(admin_key);
+		jsonDto.setBody(liveOnlyInfo);
+
+		sentJSONByPOST(url + "/" + sessionService.getMySession() + "/" + sessionService.getMySessionHandler(),
+				jsonDto);
+		return true;
+	}
+
+	// CARGA 6 SEGUN DOCUMENTO
+	public boolean chatRoom(final String backendToken, final String url, final JanusChatRoomInfoDto chatRoomInfo, final String admin_key) {
+
+		JanusChatRoomDto jsonDto = new JanusChatRoomDto();
+		jsonDto.setJanus("message");
+		jsonDto.setTransaction(String.valueOf(Math.random()));
+		jsonDto.setToken(backendToken);
+		chatRoomInfo.setRequest(CREATE);
+		chatRoomInfo.setAdmin_key(admin_key);
+		jsonDto.setBody(chatRoomInfo);
+
+		sentJSONByPOST(url + "/" + sessionService.getMySession() + "/" + sessionService.getMyTextroomHandle(),
+				jsonDto);
+		return true;
+	}
+	
+	private JanusChatRoomInfoDto fillChatRoomInformation(final JanusLiveOnlyInfoDto liveOnlyContents) {
+		JanusChatRoomInfoDto janusChatRoomInfoDto = new JanusChatRoomInfoDto();
+		janusChatRoomInfoDto.setAdmin_key(liveOnlyContents.getAdminkey());
+		janusChatRoomInfoDto.setDescription(liveOnlyContents.getDescription());
+		janusChatRoomInfoDto.setPermanent(true);
+		if(liveOnlyContents.isPpv()) {
+			janusChatRoomInfoDto.setPin(liveOnlyContents.getPin());
+		}
+		janusChatRoomInfoDto.setPost(JANUS_CHAT_ROOM_URL);
+		janusChatRoomInfoDto.setRequest(CREATE);
+		janusChatRoomInfoDto.setRoom(liveOnlyContents.getId());
+		return janusChatRoomInfoDto;
 	}
 	
 //	
