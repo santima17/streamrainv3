@@ -4,7 +4,7 @@
   <!-- NAVBAR -->
   <nav class="navbar navbar-default navbar-fixed-top" >
     <div class="container-fluid">
-      <router-link to="/"><img src="../assets/img/foccsmint.png"></router-link>
+      <router-link to="/"><img src="../assets/img/tenantLogo.png"></router-link>
       <div class="navbar-right">				
         <div id="navbar-menu">
           <ul class="nav navbar-nav">	
@@ -75,7 +75,7 @@
   <div class="clearfix"></div>
   <!-- FOOTER -->
   <footer style='width:100%; border-top: 1px solid #ddd; padding:0; '>
-    <div class="logo text-right"><span class="lead">Desarrollado por</span><img src="../assets/img/logomint.png" alt="sr"></div>
+    <div class="logo text-right"><span class="lead">Desarrollado por</span><img src="../assets/img/streamrainLogo.png" alt="sr"></div>
   </footer>
   <!-- END FOOTER -->
 </div>

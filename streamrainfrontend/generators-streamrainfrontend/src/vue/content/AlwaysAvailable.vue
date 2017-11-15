@@ -199,10 +199,14 @@ export default {
 			apellidoActor: '',
 			options: [],
 			searchText: '', 
-			lastSelectItem: {}
+			lastSelectItem: {},
+
+			token: ''
 		}
 	},
 	created () {
+			var token = localStorage.getItem("token");
+    		this.token = token;
 			this.getCategories();
 			this.getContents();
     },
@@ -215,11 +219,11 @@ export default {
 	methods: {
 		getContents () {
 			const i = this;
-			i.$http.get(`${i.config.backendPOSTA}/generator/createContent`,
+			i.$http.get(`${i.config.backend}/generator/createContent`,
 			{
-				headers: {
-					'Authorization': i.token
-				}
+			//	headers: { quedo sin Authorization???
+					//'Authorization': i.token
+			//	}
 			}
 			)
 			.then((result) => {
@@ -243,7 +247,7 @@ export default {
 		},		
 		getCategories () {
 			const i = this;
-			i.$http.get(`${i.config.backendPOSTA}/generator/category`,
+			i.$http.get(`${i.config.backend}/generator/category`,
 			{
 				headers: {
 					'Authorization': i.token
@@ -301,12 +305,12 @@ export default {
 					+'}');
 					console.log(datos);
 			this.formData.append('datos', new Blob([JSON.stringify(datos)],{type: "application/json"}));
-			const url = `${this.config.backendPOSTA}/generator/createContent`;
+			const url = `${this.config.backend}/generator/createContent`;
 			this.$http.post(url, this.formData,
 				{
-				headers: {
-					Authorization : 'Barer TOKEN:eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ2dHYiLCJleHAiOjE1MTAyNzQwMjh9.thCY9Ik_dkfb3GdxcGnsUKZSkSgT5Ry-gdi-CWi668dDbqaEM6qBWhFAh2rxY5npNmUWN7jNgnPGzsmiJAOPrQ'
-					}
+				//headers: { quedo sin Authorization
+				//	Authorization : 'Barer ' + this.token
+				//	}
 				}).then((response) => {	
 					// exito
 				}).catch((error) => {						

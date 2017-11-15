@@ -5,7 +5,7 @@
 				<div class="auth-box">
 					<div class="content">
 						<div class="header">
-						<div class="logo text-center"><img src="../../assets/img/foccsmint.png" alt="sonnny"></div>
+						<div class="logo text-center"><img src="../../assets/img/tenantLogo.png" alt="sonnny"></div>
 						<p class="lead">Portal de Administracion</p>
 						</div>
 						<form class="form-auth-small" v-on:submit.prevent="login">
@@ -24,7 +24,7 @@
 							<button type="submit" class="btn btn-primary btn-lg btn-block">INICIAR SESION</button>
 						</form>
 					</div>
-					<div class="logo text-right"><img src="../../assets/img/logomint.png" alt="sr"></div>
+					<div class="logo text-right"><img src="../../assets/img/streamrainLogo.png" alt="sr"></div>
           <div class="logo text-center" style="color:red;padding:10"><span class="lead">{{errores}}</span></div> 
 				</div>
         
@@ -71,8 +71,8 @@
             this.errores = 'Error durante la verificación. Las credenciales aportadas no son correctas.'
           });
           //sacar esto inicio
-          i.eventBus.$emit('setToken','adsfasdfasddsfadf');
-           this.$router.push("/");
+         // i.eventBus.$emit('setToken','adsfasdfasddsfadf');
+         //  this.$router.push("/");
           //sacar esto fin
           
         } 
