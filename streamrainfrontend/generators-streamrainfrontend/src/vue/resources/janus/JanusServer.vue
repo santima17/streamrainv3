@@ -140,7 +140,10 @@
         id: this.$route.params.id,
         selectedServer: null,
         janusInfo: null,
-        authTokens: null
+        authTokens: null,
+        session: {
+          userToken: localStorage.getItem('token')
+        }
       }
     },
     created () {
@@ -151,7 +154,11 @@
         this.authTokens = result;
       }, this);
       // Obtenemos la información del Janus Server
-      this.$http.get(`${this.config.backend}/generator/janus_servers/${this.id}`)
+      this.$http.get(`${this.config.backend}/generator/janus/janusServers/${this.id}`, {
+        headers: {
+          'Authorization': this.session.userToken
+        }
+      })
       .then((result) => { 
         this.selectedServer = result.body;
         this.eventBus.$emit('getJanusServerInfo', result.body);

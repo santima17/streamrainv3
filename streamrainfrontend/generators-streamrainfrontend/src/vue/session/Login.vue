@@ -52,7 +52,7 @@
       const username = this.username;
       const password = this.password;
       if (username.trim() !== '' && password.trim() !== '') {
-        this.$http.post(`${this.config.backendPOSTA}/generator/login`,
+        this.$http.post(`${this.config.backend}/generator/login`,
           {
             username,
             password,
@@ -65,8 +65,6 @@
             }
           },
           ).then((response) => {
-            console.log(response.headers.get('Authorization'));
-            console.log(JSON.stringify(response));
             i.eventBus.$emit('setToken', response.headers.get('Authorization'));
             this.$router.push("/");
           }).catch((response) => {

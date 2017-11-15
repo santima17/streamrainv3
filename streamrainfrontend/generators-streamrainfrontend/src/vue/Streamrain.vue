@@ -49,6 +49,13 @@
             <li class=""><router-link to="/content/ALLLIVE">Listar</router-link></li>
           </ul>
         </li>
+        <li class="">	
+          <a href="#" class="has-arrow" aria-expanded="false"><i class="fa fa-server" ></i> <span>Servidores</span></a>
+          <ul aria-expanded="true">
+            <li class=""><router-link to="/resources/janus">Janus</router-link></li>
+            <li class=""><router-link to="/resources/nginx">Nginx</router-link></li>
+          </ul>
+        </li>
         <li class=""><router-link to="/statistics/Statistics"><i class="fa fa-bar-chart" aria-expanded="true"></i> Reportes</router-link></li>
         <li class=""><router-link to="/content/BloquearUsuarios"> <i class="fa fa-user-times" aria-expanded="true"></i>  Bloquear Usuario</router-link></li>
       </ul>

@@ -24,11 +24,11 @@
                     <tr>
                       <td><b>Enable</b></td>
                       <td>
-                        <span v-if="!server.is_enable" class="text-danger">
-                          {{ (server.is_enable).toString().toUpperCase() }}
+                        <span v-if="!server.isEnable" class="text-danger">
+                          {{ (server.isEnable).toString().toUpperCase() }}
                         </span>
-                        <span v-if="server.is_enable" class="text-success">
-                          {{ (server.is_enable).toString().toUpperCase() }}
+                        <span v-if="server.isEnable" class="text-success">
+                          {{ (server.isEnable).toString().toUpperCase() }}
                         </span>
                       </td>
                     </tr>
@@ -38,15 +38,15 @@
                     </tr>
                     <tr>
                       <td><b>Last Update Request</b></td>
-                      <td>{{ server.date_last_update_request }}</td>
+                      <td>{{ server.dateLastUpdateRequest }}</td>
                     </tr>
                     <tr>
                       <td><b>Janus URL</b></td>
-                      <td>{{ server.janus_url }}</td>
+                      <td>{{ server.janusUrl }}</td>
                     </tr>
                     <tr class="text-right">
                       <td></td>
-                      <td v-if="server.is_enable">
+                      <td v-if="server.isEnable">
                         <router-link :to="`/resources/janus/${server.id}`">
                           <div><b>Show more...</b></div>
                         </router-link>
@@ -74,23 +74,23 @@
                   </tr>
                   <tr>
                     <td><b>Token</b></td>
-                    <td>{{ token.janus_token }}</td>
+                    <td>{{ token.janusToken }}</td>
                   </tr>
                   <tr>
                     <td><b>Backend</b></td>
-                    <td>{{ token.streamrain_rest_backend }}</td>
+                    <td>{{ token.streamrainRestBackend }}</td>
                   </tr>
                   <tr>
                     <td><b>Creation</b></td>
-                    <td>{{ token.date_creation }}</td>
+                    <td>{{ token.dateCreation }}</td>
                   </tr>
                   <tr>
                     <td><b>Expiration</b></td>
-                    <td>{{ token.date_expiration }}</td>
+                    <td>{{ token.dateExpiration }}</td>
                   </tr>
                   <tr v-if="token.date_usage != null">
                     <td><b>Usage</b></td>
-                    <td>{{ token.date_usage }}</td>
+                    <td>{{ token.dateUsage }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -116,6 +116,9 @@
       return {
         janusServers: [],
         janusCreationTokens: [],
+        session: {
+          userToken: localStorage.getItem('token')
+        }
       }
     },
     created () {
@@ -124,12 +127,20 @@
     methods: {
       getJanusServers: function () {
         // Obtenemos los servidores Janus del Generator
-        this.$http.get(`${this.config.backend}/generator/janus_servers`)
-        .then((result) => { 
-          this.janusServers.push(result.body);
+        this.$http.get(`${this.config.backend}/generator/janus/janusServers`, {
+          headers: {
+            'Authorization': this.session.userToken
+          }
+        })
+        .then((result) => {
+          this.janusServers = result.body;
         }, this);
         // Obtenemos los Janus Creation Token del Generator
-        this.$http.get(`${this.config.backend}/generator/janus_creation_tokens`)
+        this.$http.get(`${this.config.backend}/generator/janus/janusCreationTokens`, {
+          headers: {
+            'Authorization': this.session.userToken
+          }
+        })
         .then((result) => { 
           this.janusCreationTokens = result.body;
         }, this);

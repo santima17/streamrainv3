@@ -17,7 +17,7 @@
     },
     methods: {
       getJanusServerInfo: function (selectedServer) {
-        this.$http.get(`${selectedServer.admin_url}/info`)
+        this.$http.get(`${selectedServer.adminUrl}/info`)
         .then((result) => { 
           this.eventBus.$emit('setJanusServerInfo', result.body);
         }, this);
@@ -26,9 +26,9 @@
         const request = {
           janus: 'list_tokens',
           transaction: randomString(12),
-          admin_secret: selectedServer.admin_secret
+          admin_secret: selectedServer.adminSecret
         };
-        this.$http.post(selectedServer.admin_url, request)
+        this.$http.post(selectedServer.adminUrl, request)
         .then((result) => {
           this.eventBus.$emit('setJanusAuthTokens', result.body.data.tokens);
         }, this)
