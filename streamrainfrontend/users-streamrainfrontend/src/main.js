@@ -91,9 +91,21 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   if (!to.matched.length) {
     next('/notFound');
-  } else {
+  } 
+  else {
     document.title = to.meta.title;
-    next();
+    if (to.path !== '/login' && to.path !== '/signup' && to.path !== '/') {
+      const session = JSON.parse(localStorage.getItem(`streamrain-${config.tenant.name.replace(/\s/g, '')}-session`));
+      if (session !== undefined && session !== null) {
+        next();
+      }
+      else {
+        eventBus.$emit('removeVueSession', null);
+        next('/login');
+      }
+    } else {
+      next();
+    }
   }
 });
 

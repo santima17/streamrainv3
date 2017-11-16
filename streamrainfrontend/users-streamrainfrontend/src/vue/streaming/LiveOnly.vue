@@ -1,29 +1,41 @@
 <template>
-  <div class="container-fluid text-center">    
+  <div class="container-fluid text-center">
     <div class="row content">
       <div class="col-sm-2 sidenav">
       </div>
       <div class="col-sm-8 text-left">
-        <div class="row content" v-if="janusAlert">
-          <div class="alert alert-dismissible alert-warning">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <p><strong>Oops!</strong></p>
-            <p>{{ janusAlert.message }}</p>
+        <h1>{{ stream.name }} <i v-if="!stream.ready && !alert.show && !janusAlert" class="fa fa-spinner fa-spin" style="font-size"></i></h1>
+        <hr v-if="stream.ready">
+        <div class="row" v-if="!stream.ready">
+          <div class="col-sm-12">
+            <div class="progress progress-striped active">
+              <div class="progress-bar" v-bind:style="progressBar"></div>
+            </div>
           </div>
         </div>
-        <h1>Live Stream {{ stream.description }}</h1>
-        <h2>{{ stream.description }}</h2>
+        <div class="row">
+          <div class="col-sm-12" v-if="janusAlert">
+            <div class="alert alert-dismissible alert-warning">
+              <button type="button" class="close" data-dismiss="alert">&times;</button>
+              <p><strong>Oops!</strong></p>
+              <p>{{ janusAlert.message }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12" v-if="alert.show">
+            <div class="alert alert-dismissible alert-warning">
+              <button type="button" class="close" data-dismiss="alert">&times;</button>
+              <p><strong>Oops!</strong></p>
+              <p>{{ alert.message }}</p>
+            </div>
+          </div>
+        </div>
         <div class="row" id="room">
           <div class="col-sm-7">
-            <div v-if="!stream.ready && !janusAlert">
-              <p class="text-danger">Connecting...</p>
-            </div>
             <video ref="video" width="100%" v-on:playing="playingVideo" autoplay />
           </div>
           <div class="col-sm-5">
-            <div v-if="!chatroom.ready && !janusAlert">
-              <p class="text-danger">Connecting...</p>
-            </div>
             <div class="panel panel-info" v-if="chatroom.ready">
               <div class="panel-heading">
                 <div class="btn-group pull-right">
@@ -64,6 +76,70 @@
             </div>
           </div>
         </div>
+        <div class="row">
+          <div class="col-sm-6 text-left">
+            <div>
+              <span v-if="stream.type" class="label label-info">{{ stream.type }}</span>
+              <span v-if="stream.isPayPerView" class="label label-danger">Pay Per View</span>
+            </div>
+            <div v-if="stream.dateStart">
+              <br>
+              {{ getDate(stream.dateStart) }}
+            </div>
+          </div>
+          <div class="col-sm-6 text-right">
+            <div>
+              <div v-if="stream.id && !sendingRank" v-on:mouseleave="loadMyRank()" >
+                <i v-bind:class="stars.s1.class" v-on:mouseover="paintStars(1)" v-on:click="sendRank(1)"></i>
+                <i v-bind:class="stars.s2.class" v-on:mouseover="paintStars(2)" v-on:click="sendRank(2)"></i>
+                <i v-bind:class="stars.s3.class" v-on:mouseover="paintStars(3)" v-on:click="sendRank(3)"></i>
+                <i v-bind:class="stars.s4.class" v-on:mouseover="paintStars(4)" v-on:click="sendRank(4)"></i>
+                <i v-bind:class="stars.s5.class" v-on:mouseover="paintStars(5)" v-on:click="sendRank(5)"></i>
+              </div>
+              <div v-if="sendingRank">
+                <i class="fa fa-spinner fa-spin text-info" style="font-size"></i>
+              </div>
+              <div v-if="stream.ranking">
+                <b>Ranking:</b> {{ stream.ranking }}
+              </div>
+              <div v-if="stream.id && !stream.ranking">
+                <b>Ranking:</b> Unranked
+              </div>
+            </div>
+          </div>
+        </div>
+        <div v-if="stream.description">
+          <br>
+          <b>Description</b>
+          <p>{{ stream.description }}</p>
+        </div>
+        <div class="panel-group">
+          <div class="panel panel-default">
+            <div class="panel-heading text-center">
+              <a data-toggle="collapse" href="#collapse1">More</a>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse">
+              <div class="panel-body">
+                <div v-if="stream.directors">
+                  <b>Directors</b>
+                  <ul class="list-inline">
+                    <li v-for="(director, index) in stream.directors" :key="index">
+                      {{ director.lastName }}, {{ director.firstName }}
+                    </li>
+                  </ul>
+                </div>
+                <div v-if="stream.actors && stream.actors.length > 0">
+                  <b>Actors</b>
+                  <ul class="list-inline">
+                    <li v-for="(actor, index) in stream.actors" :key="index">
+                      {{ actor.lastName }}, {{ actor.firstName }}
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> 
         <hr>
       </div>
       <div class="col-sm-2 sidenav">
@@ -82,9 +158,39 @@
     ],
     data () {
       return {
-        stream: {
-          ready: false
+        progressBar: 'width: 15%',
+        //
+        stars: {
+          s1: {
+            class: 'star glyphicon glyphicon-star',
+            painted: false
+          },
+          s2: {
+            class: 'star glyphicon glyphicon-star',
+            painted: false
+          },
+          s3: {
+            class: 'star glyphicon glyphicon-star',
+            painted: false
+          },
+          s4: {
+            class: 'star glyphicon glyphicon-star',
+            painted: false
+          },
+          s5: {
+            class: 'star glyphicon glyphicon-star',
+            painted: false
+          }
         },
+        myRank: 0,
+        sendingRank: false,
+        //
+        currentStream: null,
+        stream: {
+          ready: false,
+          name: 'Live Stream'
+        },
+        //
         chatroom: {
           ready: false,
           myId: null,
@@ -94,7 +200,11 @@
           privateMessageMode: false
         },
         messageToSend: null,
-        currentStream: null
+        //
+        alert: {
+          show: false,
+          message: null
+        }
       }
     },
     created () {
@@ -129,7 +239,6 @@
           }
           return;
         }
-
         // $('#stream').append('<video class="rounded centered hide" id="remotevideo" width=320 height=240 autoplay/>');
         // Show the stream and hide the spinner when we get a playing event
         // i.$refs.video.bind('playing', function () {
@@ -278,18 +387,46 @@
         }
       });
 
-      this.eventBus.$emit('JanusReady?', null);
-
       this.$http.get(`${this.config.backend}/user/content/${streamId}`,
       {
         headers: {
-          'Authorization': session.userToken
+          'Authorization': session.token
         }
       }).then((response) => {
-        console.log(JSON.stringify(response));
-        i.updateCatalog(response.body);
-      }).catch((error) => {
-        console.log(JSON.stringify(error));       
+        const newStream = response.body;
+        newStream.ready = false;
+        i.updateStream(newStream);
+        i.updateProgressBar('width: 30%');
+        this.eventBus.$emit('JanusReady?', null);
+      }).catch((response) => {
+        switch(response.status) {
+          case 500:
+            i.updateAlert({
+              show: true,
+              message: 'Internal server error'
+            });
+            break;
+          case 404:
+            i.updateAlert({
+              show: true,
+              message: 'Not found'
+            });
+            break;
+          case 401:
+          case 403:
+            localStorage.removeItem(`streamrain-${i.config.tenant.name.replace(/\s/g, '')}-session`);
+            i.eventBus.$emit('removeVueSession', null);
+            i.updateAlert({
+              show: true,
+              message: 'The session has expired, please log in again'
+            });
+            break;
+          default:
+            updateAlert({
+              show: true,
+              message: 'An error has occurred'
+            });
+        }
       });
 
     },
@@ -297,6 +434,97 @@
       this.eventBus.$emit('leaveStreaming', null);
     },
     methods: {
+      sendRank: function (rank) {
+        this.sendingRank = true;
+      },
+      loadMyRank: function () {
+        this.paintStars(this.myRank);
+      },
+      paintStars: function (star) {
+        switch (star) {
+          case 0:
+            this.stars.s1.class = 'star glyphicon glyphicon-star';
+            this.stars.s1.painted = false;
+            this.stars.s2.class = 'star glyphicon glyphicon-star';
+            this.stars.s2.painted = false;
+            this.stars.s3.class = 'star glyphicon glyphicon-star';
+            this.stars.s3.painted = false;
+            this.stars.s4.class = 'star glyphicon glyphicon-star';
+            this.stars.s4.painted = false;
+            this.stars.s5.class = 'star glyphicon glyphicon-star';
+            this.stars.s5.painted = false;
+            break;
+          case 1:
+            this.stars.s1.class = 'star glyphicon glyphicon-star text-info';
+            this.stars.s1.painted = true;
+            this.stars.s2.class = 'star glyphicon glyphicon-star';
+            this.stars.s2.painted = false;
+            this.stars.s3.class = 'star glyphicon glyphicon-star';
+            this.stars.s3.painted = false;
+            this.stars.s4.class = 'star glyphicon glyphicon-star';
+            this.stars.s4.painted = false;
+            this.stars.s5.class = 'star glyphicon glyphicon-star';
+            this.stars.s5.painted = false;
+            break;
+          case 2:
+            this.stars.s1.class = 'star glyphicon glyphicon-star text-info';
+            this.stars.s1.painted = true;
+            this.stars.s2.class = 'star glyphicon glyphicon-star text-info';
+            this.stars.s2.painted = true;
+            this.stars.s3.class = 'star glyphicon glyphicon-star';
+            this.stars.s3.painted = false;
+            this.stars.s4.class = 'star glyphicon glyphicon-star';
+            this.stars.s4.painted = false;
+            this.stars.s5.class = 'star glyphicon glyphicon-star';
+            this.stars.s5.painted = false;
+            break;
+          case 3:
+            this.stars.s1.class = 'star glyphicon glyphicon-star text-info';
+            this.stars.s1.painted = true;
+            this.stars.s2.class = 'star glyphicon glyphicon-star text-info';
+            this.stars.s2.painted = true;
+            this.stars.s3.class = 'star glyphicon glyphicon-star text-info';
+            this.stars.s3.painted = true;
+            this.stars.s4.class = 'star glyphicon glyphicon-star';
+            this.stars.s4.painted = false;
+            this.stars.s5.class = 'star glyphicon glyphicon-star';
+            this.stars.s5.painted = false;
+            break;
+          case 4:
+            this.stars.s1.class = 'star glyphicon glyphicon-star text-info';
+            this.stars.s1.painted = true;
+            this.stars.s2.class = 'star glyphicon glyphicon-star text-info';
+            this.stars.s2.painted = true;
+            this.stars.s3.class = 'star glyphicon glyphicon-star text-info';
+            this.stars.s3.painted = true;
+            this.stars.s4.class = 'star glyphicon glyphicon-star text-info';
+            this.stars.s4.painted = true;
+            this.stars.s5.class = 'star glyphicon glyphicon-star';
+            this.stars.s5.painted = false;
+            break;
+          case 5:
+            this.stars.s1.class = 'star glyphicon glyphicon-star text-info';
+            this.stars.s1.painted = true;
+            this.stars.s2.class = 'star glyphicon glyphicon-star text-info';
+            this.stars.s2.painted = true;
+            this.stars.s3.class = 'star glyphicon glyphicon-star text-info';
+            this.stars.s3.painted = true;
+            this.stars.s4.class = 'star glyphicon glyphicon-star text-info';
+            this.stars.s4.painted = true;
+            this.stars.s5.class = 'star glyphicon glyphicon-star text-info';
+            this.stars.s5.painted = true;
+            break;
+        }
+      },
+      updateProgressBar: function (progressBar) {
+        this.progressBar = progressBar;
+      },
+      updateStream: function (stream) {
+        this.stream = stream;
+      },
+      updateAlert: function (alert) {
+        this.alert = alert;
+      },
       playingVideo: function () {
         // $('#waitingvideo').remove();
         // if (this.videoWidth) $('#remotevideo').removeClass('hide').show();
@@ -349,15 +577,30 @@
           this.eventBus.$emit('janusSendPublicMessage', this.messageToSend);
           this.messageToSend = ''
         }
+      },
+      getDate: function(UNIX_timestamp){
+        let a = new Date(UNIX_timestamp * 1000);
+        let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        let year = a.getFullYear();
+        let month = months[a.getMonth()];
+        let date = a.getDate();
+        let hour = a.getHours();
+        let min = a.getMinutes();
+        let sec = a.getSeconds();
+        let time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min ;
+        return time;
       }
     }
   }
 </script>
 
 <style>
-  .chat-body{
+  .chat-body {
     height:300px;
     overflow-y:scroll;
     width:100%;
+  }
+  .star {
+    cursor: pointer;
   }
 </style>

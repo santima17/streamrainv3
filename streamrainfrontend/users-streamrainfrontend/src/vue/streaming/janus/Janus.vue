@@ -92,7 +92,7 @@
         streamId: null,
         // Streaming
         streaming: {
-          ready: false, // TODO: false
+          ready: false,
           handle: null
         },
         // TextRoom
@@ -111,7 +111,7 @@
       callBackend: function (callback) {
         // TODO: definir bien las rutas y parámetros.
         const i = this;
-        this.$http.get(`${this.config.backend}/backend-mock/${this.config.tenant.id}/janus-servers`)
+        this.$http.get(`${this.config.backend}/user/janus/janusServers`)
         .then((result) => { 
           i.updateJanusInf(result.body);
           return callback (null);
@@ -169,7 +169,7 @@
         const i = this;
         const eventBus = i.eventBus;
         Janus.init({
-          debug: true,
+          debug: (i.config.debug_level > 0),
           callback: function () {
             // Use a button to start the demo
             if (i.started) return;

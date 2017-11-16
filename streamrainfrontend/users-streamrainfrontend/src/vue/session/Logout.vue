@@ -26,7 +26,8 @@
     ],
     methods: {
       logout: function () {
-        this.eventBus.$emit('removeSession', null);
+        localStorage.removeItem(`streamrain-${this.config.tenant.name.replace(/\s/g, '')}-session`);
+        this.eventBus.$emit('removeVueSession', null);
         this.$router.push('/');
       }
     }

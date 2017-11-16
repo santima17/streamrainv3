@@ -2,5 +2,6 @@
   "backend": "http://localhost:3000",
   "tenant": {
     "name": "Default Tenant"
-  }
+  },
+  "debug_level": 0
 }

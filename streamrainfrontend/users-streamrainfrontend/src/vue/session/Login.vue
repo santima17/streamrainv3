@@ -19,7 +19,7 @@
           <div class="col-sm-6 text-left">
             <div class="form-group">
               <p>Nickname</p>
-              <input v-model="username" class="form-control input-sm" type="text" value="Username">
+              <input v-model="nickname" class="form-control input-sm" type="text" value="Nickname">
             </div>
             <div class="form-group">
               <p>Password</p>
@@ -46,7 +46,7 @@
   ],
   data () {
     return {
-      username: '',
+      nickname: '',
       password: '',
       buttonEnable: true,
       buttonText: 'Log In',
@@ -58,7 +58,7 @@
   },
   methods: {
     validation: function () {
-      if (this.username.length < 1) {
+      if (this.nickname.length < 1) {
         this.loginError.message = 'Invalid nickname'
         this.loginError.show = true;
         return false;
@@ -75,18 +75,19 @@
       if (!this.validation()) return;
       const eventBus = this.eventBus;
       const router = this.$router;
-      const username = this.username;
+      const nickname = this.nickname;
       const password = this.password;
       const updateLoginError = this.updateLoginError;
       const updateButtonEnable = this.updateButtonEnable;
       const updateButtonText = this.updateButtonText;
-      if (username.trim() !== '' && password.trim() !== '') {
+      const config = this.config;
+      if (nickname.trim() !== '' && password.trim() !== '') {
         if (this.buttonEnable) {
           updateButtonEnable(false);
           updateButtonText('Please wait... ');
           this.$http.post(`${this.config.backend}/user/login`,
             {
-              username,
+              username: nickname,
               password,
               twitter: false,
               twitterID: ''
@@ -96,10 +97,11 @@
                 'Access-Control-Expose-Headers': 'Authorization'
               }
             }).then((response) => {
-              eventBus.$emit('setSession', {
-                username,
-                userToken: response.headers.get('Authorization')
-              });
+              let newSession = response.body;
+              newSession.nickname = nickname;
+              newSession.token = response.headers.get('Authorization');
+              localStorage.setItem(`streamrain-${config.tenant.name.replace(/\s/g, '')}-session`, JSON.stringify(newSession));
+              eventBus.$emit('setVueSession', newSession);
               router.push('/');
             }).catch((response) => {
               updateButtonText('Log In');

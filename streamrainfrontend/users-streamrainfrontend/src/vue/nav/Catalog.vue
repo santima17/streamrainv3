@@ -4,35 +4,73 @@
       <div class="col-sm-2 sidenav">
       </div>
       <div class="col-sm-8 text-left">
-        <div class="row content" v-if="janusAlert">
-          <div class="alert alert-dismissible alert-warning">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <p><strong>Oops!</strong></p>
-            <p>{{ janusAlert.message }}</p>
+        <h1>{{ config.tenant.name }} Catalog <i v-if="!catalog && !alert.show" class="fa fa-spinner fa-spin" style="font-size"></i></h1>
+        <hr>
+        <div class="row">
+          <div class="col-sm-12" v-if="alert.show">
+            <div class="alert alert-dismissible alert-warning">
+              <button type="button" class="close" data-dismiss="alert">&times;</button>
+              <p><strong>Oops!</strong></p>
+              <p>{{ alert.message }}</p>
+            </div>
           </div>
         </div>
-        <h1>{{ config.tenant.name }} Catalog</h1>
-        <div v-if="!catalog && !janusAlert">
-          <p class="text-danger">Connecting...</p>
+        <div class="row">
+          <div class="col-sm-12">
+            <div v-if="catalog != null">
+              <h2 class="text-info">Live</h2>
+              <ul class="list-inline text-center">
+                <li v-for="(streaming, index) in catalog" :key="index">
+                  <div v-if="!streaming.alwaysAvailable" class="panel panel-info">
+                    <div class="panel-heading">
+                      <h2 class="panel-title">{{ streaming.name }}</h2>
+                      <span v-if="streaming.isPayPerView" class="label label-danger">Pay Per View</span>
+                      <br v-if="!streaming.isPayPerView">
+                    </div>
+                    <div class="panel-body text-center">
+                      <img v-bind:src="streaming.coverPictureUrl" height="150">
+                      <hr> 
+                      <div class="text-info">
+                        {{ streaming.type }}  
+                      </div>
+                      <div>
+                        {{ getDate(streaming.dateStart) }}
+                      </div>
+                      <hr>
+                      <router-link :to="`/live/${streaming.id}`"><div class="btn btn-info">Watch now!</div></router-link>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
-        <div v-if="catalog != null">
-          <ul class="list-inline">
-            <li v-for="(streaming, index) in catalog" :key="index">
-              <div class="panel panel-info">
-                <div class="panel-heading">
-                  <h2 class="panel-title">{{ streaming.name }}</h2>
-                  <b v-if="streaming.alwaysAvailable" class="panel-title text-right">VOD</b>
-                  <b v-if="!streaming.alwaysAvailable" class="panel-title text-right">LIVE</b>
-                </div>
-                <div class="panel-body text-center">
-                  <p>Image</p>
-                  <hr>
-                  <router-link v-if="streaming.alwaysAvailable" :to="`/vod/${streaming.id}`"><div class="btn btn-info">Watch now!</div></router-link>
-                  <router-link v-if="!streaming.alwaysAvailable" :to="`/live/${streaming.id}`"><div class="btn btn-info">Watch now!</div></router-link>
-                </div>
-              </div>
-            </li>
-          </ul>
+        <div class="row">
+          <div class="col-sm-12">
+            <div v-if="catalog != null">
+              <h2 class="text-primary">VoD</h2>
+              <ul class="list-inline text-center">
+                <li v-for="(streaming, index) in catalog" :key="index">
+                  <div v-if="streaming.alwaysAvailable" class="panel panel-primary">
+                    <div class="panel-heading">
+                      <h2 class="panel-title">{{ streaming.name }}</h2>
+                      <span v-if="streaming.isPayPerView" class="label label-danger">Pay Per View</span>
+                      <br v-if="!streaming.isPayPerView">
+                    </div>
+                    <div class="panel-body text-center">
+                      <img v-bind:src="streaming.coverPictureUrl" height="150">
+                      <hr> 
+                      <div class="text-info">
+                        {{ streaming.type }}  
+                      </div>
+                      <hr>
+                      <router-link :to="`/vod/${streaming.id}`"><div class="btn btn-primary">Watch now!</div></router-link>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
         <hr>
       </div>
@@ -47,12 +85,15 @@
     props: [
       'config',
       'eventBus',
-      'janusAlert',
       'session'
     ],
     data () {
       return {
-        catalog: null
+        catalog: null,
+        alert: {
+          show: false,
+          message: null
+        }
       }
     },
     created () {
@@ -60,33 +101,62 @@
       const session = this.session;
       const i = this;
 
-      // this.eventBus.$once('JanusReady', function () {
-      //   eventBus.$emit('getJanusStreamsList', null);
-      // });
-
-      // const updateCatalog = this.updateCatalog;
-      // this.eventBus.$once('setJanusStreamsList', function (result) {
-      //   updateCatalog(result);
-      // });
-
-      // this.eventBus.$emit('JanusReady?', null);
-
       this.$http.get(`${this.config.backend}/user/content`,
       {
         headers: {
-          'Authorization': session.userToken
+          'Authorization': session.token
         }
       }).then((response) => {
-        console.log(JSON.stringify(response));
         i.updateCatalog(response.body);
-      }).catch((error) => {
-        console.log(JSON.stringify(error));       
+      }).catch((response) => {
+        switch(response.status) {
+          case 500:
+            i.updateAlert({
+              show: true,
+              message: 'Internal server error'
+            });
+            break;
+          case 404:
+            i.updateAlert({
+              show: true,
+              message: 'Not found'
+            });
+            break;
+          case 401:
+          case 403:
+            localStorage.removeItem(`streamrain-${i.config.tenant.name.replace(/\s/g, '')}-session`);
+            i.eventBus.$emit('removeVueSession', null);
+            i.updateAlert({
+              show: true,
+              message: 'The session has expired, please log in again'
+            });
+            break;
+          default:
+            updateAlert({
+              show: true,
+              message: 'An error has occurred'
+            });
+        }
       });
-
     },
     methods: {
       updateCatalog: function (catalog) {
         this.catalog = catalog;
+      },
+      updateAlert: function (alert) {
+        this.alert = alert;
+      },
+      getDate: function(UNIX_timestamp){
+        let a = new Date(UNIX_timestamp * 1000);
+        let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        let year = a.getFullYear();
+        let month = months[a.getMonth()];
+        let date = a.getDate();
+        let hour = a.getHours();
+        let min = a.getMinutes();
+        let sec = a.getSeconds();
+        let time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min ;
+        return time;
       }
     }
   }

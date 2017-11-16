@@ -18,7 +18,7 @@
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li v-if="!session"><router-link to="/login">Log In</router-link></li>
-            <li v-if="session"><router-link to="/logout">Welcome, {{ session.username }}</router-link></li>
+            <li v-if="session"><router-link to="/logout">Welcome, {{ session.nickname }}</router-link></li>
             <li><router-link to="/signup"><span class="text-danger">Sign Up!</span></router-link></li>
           </ul>
         </div>
@@ -60,15 +60,20 @@
       }
     },
     created () {
+      this.session = JSON.parse(localStorage.getItem(`streamrain-${this.config.tenant.name.replace(/\s/g, '')}-session`));
+
       const updateSession = this.updateSession;
       const removeSession = this.removeSession;
+
       this.eventBus.$on('setJanusAlert', function (janusAlert) {
         this.janusAlert = janusAlert;
       }, this);
-      this.eventBus.$on('setSession', function (session) {
+
+      this.eventBus.$on('setVueSession', function (session) {
         updateSession(session);
+
       }, this);
-      this.eventBus.$on('removeSession', function () {
+      this.eventBus.$on('removeVueSession', function () {
         removeSession();
       }, this);
     },
