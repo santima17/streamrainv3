@@ -16,7 +16,7 @@ public class StreamRainMongoDbDAO implements IDAOMongoDBService {
 			String tenantID) {
 		try {
 			MongoClient mongo = new MongoClient("localhost", 27017);
-			DB db = mongo.getDB("streamrain");
+			DB db = mongo.getDB(tenantID);
 			DBCollection table = db.getCollection("userChatMessage");
 			BasicDBObject document = new BasicDBObject();
 			document.put("userNickname", userNickname);
