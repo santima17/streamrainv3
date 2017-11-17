@@ -111,6 +111,18 @@ public class ContentUserController {
 		return response;
     }
     
+    @RequestMapping(value = "/addChatMessageToContent", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserContentCommentDto> addChatMessageToContent(@RequestBody UserContentCommentDto userContentCommentDto) {
+    	boolean voteOk = contentService.addChatMessageToContent(userContentCommentDto, sessionService.getCurrentTenant());
+        ResponseEntity<UserContentCommentDto> response;
+        if (voteOk) {
+            response = new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+		return response;
+    }
+    
     @RequestMapping(value = "/addViewToContent", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserContentViewDto> addViewToContent(@RequestBody UserContentViewDto userContentViewDto) {
     	boolean voteOk = contentService.addViewToContent(userContentViewDto, sessionService.getCurrentTenant());

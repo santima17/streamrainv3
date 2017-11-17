@@ -10,5 +10,6 @@
 	<bean id="daoUserService" class="com.tsi2.streamrain.dao.implementations.StreamRainMySQLUserDAO"/>
 	<bean id="daoJanusService" class="com.tsi2.streamrain.dao.implementations.StreamRainMySQLJanusDAO"/>
 	<bean id="daoMainService" class="com.tsi2.streamrain.dao.implementations.StreamRainMySQLMainDAO"/>
+	<bean id="daoMongoDBService" class="com.tsi2.streamrain.dao.implementations.StreamRainMongoDbDAO"/>
 	
 </beans>

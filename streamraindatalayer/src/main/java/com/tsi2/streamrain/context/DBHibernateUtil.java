@@ -14,6 +14,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.springframework.util.StringUtils;
 
+
 /**
  * Hibernate Utility class with a convenient method to get Session Factory
  * object.
@@ -43,7 +44,7 @@ public class DBHibernateUtil {
 			throw new ExceptionInInitializerError(ex);
 		}
 	}
-
+	
 	public static Session getSessionFactoryGenerator(final String tenantID) {
 		if (StringUtils.isEmpty(currentTenantID) || (!tenantID.equals(currentTenantID))) {
 			currentTenantID = tenantID;
@@ -56,4 +57,5 @@ public class DBHibernateUtil {
 	public static Session getSessionFactoryMain() {
 		return sessionFactoryMain.openSession();
 	}
+	
 }

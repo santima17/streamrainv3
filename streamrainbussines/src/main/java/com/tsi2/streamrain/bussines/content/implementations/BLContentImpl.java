@@ -7,8 +7,10 @@ import java.util.Set;
 
 import com.tsi2.streamrain.bussines.content.interfaces.IBLContent;
 import com.tsi2.streamrain.context.StremRainDataContextLoader;
+import com.tsi2.streamrain.dao.implementations.StreamRainMongoDbDAO;
 import com.tsi2.streamrain.dao.implementations.StreamRainMySQLDAO;
 import com.tsi2.streamrain.dao.implementations.StreamRainMySQLUserDAO;
+import com.tsi2.streamrain.dao.interfaces.IDAOMongoDBService;
 import com.tsi2.streamrain.dao.interfaces.IDAOService;
 import com.tsi2.streamrain.dao.interfaces.IDAOUserService;
 import com.tsi2.streamrain.model.generator.Categories;
@@ -30,6 +32,8 @@ public class BLContentImpl implements IBLContent {
 	
 	IDAOUserService daoUserService = (StreamRainMySQLUserDAO) StremRainDataContextLoader.contextLoader().getBean("daoUserService");
 		
+	IDAOMongoDBService daoMongoDbService = (StreamRainMongoDbDAO) StremRainDataContextLoader.contextLoader().getBean("daoMongoDBService");
+	
 	public Integer saveContent(Contents contents, final List<Integer> idCategories, final List<Integer> idSimilarContent, final String tenantID) {
 		try {
 			Set<Categories> categories = new HashSet<Categories>();
@@ -179,6 +183,12 @@ public class BLContentImpl implements IBLContent {
 			ex.printStackTrace();
 			return false;
 		}
+	}
+
+	public boolean addChatMessageToContent(Integer contentID, String userNickname, String text, boolean delete,
+			String tenantID) {
+		daoMongoDbService.saveChatMessageToContent(contentID, userNickname, text, delete, tenantID);
+		return true;
 	}
 	
 
