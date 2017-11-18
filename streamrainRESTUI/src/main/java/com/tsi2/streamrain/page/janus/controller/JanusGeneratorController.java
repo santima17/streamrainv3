@@ -119,7 +119,7 @@ public class JanusGeneratorController extends AbstractController {
 			BindingResult result, HttpServletRequest request) {
 		
 		String siteURL = request.getRequestURL().toString();
-		JANUS_CHAT_ROOM_URL += siteURL.split("/createServer")[0] + JANUS_CHAT_ROOM_URL_POSTFIX; 
+		JANUS_CHAT_ROOM_URL = siteURL.split("/createServer")[0] + JANUS_CHAT_ROOM_URL_POSTFIX + "/" + janusServerDto.getTokenJanusCreationTokens(); 
 		
 		String urlTenant = request.getRequestURL().toString();
 		String tentantID = urlTenant.substring(7,urlTenant.indexOf("."));

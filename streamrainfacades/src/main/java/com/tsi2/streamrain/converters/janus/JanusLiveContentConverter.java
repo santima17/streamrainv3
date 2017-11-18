@@ -20,7 +20,9 @@ public class JanusLiveContentConverter implements IConverter<JanusLiveOnlyInfoDt
 		janusLiveOnlyInfoDto.setDescription(source.getDescription());
 		janusLiveOnlyInfoDto.setPermanent(true);
 		janusLiveOnlyInfoDto.setId(source.getId());
-		janusLiveOnlyInfoDto.setPin(source.getLiveOnlyContents().getJanusPin());
+		if (source.getIsPayPerView()) {
+			janusLiveOnlyInfoDto.setPin(source.getLiveOnlyContents().getJanusPin());
+		}
 		janusLiveOnlyInfoDto.setType(RTP);
 		janusLiveOnlyInfoDto.setVideo(source.getLiveOnlyContents().isJanusVideo());
 		janusLiveOnlyInfoDto.setVideopt(source.getLiveOnlyContents().getJanusVideoPt());

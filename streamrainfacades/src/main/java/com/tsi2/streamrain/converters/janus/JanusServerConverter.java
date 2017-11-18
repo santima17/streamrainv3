@@ -23,6 +23,7 @@ public class JanusServerConverter implements IConverter<JanusServerDto, JanusSer
 		janusServers.setName(source.getName());
 		janusServers.setStreamrainRestToken(source.getStreamrainRestToken());
 		janusServers.setStunServer(source.getStunServer());
+		janusServers.setTokenJanusCreationTokens(source.getJanusCreationTokens().getJanusToken());
 		return janusServers;
 	}
 

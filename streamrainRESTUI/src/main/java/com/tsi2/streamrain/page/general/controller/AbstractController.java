@@ -222,7 +222,7 @@ public class AbstractController {
 		}
 
 		// CARGA 6 SEGUN DOCUMENTO
-		public boolean liveOnly(final String backendToken, final String url, final JanusLiveOnlyInfoDto liveOnlyInfo, final String admin_key) {
+		public boolean liveOnly(final String backendToken, final String url, JanusLiveOnlyInfoDto liveOnlyInfo, final String admin_key) {
 
 			JanusLiveOnlyDto jsonDto = new JanusLiveOnlyDto();
 			jsonDto.setJanus("message");
@@ -239,7 +239,7 @@ public class AbstractController {
 		}
 
 		// CARGA 6 SEGUN DOCUMENTO
-		public boolean chatRoom(final String backendToken, final String url, final JanusChatRoomInfoDto chatRoomInfo, final String admin_key) {
+		public boolean chatRoom(final String backendToken, final String url, JanusChatRoomInfoDto chatRoomInfo, final String admin_key) {
 
 			JanusChatRoomDto jsonDto = new JanusChatRoomDto();
 			jsonDto.setJanus("message");

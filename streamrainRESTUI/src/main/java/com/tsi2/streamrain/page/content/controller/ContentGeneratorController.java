@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -63,9 +64,13 @@ public class ContentGeneratorController extends AbstractController {
 	
 	@Value("${location.file.path}")
 	private String location;
-	
+		
 	@Value("${janus.chatRoom.url}")
-	private String JANUS_CHAT_ROOM_URL;
+	private String JANUS_CHAT_ROOM_URL_POSTFIX;
+	
+	private String JANUS_CHAT_ROOM_URL = "";
+	
+	private String siteURL;
 	
 	private static final String ADD_TOKEN = "add_token";
 
@@ -108,7 +113,7 @@ public class ContentGeneratorController extends AbstractController {
     
         
 	@RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<BindingResult> insertContent(@RequestParam("picture") MultipartFile picture, @RequestParam("video") MultipartFile video, @RequestPart("datos") String datos, BindingResult result) {
+    public ResponseEntity<BindingResult> insertContent(@RequestParam("picture") MultipartFile picture, @RequestParam("video") MultipartFile video, @RequestPart("datos") String datos, BindingResult result, HttpServletRequest request) {
     	ResponseEntity<BindingResult> response = new ResponseEntity<>(HttpStatus.CREATED);
     	    	
     	if (result.hasErrors()) {
@@ -134,8 +139,10 @@ public class ContentGeneratorController extends AbstractController {
 			}else if ("3".equals(contentDto.getType())) {
 				contentDto.setType("Evento Deportivo");
 				contentDto.setAlwaysAvailable(false);
-				UUID janus_pin = UUID.randomUUID();
-				contentDto.setJanus_pin(janus_pin.toString());
+				if (contentDto.getIsPayPerView()){
+					UUID janus_pin = UUID.randomUUID();
+					contentDto.setJanus_pin(janus_pin.toString());
+				}
 				isLiveContent = true;
 				contentDto.setStorageUrl("n/a");
 				contentDto.setJanus_audio_port(ThreadLocalRandom.current().nextInt(5000, 14999));
@@ -143,8 +150,10 @@ public class ContentGeneratorController extends AbstractController {
 			}else if ("4".equals(contentDto.getType())) {
 				contentDto.setType("Evento Espectaculo");
 				contentDto.setAlwaysAvailable(false);
-				UUID janus_pin = UUID.randomUUID();
-				contentDto.setJanus_pin(janus_pin.toString());
+				if (contentDto.getIsPayPerView()){
+					UUID janus_pin = UUID.randomUUID();
+					contentDto.setJanus_pin(janus_pin.toString());
+				}
 				isLiveContent = true;
 				contentDto.setStorageUrl("n/a");
 				contentDto.setJanus_audio_port(ThreadLocalRandom.current().nextInt(5000, 14999));
@@ -160,6 +169,7 @@ public class ContentGeneratorController extends AbstractController {
 					//newContentDto.setJanus_audio_port(5000 + idContent);
 					//newContentDto.setJanus_video_port(15000 + idContent);
 					//contentService.updateContent(newContentDto, sessionService.getCurrentTenant());
+					siteURL = request.getRequestURL().toString();
 					JanusLiveOnlyInfoDto janusLiveOnlyInfoDto = createJanusLiveOnlyInfoDto(newContentDto);
 					activateJanusServer(sessionService.getCurrentTenant(), janusLiveOnlyInfoDto);
 				}
@@ -205,6 +215,7 @@ public class ContentGeneratorController extends AbstractController {
     	List<JanusServerDto> list = janusService.getAllJanusServerActive(tenantID);
     	boolean ok;
 		for(JanusServerDto janusServerDto : list) {
+			JANUS_CHAT_ROOM_URL = siteURL.split("/createContent")[0] + "/janus" +JANUS_CHAT_ROOM_URL_POSTFIX + "/" + janusServerDto.getTokenJanusCreationTokens(); 
 			ok = createSession(janusServerDto.getStreamrainRestToken(), janusServerDto.getJanusUrl());
 			if (ok) {
 				ok = attachSessionStreaming(janusServerDto.getStreamrainRestToken(), janusServerDto.getJanusUrl());
