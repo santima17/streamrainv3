@@ -29,7 +29,9 @@ public interface IJanusService {
 
 	JanusServerDto getJanusServer(final Integer janusServerId, final String tenantID);
 
-	List<JanusCreateTokenDto> getAllJanusCreationTokens(final String currentTenant);
+	List<JanusCreateTokenDto> getAllJanusCreationTokens(final String tenantID);
+
+	Integer getJanusServerIdForJanusCreationToken(final String tokenJanusCreationTokens, final String tenantID);
 	
 
 }

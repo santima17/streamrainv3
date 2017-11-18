@@ -39,7 +39,6 @@ public interface IBLContent {
 
 	boolean spolierMarkComment(final String userNickName, final Integer userCommentId, final String tenantID);
 
-	boolean addChatMessageToContent(final Integer contentID, final String userNickname, final String text, final boolean delete,
-			String tenantID);
+	boolean addChatMessageToContent(final Integer idJanusServer, final String jsonChatMessage, String tenantID);
 
 }

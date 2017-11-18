@@ -2,8 +2,6 @@ package com.tsi2.streamrain.page.content.controller;
 
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,7 +22,6 @@ import com.tsi2.streamrain.datatypes.content.UserContentViewDto;
 import com.tsi2.streamrain.services.category.interfaces.ICategoryService;
 import com.tsi2.streamrain.services.content.interfaces.IContentService;
 import com.tsi2.streamrain.services.session.interfaces.ISessionService;
-import com.tsi2.streamrain.utils.Utils;
 
 @RestController
 @RequestMapping("/user/content")
@@ -38,8 +35,7 @@ public class ContentUserController {
 	
 	@Autowired
 	ISessionService sessionService;
-
-	
+		
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ContentDto> getAllContent() {
         return contentService.getAllContents(sessionService.getCurrentTenant());
@@ -110,19 +106,7 @@ public class ContentUserController {
         }
 		return response;
     }
-    
-    @RequestMapping(value = "/addChatMessageToContent", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserContentCommentDto> addChatMessageToContent(@RequestBody UserContentCommentDto userContentCommentDto) {
-    	boolean voteOk = contentService.addChatMessageToContent(userContentCommentDto, sessionService.getCurrentTenant());
-        ResponseEntity<UserContentCommentDto> response;
-        if (voteOk) {
-            response = new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-		return response;
-    }
-    
+        
     @RequestMapping(value = "/addViewToContent", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserContentViewDto> addViewToContent(@RequestBody UserContentViewDto userContentViewDto) {
     	boolean voteOk = contentService.addViewToContent(userContentViewDto, sessionService.getCurrentTenant());
@@ -151,5 +135,5 @@ public class ContentUserController {
     		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     	}
     }
-    
+        
 }

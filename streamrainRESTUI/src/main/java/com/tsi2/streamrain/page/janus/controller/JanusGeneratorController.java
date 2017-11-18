@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tsi2.streamrain.datatypes.content.ChatMessageDto;
+import com.tsi2.streamrain.datatypes.content.UserContentCommentDto;
 import com.tsi2.streamrain.datatypes.janus.JanusAttachedSessionDto;
 import com.tsi2.streamrain.datatypes.janus.JanusBackendTokenDto;
 import com.tsi2.streamrain.datatypes.janus.JanusChatRoomDto;
@@ -35,7 +37,7 @@ import com.tsi2.streamrain.utils.Utils;
 
 @RestController
 @RequestMapping("/generator/janus")
-public class JanusController extends AbstractController {
+public class JanusGeneratorController extends AbstractController {
 
 	@Value("${janus.chatRoom.url}")
 	private String JANUS_CHAT_ROOM_URL;
@@ -173,10 +175,22 @@ public class JanusController extends AbstractController {
 		return janusService.getAllJanusAdminUrl(sessionService.getCurrentTenant());
 	}
 
-	@RequestMapping(value = "/janusUrl", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<String> getAllJanusUrl() {
-		return janusService.getAllJanusUrl(sessionService.getCurrentTenant());
-	}
+		
+	@RequestMapping(value = "/keepChatMessage/{tokenJanusCreationTokens}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserContentCommentDto> addChatMessageToContent(@PathVariable String tokenJanusCreationTokens, @RequestBody ChatMessageDto chatMessageDto) {
+    	Integer idJanusServer = janusService.getJanusServerIdForJanusCreationToken(tokenJanusCreationTokens, sessionService.getCurrentTenant());
+    	if (idJanusServer == null) {
+    		return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    	}
+		boolean voteOk = contentService.addChatMessageToContent(idJanusServer, chatMessageDto.toString(), sessionService.getCurrentTenant());
+        ResponseEntity<UserContentCommentDto> response;
+        if (voteOk) {
+            response = new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+		return response;
+    }
 
 	// CARGA 1 SEGUN DOCUMENTO
 	public boolean sendBackendToken(final String backendToken, final String url, final String secret) {

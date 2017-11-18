@@ -125,10 +125,8 @@ public class ContentServiceImpl implements IContentService {
 		return janusLiveContentInfoConverter.convertAll(liveOnlyList);
 	}
 
-	public boolean addChatMessageToContent(final UserContentCommentDto userContentCommentDto, final String tenantID) {
-		return contentBussines.addChatMessageToContent(userContentCommentDto.getContentID(),
-				userContentCommentDto.getUserNickname(), userContentCommentDto.getText(),
-				userContentCommentDto.isDelete(), tenantID);
+	public boolean addChatMessageToContent(final Integer idJanusServer, final String jsonChatMessage, final String tenantID) {
+		return contentBussines.addChatMessageToContent(idJanusServer, jsonChatMessage, tenantID);
 	}
 
 }

@@ -185,9 +185,8 @@ public class BLContentImpl implements IBLContent {
 		}
 	}
 
-	public boolean addChatMessageToContent(Integer contentID, String userNickname, String text, boolean delete,
-			String tenantID) {
-		daoMongoDbService.saveChatMessageToContent(contentID, userNickname, text, delete, tenantID);
+	public boolean addChatMessageToContent(final Integer idJanusServer, final String jsonChatMessage, String tenantID) {
+		daoMongoDbService.saveChatMessageToContent(idJanusServer, jsonChatMessage, tenantID);
 		return true;
 	}
 	

@@ -40,6 +40,6 @@ public interface IContentService {
 
 	List<JanusLiveOnlyInfoDto> getAllLiveOnlyContents(final String tenantID);
 
-	boolean addChatMessageToContent(final UserContentCommentDto userContentCommentDto, final String tenantID);
+	boolean addChatMessageToContent(final Integer idJanusServer, final String jsonChatMessage, final String tenantID);
 
 }
