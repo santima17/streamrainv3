@@ -20,6 +20,10 @@ public interface IBLUser {
 
 	void updateUser(final Users user, Users oldUser, final String currentTenant);
 
-	void deleteUser(Users oldUser, final String currentTenant);
+	void deleteUser(final Users oldUser, final String currentTenant);
+
+	String getJanusTokenForUser(final String userNickname, final String tenantID);
+
+	List<String> getJanusPinForUser(final String userNickname, final String tenantID);
 
 }

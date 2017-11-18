@@ -48,8 +48,18 @@ public class UserServiceImpl implements IUserService{
 		userBussines.updateUser((Users)userConverter.deConverter(user), (Users)userConverter.deConverter(userOld), tenantID);
 	}
 
-	public void deleteUser(UserDto userOld, final String tenantID) {
+	public void deleteUser(final UserDto userOld, final String tenantID) {
 		userBussines.deleteUser((Users)userConverter.deConverter(userOld), tenantID); 
+	}
+
+	@Override
+	public String getJanusTokenForUser(final String userNickname, final String tenantID) {
+		return userBussines.getJanusTokenForUser(userNickname, tenantID);
+	}
+
+	@Override
+	public List<String> getJanusPinForUser(final String userNickname, final String tenantID) {
+		return userBussines.getJanusPinForUser(userNickname, tenantID);
 	}
 
 
