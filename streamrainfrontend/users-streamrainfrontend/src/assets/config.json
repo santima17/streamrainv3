@@ -3,5 +3,5 @@
   "tenant": {
     "name": "Default Tenant"
   },
-  "debug_level": 0
+  "debug_level": 1
 }

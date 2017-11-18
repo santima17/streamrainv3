@@ -193,7 +193,7 @@
         //
         chatroom: {
           ready: false,
-          myId: null,
+          myId: this.session.nickname,
           messages: [],
           participants: [],
           participantsSelected: [],
@@ -217,16 +217,13 @@
       });
 
       this.eventBus.$on('janusStartingStream', function () {
-        console.error('janusStartingStream');
       });
 
       this.eventBus.$on('janusStartedStream', function () {
-        console.error('janusStartedStream');
         i.stream.ready = true;
       });
 
       this.eventBus.$on('janusRemoteStream', function (obj) {
-        console.error('janusRemoteStream');
         const stream = obj.stream;
         const browser = obj.browser;
         this.currentStream = stream;
@@ -239,27 +236,6 @@
           }
           return;
         }
-        // $('#stream').append('<video class="rounded centered hide" id="remotevideo" width=320 height=240 autoplay/>');
-        // Show the stream and hide the spinner when we get a playing event
-        // i.$refs.video.bind('playing', function () {
-        //   // $('#waitingvideo').remove();
-        //   // if (this.videoWidth) $('#remotevideo').removeClass('hide').show();
-        //   // if (spinner !== null && spinner !== undefined) spinner.stop();
-        //   // spinner = null;
-        //   const videoTracks = stream.getVideoTracks();
-        //   if (videoTracks === null || videoTracks === undefined || videoTracks.length === 0) return;
-        //   const width = this.videoWidth;
-        //   const height = this.videoHeight;
-        //   // $('#curres').removeClass('hide').text(width+'x'+height).show();
-        //   if (browser.name === 'firefox') {
-        //     // Firefox Stable has a bug: width and height are not immediately available after a playing
-        //     // setTimeout(function() {
-        //     //   const width = $("#remotevideo").get(0).videoWidth;
-        //     //   const height = $("#remotevideo").get(0).videoHeight;
-        //     //   $('#curres').removeClass('hide').text(width+'x'+height).show();
-        //     // }, 2000);
-        //   }
-        // });
         const videoTracks = stream.getVideoTracks();
         if (videoTracks && videoTracks.length &&
           (
@@ -311,7 +287,6 @@
       });
 
       this.eventBus.$on('janusStoppedStream', function () {
-        console.error('janusStoppedStream');
       });
 
       this.eventBus.$on('janusTextroomNewPublicMessage', function (message) {

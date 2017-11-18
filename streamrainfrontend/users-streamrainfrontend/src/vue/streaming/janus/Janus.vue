@@ -6,14 +6,15 @@
   export default {
     props: [
       'config',
-      'eventBus'
+      'eventBus',
+      'session'
     ],
     created () {
       const i = this;
 
       this.callBackend(() => {
-        this.janusInit();
-      });      
+        i.janusInit();
+      });  
 
       this.eventBus.$on('JanusReady?', function () {
         if (i.streaming.ready && i.textroom.ready) {
@@ -99,7 +100,7 @@
         textroom: {
           ready: false,
           handle: null,
-          myusername: null,
+          myusername: this.session.nickname || null,
           myid: null,
           currentTextroom: null,
           participants: {},
@@ -111,17 +112,45 @@
       callBackend: function (callback) {
         // TODO: definir bien las rutas y parámetros.
         const i = this;
-        this.$http.get(`${this.config.backend}/user/janus/janusServers`)
-        .then((result) => { 
-          i.updateJanusInf(result.body);
+        this.$http.get(`${this.config.backend}/user/janus/servers`,
+        {
+          headers: {
+            'Authorization': i.session.token
+          }
+        }).then((response) => { 
+          i.updateJanusInf(response.body);
           return callback (null);
+        }).catch((response) => {
+          switch(response.status) {
+            case 500:
+              i.eventBus.$emit('setJanusAlert', {
+                message: 'Janus: connection error (Internal Server Error)'
+              });
+              break;
+            case 404:
+              i.eventBus.$emit('setJanusAlert', {
+                message: 'Janus: connection error (Not Found)'
+              });
+              break;
+            case 401:
+            case 403:
+              localStorage.removeItem(`streamrain-${i.config.tenant.name.replace(/\s/g, '')}-session`);
+              i.eventBus.$emit('removeVueSession', null);
+              i.eventBus.$emit('setJanusAlert', {
+                message: 'The session has expired, please log in again'
+              });
+              break;
+            default:
+              i.eventBus.$emit('setJanusAlert', {
+                message: 'Janus: connection error'
+              });
+          }
         });
       },
-      updateJanusInf: function (inf) {
-        this.server = inf.janus;
-        this.userToken = inf.token;
+      updateJanusInf: function (servers) {
+        this.server = servers;
         // HARDCODEADO
-        this.textroom.myusername = `USER_${Janus.randomString(3)}`;
+        this.userToken = 'userToken1';
       },
       leaveStreaming: function () {
         const request = {

@@ -24,18 +24,19 @@
         </div>
       </div>
     </nav>
-    <router-view 
+    <router-view
       :config="config"
       :eventBus="eventBus"
       :janusAlert="janusAlert"
       :session="session"
     >
     </router-view>
-    <!-- <streamrain-janus 
+    <streamrain-janus v-if="session"
       :config="config"
       :eventBus="eventBus"
+      :session="session"
     >
-    </streamrain-janus> -->
+    </streamrain-janus>
     <footer class="container-fluid text-center">
       <p>Streamrain {{ config.tenant.name }} footer</p>
     </footer>
@@ -60,10 +61,11 @@
       }
     },
     created () {
-      this.session = JSON.parse(localStorage.getItem(`streamrain-${this.config.tenant.name.replace(/\s/g, '')}-session`));
+      this.session = JSON.parse(localStorage.getItem(`streamrain-${this.config.tenant.name.replace(/\s/g, '')}-session`)) || {};
 
       const updateSession = this.updateSession;
       const removeSession = this.removeSession;
+      const eventBus = this.eventBus;
 
       this.eventBus.$on('setJanusAlert', function (janusAlert) {
         this.janusAlert = janusAlert;
@@ -71,8 +73,8 @@
 
       this.eventBus.$on('setVueSession', function (session) {
         updateSession(session);
-
       }, this);
+
       this.eventBus.$on('removeVueSession', function () {
         removeSession();
       }, this);

@@ -132,7 +132,7 @@
             });
             break;
           default:
-            updateAlert({
+            i.updateAlert({
               show: true,
               message: 'An error has occurred'
             });
