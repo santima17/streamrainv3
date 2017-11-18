@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tsi2.streamrain.datatypes.janus.JanusAccessInformationDto;
 import com.tsi2.streamrain.datatypes.user.UserDto;
 import com.tsi2.streamrain.services.session.interfaces.ISessionService;
 import com.tsi2.streamrain.services.user.interfaces.IUserService;
@@ -57,6 +58,22 @@ public class UserController {
             response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
             response = new ResponseEntity<>(user, HttpStatus.OK);
+        }
+        return response;
+    }
+    
+    @RequestMapping(value = "/accesinformation/{userNickname}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<JanusAccessInformationDto> getAccessInformation(@PathVariable String userNickname) {
+    	UserDto user = userService.getUserByNickname(userNickname, sessionService.getCurrentTenant());
+    	JanusAccessInformationDto accessInfo = new JanusAccessInformationDto();
+    	accessInfo.setBaned(user.getIsBanned()); 
+    	accessInfo.setJanusPins(userService.getJanusPinForUser(userNickname,sessionService.getCurrentTenant()));
+    	accessInfo.setJanusToken(userService.getJanusTokenForUser(userNickname,sessionService.getCurrentTenant()));
+		ResponseEntity<JanusAccessInformationDto> response;
+        if (user == null) {
+            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            response = new ResponseEntity<>(accessInfo, HttpStatus.OK);
         }
         return response;
     }

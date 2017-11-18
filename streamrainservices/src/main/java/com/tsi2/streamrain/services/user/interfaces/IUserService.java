@@ -20,6 +20,10 @@ public interface IUserService {
 
 	void updateUser(final UserDto user, UserDto userOld, final String currentTenant);
 	
-	void deleteUser(UserDto userOld, final String currentTenant);
+	void deleteUser(final UserDto userOld, final String currentTenant);
+	
+	String getJanusTokenForUser(final String userNickname, final String tenantID);
+
+	List<String> getJanusPinForUser(final String userNickname, final String tenantID);
 
 }

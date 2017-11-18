@@ -35,22 +35,23 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
 			throws AuthenticationException, IOException, ServletException {
 
 		String url = req.getRequestURL().toString();
-		String tentantID = url.substring(7,url.indexOf("."));
+		String tenantID = url.substring(7,url.indexOf("."));
 		InputStream body = req.getInputStream();
 
+		
 		User user = new ObjectMapper().readValue(body, User.class);
 
 		UsernamePasswordAuthenticationToken userToAuth = new UsernamePasswordAuthenticationToken(user.getUsername(),
 				user.getPassword(), Collections.emptyList());
 
 		if (getAuthenticationManager() instanceof UserAuthenticationManager) {
-			((UserAuthenticationManager) getAuthenticationManager()).getSessionService().setCurrentTenant(tentantID);
+			((UserAuthenticationManager) getAuthenticationManager()).getSessionService().setCurrentTenant(tenantID);
 			if(user.isTwitter()) {
 				((UserAuthenticationManager) getAuthenticationManager()).setTwitterLogin(true);
 				((UserAuthenticationManager) getAuthenticationManager()).setTwitterID(user.getTwitterID());
 			}
 		}else if (getAuthenticationManager() instanceof GeneratorAuthenticationManager) {
-			((GeneratorAuthenticationManager) getAuthenticationManager()).getSessionService().setCurrentTenant(tentantID);
+			((GeneratorAuthenticationManager) getAuthenticationManager()).getSessionService().setCurrentTenant(tenantID);
 		}
 
 		return getAuthenticationManager().authenticate(userToAuth);
