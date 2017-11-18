@@ -134,6 +134,7 @@ public class JanusGeneratorController extends AbstractController {
 		
 		UUID token = UUID.randomUUID();
 		janusServerDto.setStreamrainRestToken(token.toString());
+		janusServerDto.setEnable(true);
 		boolean ok = janusService.createJanusServer(janusServerDto, tentantID);
 
 		// JANUS PROCESS

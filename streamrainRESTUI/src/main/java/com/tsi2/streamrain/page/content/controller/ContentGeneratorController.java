@@ -184,20 +184,20 @@ public class ContentGeneratorController extends AbstractController {
 	
     private JanusLiveOnlyInfoDto createJanusLiveOnlyInfoDto(ContentDto contentDto) {
 		JanusLiveOnlyInfoDto dto = new JanusLiveOnlyInfoDto();
+		dto.setId(contentDto.getId());
 		dto.setAudio(true);
 		dto.setAudiopt(contentDto.getJanus_audio_pt());
 		dto.setAudiortpmap(contentDto.getJanus_audio_rtp_map());
+		dto.setAudioport(contentDto.getJanus_audio_port());
 		dto.setDescription(contentDto.getDescription());
 		dto.setPin(contentDto.getJanus_pin());
-		dto.setPpv(contentDto.getIsPayPerView());
-		dto.setType(contentDto.getType());
+		dto.setType("rtp");
 		dto.setVideo(true);
 		dto.setVideopt(contentDto.getJanus_video_pt());
 		dto.setVideortpmap(contentDto.getJanus_video_rtp_map());
-		dto.setAudioport(contentDto.getJanus_audio_port());
 		dto.setVideoport(contentDto.getJanus_video_port());
 		dto.setPermanent(true);
-		dto.setRequest("create");
+		dto.setPpv(contentDto.getIsPayPerView());
 		return dto;
 	}
 
