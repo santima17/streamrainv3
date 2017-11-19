@@ -66,7 +66,7 @@ public class UserController {
     public ResponseEntity<JanusAccessInformationDto> getAccessInformation(@PathVariable String userNickname) {
     	UserDto user = userService.getUserByNickname(userNickname, sessionService.getCurrentTenant());
     	JanusAccessInformationDto accessInfo = new JanusAccessInformationDto();
-    	accessInfo.setBaned(user.getIsBanned()); 
+    	accessInfo.setBanned(user.getIsBanned()); 
     	accessInfo.setJanusPins(userService.getJanusPinForUser(userNickname,sessionService.getCurrentTenant()));
     	accessInfo.setJanusToken(userService.getJanusTokenForUser(userNickname,sessionService.getCurrentTenant()));
 		ResponseEntity<JanusAccessInformationDto> response;

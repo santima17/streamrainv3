@@ -4,15 +4,16 @@ import java.util.List;
 
 public class JanusAccessInformationDto {
 	
-	private boolean isBaned;
+	private boolean isBanned;
 	private String janusToken;
 	private List<String> janusPins;
 	
-	public boolean isBaned() {
-		return isBaned;
+	
+	public boolean isBanned() {
+		return isBanned;
 	}
-	public void setBaned(boolean isBaned) {
-		this.isBaned = isBaned;
+	public void setBanned(boolean isBanned) {
+		this.isBanned = isBanned;
 	}
 	public String getJanusToken() {
 		return janusToken;
