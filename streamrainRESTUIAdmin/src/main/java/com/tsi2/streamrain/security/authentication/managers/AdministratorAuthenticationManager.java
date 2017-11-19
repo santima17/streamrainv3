@@ -16,7 +16,7 @@ public class AdministratorAuthenticationManager implements AuthenticationManager
 	@Value("${admin.user}")
 	private String storedUser;
 	
-	@Value("${admin.password}")
+	@Value("${admin.password}") 
 	private String storedPass;
 	
 	@Autowired
