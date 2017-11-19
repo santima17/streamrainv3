@@ -20,13 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tsi2.streamrain.datatypes.content.ChatMessageDto;
 import com.tsi2.streamrain.datatypes.content.UserContentCommentDto;
-import com.tsi2.streamrain.datatypes.janus.JanusAttachedSessionDto;
-import com.tsi2.streamrain.datatypes.janus.JanusBackendTokenDto;
-import com.tsi2.streamrain.datatypes.janus.JanusChatRoomDto;
 import com.tsi2.streamrain.datatypes.janus.JanusChatRoomInfoDto;
-import com.tsi2.streamrain.datatypes.janus.JanusCreateSessionDto;
 import com.tsi2.streamrain.datatypes.janus.JanusCreateTokenDto;
-import com.tsi2.streamrain.datatypes.janus.JanusLiveOnlyDto;
 import com.tsi2.streamrain.datatypes.janus.JanusLiveOnlyInfoDto;
 import com.tsi2.streamrain.datatypes.janus.JanusServerDto;
 import com.tsi2.streamrain.page.general.controller.AbstractController;
@@ -127,7 +122,11 @@ public class JanusGeneratorController extends AbstractController {
 		UUID token = UUID.randomUUID();
 		janusServerDto.setStreamrainRestToken(token.toString());
 		janusServerDto.setEnable(true);
-		boolean ok = janusService.createJanusServer(janusServerDto, tentantID);
+		boolean ok = false;
+		Integer idJanusServer = janusService.getJanusServerIdForJanusCreationToken(janusServerDto.getTokenJanusCreationTokens(), tentantID);
+		if (idJanusServer == null) {
+			ok = janusService.createJanusServer(janusServerDto, tentantID);
+		}
 
 		// JANUS PROCESS
 		ok = sendBackendToken(janusServerDto.getStreamrainRestToken(), janusServerDto.getAdminUrl(), janusServerDto.getAdminSecret());
