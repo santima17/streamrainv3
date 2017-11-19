@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="
+    http://www.springframework.org/schema/security 
+    http://www.springframework.org/schema/security/spring-security-4.2.xsd
+    http://www.springframework.org/schema/beans 
+    http://www.springframework.org/schema/beans/spring-beans-4.2.xsd">
+
+	<http pattern="/static/**" security="none" />
+
+	<http use-expressions="true" auto-config="false"
+		authentication-manager-ref="generatorAuthenticationManager" pattern="/generator/**">
+		<http-basic />
+		<intercept-url pattern="/generator/**" access="hasRole('ROLE_ADMINISTRATION')" />
+	</http>
+
+	<http use-expressions="true" auto-config="false"
+		authentication-manager-ref="administratorAuthenticationManager"
+		pattern="/administrator/**">
+		<http-basic />
+		<intercept-url pattern="/administrator/**" access="hasRole('ROLE_ADMINISTRATION')" />
+	</http>
+
+	<http use-expressions="true" auto-config="false"
+		authentication-manager-ref="userAuthenticationManager" pattern="/user/**">
+		<http-basic />
+		<intercept-url pattern="/user/**" access="hasRole('ROLE_ADMINISTRATION')" />
+	</http>
+
+	<authentication-manager id="generatorAuthenticationManager">
+		<authentication-provider ref="generatorAuthenticationProvider"/>
+	</authentication-manager>
+
+	<authentication-manager id="administratorAuthenticationManager">
+		<authentication-provider user-service-ref="administratorAuthenticationProvider"/>
+	</authentication-manager>
+
+	<authentication-manager id="userAuthenticationManager">
+		<authentication-provider ref="userAuthenticationProvider" />
+	</authentication-manager>
+
+	<http use-expressions="true">
+		<intercept-url pattern="/login*" access="isAnonymous()" />
+		<intercept-url pattern="/portal/**" access="isAuthenticated()" />
+		<intercept-url pattern="/auth/**" access="permitAll" />
+		
+		<csrf disabled="true"/>
+
+		<form-login login-page='/login.html' login-processing-url="/perform_login"
+			default-target-url="/welcome.html" authentication-failure-url="/login.html?error=true" />
+
+		<logout logout-success-url="/login.html" delete-cookies="JSESSIONID" />
+	</http>
+
+	<authentication-manager>
+		<authentication-provider>
+			<user-service>
+				<user name="user1" password="user1Pass" authorities="ROLE_USER" />
+			</user-service>
+		</authentication-provider>
+	</authentication-manager>
+</beans:beans>

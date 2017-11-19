@@ -21,3 +21,7 @@ mvn install
 cd $REPO_PATH'/streamrainRESTUI'
 mvn clean
 mvn install
+
+cd $REPO_PATH'/streamrainRESTUIGenerador'
+mvn clean
+mvn install
