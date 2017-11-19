@@ -62,8 +62,11 @@ import com.tsi2.streamrain.services.session.interfaces.ISessionService;
 @RequestMapping("/generator/createContent")
 public class ContentGeneratorController extends AbstractController {
 	
-	@Value("${location.file.path}")
-	private String location;
+	@Value("${location.file.path.video}")
+	private String locationVideo;
+	
+	@Value("${location.file.path.video}")
+	private String locationPicture;
 		
 	@Value("${janus.chatRoom.url}")
 	private String JANUS_CHAT_ROOM_URL_POSTFIX;
@@ -129,12 +132,12 @@ public class ContentGeneratorController extends AbstractController {
 			if ("1".equals(contentDto.getType())) {
 				contentDto.setType("Pelicula");
 				contentDto.setAlwaysAvailable(true);
-				String videoName = video.getOriginalFilename();
+				String videoName = locationVideo + video.getOriginalFilename();
 				contentDto.setStorageUrl(videoName);
 			}else if ("2".equals(contentDto.getType())) {
 				contentDto.setType("Serie");
 				contentDto.setAlwaysAvailable(true);
-				String videoName = video.getOriginalFilename();
+				String videoName = locationVideo + video.getOriginalFilename();
 				contentDto.setStorageUrl(videoName);
 			}else if ("3".equals(contentDto.getType())) {
 				contentDto.setType("Evento Deportivo");
@@ -161,9 +164,9 @@ public class ContentGeneratorController extends AbstractController {
 			}
 			Integer idContent = contentService.saveContent(contentDto, sessionService.getCurrentTenant());
 			if (idContent != null) {
-				recordFile(picture);
+				recordFile(locationPicture, picture);
 				if (!isLiveContent) {
-					recordFile(video);
+					recordFile(locationVideo, video);
 				}else {
 					ContentDto newContentDto = contentService.getContentById(idContent, sessionService.getCurrentTenant());
 					//newContentDto.setJanus_audio_port(5000 + idContent);
@@ -241,9 +244,9 @@ public class ContentGeneratorController extends AbstractController {
         	return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }else {
         	try {
-	        	String pictureName = recordFile(contentDto.getPicture());
+        		String pictureName = recordFile(locationPicture, contentDto.getPicture());
 	    		contentDto.setCoverPictureUrl(pictureName);
-	    		String videoName = recordFile(contentDto.getVideo());
+	    		String videoName = recordFile(locationVideo, contentDto.getVideo());
 	    		contentDto.setStorageUrl(videoName);
 	    		if ("1".equals(contentDto.getType())) {
 	    			contentDto.setType("Pelicula");
@@ -272,9 +275,9 @@ public class ContentGeneratorController extends AbstractController {
     	contentService.deleteContent(contentID, sessionService.getCurrentTenant());
     }
 	
-	private String recordFile(MultipartFile uploaded) throws Exception {
-				
-		String pathFile = location+uploaded.getOriginalFilename();
+    private String recordFile(String path, MultipartFile uploaded) throws Exception {
+		
+		String pathFile = path+uploaded.getOriginalFilename();
     	File localFile = new File(pathFile);
     	FileOutputStream os = null;
     	try {
