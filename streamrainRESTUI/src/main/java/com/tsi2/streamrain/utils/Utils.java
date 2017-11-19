@@ -293,11 +293,11 @@ public class Utils {
 	      return calendar.getTime(); 
 	 }
 	 
-	 public static String obtainPathTokenVOD(String nameFile, Integer days) {
+	 public static String obtainPathTokenVOD(String nameFile, Integer timeMiliSecs) {
 		try {
 	        String secret = "campeondelsiglo";
 	        String path = "/dash/"+nameFile;
-	        String expire = ""+((System.currentTimeMillis()/1000)+(days * 24 * 60 * 60));
+	        String expire = ""+((System.currentTimeMillis()/1000) + timeMiliSecs);
 	        String token = secret+path+expire;
    
 	        MessageDigest digester = MessageDigest.getInstance("MD5");

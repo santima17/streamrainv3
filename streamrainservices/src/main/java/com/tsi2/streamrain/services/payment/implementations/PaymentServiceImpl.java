@@ -38,4 +38,8 @@ public class PaymentServiceImpl implements IPaymentService {
 		return paymentMethodConverter.convertAll(list);
 	}
 
+	public Long getDaysValidSubscription(final String userNickName, final String tenantID) {
+		return paymentBussines.getDaysValidSubscription(userNickName, tenantID);
+	}
+
 }

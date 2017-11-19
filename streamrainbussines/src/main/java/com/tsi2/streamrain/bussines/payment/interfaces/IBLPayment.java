@@ -13,6 +13,8 @@ public interface IBLPayment {
 	void saveUserContentPPV(UserPpvs userPPV, final String userNickName, final Integer idContent, final Integer idPaymentMethods,
 			final String tenantID);
 
-	List<PaymentMethods> getAllPaytmentMethods(String tenantID);
+	List<PaymentMethods> getAllPaytmentMethods(final String tenantID);
+
+	Long getDaysValidSubscription(final String userNickName, final String tenantID);
 
 }

@@ -8,10 +8,12 @@ import com.tsi2.streamrain.datatypes.payment.UserSubscriptionDto;
 
 public interface IPaymentService {
 	
-	void saveUserSubscription(UserSubscriptionDto userSubscription, final String currentTenant);
+	void saveUserSubscription(UserSubscriptionDto userSubscription, final String tenantID);
 	
-	void saveUserContentPPV(UserContentPPVDto userContentPPVDto, final String currentTenant);
+	void saveUserContentPPV(UserContentPPVDto userContentPPVDto, final String tenantID);
 
-	List<PaymentMethodDto> getAllPaytmentMethods(final String currentTenant);
+	List<PaymentMethodDto> getAllPaytmentMethods(final String tenantID);
+
+	Long getDaysValidSubscription(final String userNickName, final String tenantID);
 
 }
