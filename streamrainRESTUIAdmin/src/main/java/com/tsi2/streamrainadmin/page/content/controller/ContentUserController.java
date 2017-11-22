@@ -1,9 +1,8 @@
-package com.tsi2.streamrain.page.content.controller;
+package com.tsi2.streamrainadmin.page.content.controller;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,17 +21,11 @@ import com.tsi2.streamrain.datatypes.content.UserContentFavDto;
 import com.tsi2.streamrain.datatypes.content.UserContentViewDto;
 import com.tsi2.streamrain.services.category.interfaces.ICategoryService;
 import com.tsi2.streamrain.services.content.interfaces.IContentService;
-import com.tsi2.streamrain.services.payment.interfaces.IPaymentService;
 import com.tsi2.streamrain.services.session.interfaces.ISessionService;
-import com.tsi2.streamrain.springmvc.model.PathTokenVODDto;
-import com.tsi2.streamrain.utils.Utils;
 
 @RestController
 @RequestMapping("/user/content")
 public class ContentUserController {
-	
-	@Value("${location.file.path.docker.vod}")
-	private String locationDockerVOD;
 	
 	@Autowired
 	IContentService contentService;
@@ -42,9 +35,6 @@ public class ContentUserController {
 	
 	@Autowired
 	ISessionService sessionService;
-	
-	@Autowired
-	IPaymentService paymentService;
 		
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ContentDto> getAllContent() {
@@ -52,30 +42,13 @@ public class ContentUserController {
     }
 	
     @RequestMapping(value = "/{contentID}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ContentDto> getContentToView(@PathVariable Integer contentID) {
+    public ResponseEntity<ContentDto> getContent(@PathVariable Integer contentID) {
     	ContentDto content = contentService.getContentById(contentID, sessionService.getCurrentTenant());
         ResponseEntity<ContentDto> response;
         if (content == null) {
             response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
             response = new ResponseEntity<ContentDto>(content, HttpStatus.OK);
-        }
-        return response;
-    }
-    
-    @RequestMapping(value = "/view/{contentID}/{userNickName}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PathTokenVODDto> getContent(@PathVariable Integer contentID, @PathVariable String userNickName) {
-    	Long days = paymentService.getDaysValidSubscription(userNickName, sessionService.getCurrentTenant());
-
-        ResponseEntity<PathTokenVODDto> response;
-        if (days == null) {
-            response = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        } else {
-        	ContentDto contentDto = contentService.getContentById(contentID, sessionService.getCurrentTenant());
-        	String pathTokenVOD = Utils.obtainPathTokenVOD(contentDto.getStorageUrl(), days.intValue());
-        	PathTokenVODDto dto = new PathTokenVODDto();
-        	dto.setPathTokenVOD(locationDockerVOD + pathTokenVOD);
-            response = new ResponseEntity<PathTokenVODDto>(dto, HttpStatus.OK);
         }
         return response;
     }

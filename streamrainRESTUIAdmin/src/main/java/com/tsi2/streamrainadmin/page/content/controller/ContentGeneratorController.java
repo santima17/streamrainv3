@@ -1,21 +1,32 @@
-package com.tsi2.streamraingenerador.page.content.controller;
+package com.tsi2.streamrainadmin.page.content.controller;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,32 +36,34 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tsi2.streamrain.datatypes.category.CategoryDto;
+import com.tsi2.streamrain.datatypes.content.ContentCastDto;
 import com.tsi2.streamrain.datatypes.content.ContentDto;
+import com.tsi2.streamrain.datatypes.janus.JanusAttachedSessionDto;
+import com.tsi2.streamrain.datatypes.janus.JanusChatRoomDto;
 import com.tsi2.streamrain.datatypes.janus.JanusChatRoomInfoDto;
+import com.tsi2.streamrain.datatypes.janus.JanusCreateSessionDto;
+import com.tsi2.streamrain.datatypes.janus.JanusLiveOnlyDto;
 import com.tsi2.streamrain.datatypes.janus.JanusLiveOnlyInfoDto;
 import com.tsi2.streamrain.datatypes.janus.JanusServerDto;
+import com.tsi2.streamrain.datatypes.user.UserDto;
 import com.tsi2.streamrain.services.category.interfaces.ICategoryService;
 import com.tsi2.streamrain.services.content.interfaces.IContentService;
 import com.tsi2.streamrain.services.janus.interfaces.IJanusService;
 import com.tsi2.streamrain.services.session.interfaces.ISessionService;
-import com.tsi2.streamraingenerador.page.general.controller.AbstractController;
+import com.tsi2.streamrainadmin.page.general.controller.AbstractController;
 
 @RestController
 @RequestMapping("/generator/createContent")
 public class ContentGeneratorController extends AbstractController {
 	
-	@Value("${location.file.path.video}")
-	private String locationVideo;
-	
-	@Value("${location.file.path.video}")
-	private String locationPicture;
-	
-	@Value("${location.file.path.docker.vod}")
-	private String locationDockerVOD;
+	@Value("${location.file.path}")
+	private String location;
 		
 	@Value("${janus.chatRoom.url}")
 	private String JANUS_CHAT_ROOM_URL_POSTFIX;
@@ -111,7 +124,7 @@ public class ContentGeneratorController extends AbstractController {
 			contentDto =  new ObjectMapper().readValue(datos, ContentDto.class);
 			boolean isLiveContent = false;
 			contentDto.setTenantId(sessionService.getCurrentTenant());
-			String pictureName = locationDockerVOD + "/" + picture.getOriginalFilename();
+			String pictureName = picture.getOriginalFilename();
 			contentDto.setCoverPictureUrl(pictureName);
 			if ("1".equals(contentDto.getType())) {
 				contentDto.setType("Pelicula");
@@ -148,9 +161,9 @@ public class ContentGeneratorController extends AbstractController {
 			}
 			Integer idContent = contentService.saveContent(contentDto, sessionService.getCurrentTenant());
 			if (idContent != null) {
-				recordFile(locationPicture, picture);
+				recordFile(picture);
 				if (!isLiveContent) {
-					recordFile(locationVideo, video);
+					recordFile(video);
 				}else {
 					ContentDto newContentDto = contentService.getContentById(idContent, sessionService.getCurrentTenant());
 					//newContentDto.setJanus_audio_port(5000 + idContent);
@@ -228,9 +241,9 @@ public class ContentGeneratorController extends AbstractController {
         	return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }else {
         	try {
-	        	String pictureName = recordFile(locationPicture, contentDto.getPicture());
+	        	String pictureName = recordFile(contentDto.getPicture());
 	    		contentDto.setCoverPictureUrl(pictureName);
-	    		String videoName = recordFile(locationVideo, contentDto.getVideo());
+	    		String videoName = recordFile(contentDto.getVideo());
 	    		contentDto.setStorageUrl(videoName);
 	    		if ("1".equals(contentDto.getType())) {
 	    			contentDto.setType("Pelicula");
@@ -259,9 +272,9 @@ public class ContentGeneratorController extends AbstractController {
     	contentService.deleteContent(contentID, sessionService.getCurrentTenant());
     }
 	
-	private String recordFile(String path, MultipartFile uploaded) throws Exception {
+	private String recordFile(MultipartFile uploaded) throws Exception {
 				
-		String pathFile = path+uploaded.getOriginalFilename();
+		String pathFile = location+uploaded.getOriginalFilename();
     	File localFile = new File(pathFile);
     	FileOutputStream os = null;
     	try {
