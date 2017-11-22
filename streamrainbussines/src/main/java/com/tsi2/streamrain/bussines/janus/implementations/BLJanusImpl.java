@@ -97,4 +97,14 @@ public class BLJanusImpl implements IBLJanus {
 		return null;
 	}
 
+	public JanusCreationTokens getJanusCreationToken(String tokenJanusCreationTokens, String tenantID) {
+		JanusCreationTokens janusCreationTokensExample = new JanusCreationTokens();
+		janusCreationTokensExample.setJanusToken(tokenJanusCreationTokens);
+		List<JanusCreationTokens> list = daoJanusService.getAllByExample(JanusCreationTokens.class, janusCreationTokensExample, tenantID);
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+		return null;
+	}
+
 }

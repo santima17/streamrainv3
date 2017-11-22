@@ -1,4 +1,4 @@
-package com.tsi2.streamraingenerdor.page.general.controller;
+package com.tsi2.streamraingenerador.page.general.controller;
 
 import java.io.BufferedReader;
 import java.io.IOException;

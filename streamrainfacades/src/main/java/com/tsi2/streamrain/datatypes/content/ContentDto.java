@@ -54,6 +54,7 @@ public class ContentDto {
     private String directorsName;
     private String categoriesName;
     private String similarContentsName;
+    private String dateStartLiveOnly;
     
 	public Integer getId() {
 		return id;
@@ -261,5 +262,11 @@ public class ContentDto {
 	public void setSimilarContentsName(String similarContentsName) {
 		this.similarContentsName = similarContentsName;
 	}
-	
+	public String getDateStartLiveOnly() {
+		return dateStartLiveOnly;
+	}
+	public void setDateStartLiveOnly(String dateStartLiveOnly) {
+		this.dateStartLiveOnly = dateStartLiveOnly;
+	}
+		
 }

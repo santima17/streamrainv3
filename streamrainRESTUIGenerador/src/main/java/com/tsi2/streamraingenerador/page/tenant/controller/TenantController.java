@@ -1,4 +1,4 @@
-package com.tsi2.streamraingenerdor.page.tenant.controller;
+package com.tsi2.streamraingenerador.page.tenant.controller;
 
 import java.util.List;
 

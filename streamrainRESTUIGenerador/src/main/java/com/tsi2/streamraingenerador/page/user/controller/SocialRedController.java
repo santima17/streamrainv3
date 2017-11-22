@@ -1,4 +1,4 @@
-package com.tsi2.streamraingenerdor.page.user.controller;
+package com.tsi2.streamraingenerador.page.user.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

@@ -1,6 +1,8 @@
 package com.tsi2.streamrain.converters.content;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -56,11 +58,11 @@ public class ContentConverter implements IConverter<ContentDto, Contents>{
 	    contentDto.setActors(actors);
 	    contentDto.setDirectors(directors);
 	    if (actorsName.length() > 2) {
-	    	actorsName = actorsName.substring(0, actorsName.length()-3);
+	    	actorsName = actorsName.substring(0, actorsName.length()-2);
 	    }
 	    contentDto.setActorsName(actorsName);
 	    if (directorsName.length() > 2) {
-	    	directorsName = directorsName.substring(0, directorsName.length()-3);
+	    	directorsName = directorsName.substring(0, directorsName.length()-2);
 	    }
 	    contentDto.setDirectorsName(directorsName);
 	    
@@ -74,7 +76,7 @@ public class ContentConverter implements IConverter<ContentDto, Contents>{
 	    }
 	    contentDto.setIdCategories(idCategoriesList);
 	    if (categoriesName.length() > 2) {
-	    	categoriesName = categoriesName.substring(0, categoriesName.length()-3);
+	    	categoriesName = categoriesName.substring(0, categoriesName.length()-2);
 	    }
 	    contentDto.setCategoriesName(categoriesName);
 	    
@@ -82,7 +84,10 @@ public class ContentConverter implements IConverter<ContentDto, Contents>{
 	    	contentDto.setAlwaysAvailable(true);
 	    	contentDto.setDuration(source.getAlwaysAvailableContents().getDuration());
 	    }else if (source.getLiveOnlyContents() != null){
-	    	contentDto.setDateStart(source.getLiveOnlyContents().getDateStart());
+	    	Date dateStart = source.getLiveOnlyContents().getDateStart();
+	    	contentDto.setDateStart(dateStart);
+	    	SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+	    	contentDto.setDateStartLiveOnly(formatter.format(dateStart));
 	    	contentDto.setEstimatedDuraction(source.getLiveOnlyContents().getEstimatedDuraction());
 	    	contentDto.setJanus_audio_pt(source.getLiveOnlyContents().getJanusAudioPt());
 	    	contentDto.setJanus_audio_rtp_map(source.getLiveOnlyContents().getJanusAudioRtpMap());
@@ -110,7 +115,7 @@ public class ContentConverter implements IConverter<ContentDto, Contents>{
 	    	similarContentsName += contentsSimilar.getName() + ", ";
 	    }
 	    if (similarContentsName.length() > 2) {
-	    	similarContentsName = similarContentsName.substring(0, similarContentsName.length()-3);
+	    	similarContentsName = similarContentsName.substring(0, similarContentsName.length()-2);
 	    }
 	    contentDto.setSimilarContentsName(similarContentsName);
 		

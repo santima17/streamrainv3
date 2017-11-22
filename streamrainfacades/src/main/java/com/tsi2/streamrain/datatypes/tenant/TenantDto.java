@@ -10,6 +10,7 @@ public class TenantDto {
 	private String dbPassword;
 	private String generatorUser;
 	private String generatorPassword;
+	
 	public Integer getId() {
 		return id;
 	}

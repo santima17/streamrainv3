@@ -106,5 +106,9 @@ public class JanusServiceImpl implements IJanusService{
 	public Integer getJanusServerIdForJanusCreationToken(String tokenJanusCreationTokens, final String tenantID) {
 		return janusBussines.getJanusServerIdForJanusCreationToken(tokenJanusCreationTokens, tenantID);
 	}
+
+	public JanusCreateTokenDto getJanusCreationToken(final String tokenJanusCreationTokens, final String tenantID) {
+		return janusTokentConverter.converter(janusBussines.getJanusCreationToken(tokenJanusCreationTokens, tenantID));
+	}
 	
 }

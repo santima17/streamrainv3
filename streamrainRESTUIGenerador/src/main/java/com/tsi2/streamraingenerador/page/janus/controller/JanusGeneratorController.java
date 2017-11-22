@@ -1,6 +1,7 @@
 package com.tsi2.streamraingenerador.page.janus.controller;
 
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,8 +28,8 @@ import com.tsi2.streamrain.datatypes.janus.JanusServerDto;
 import com.tsi2.streamrain.services.content.interfaces.IContentService;
 import com.tsi2.streamrain.services.janus.interfaces.IJanusService;
 import com.tsi2.streamrain.services.session.interfaces.ISessionService;
+import com.tsi2.streamraingenerador.page.general.controller.AbstractController;
 import com.tsi2.streamraingenerador.utils.Utils;
-import com.tsi2.streamraingenerdor.page.general.controller.AbstractController;
 
 @RestController
 @RequestMapping("/generator/janus")
@@ -123,9 +124,16 @@ public class JanusGeneratorController extends AbstractController {
 		janusServerDto.setStreamrainRestToken(token.toString());
 		janusServerDto.setEnable(true);
 		boolean ok = false;
-		Integer idJanusServer = janusService.getJanusServerIdForJanusCreationToken(janusServerDto.getTokenJanusCreationTokens(), tentantID);
-		if (idJanusServer == null) {
+		JanusCreateTokenDto janusCreateTokenDto = janusService.getJanusCreationToken(janusServerDto.getTokenJanusCreationTokens(), tentantID);
+		if (janusCreateTokenDto == null) {
+			new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+		}
+		if (janusCreateTokenDto.getDateUsage() == null) {
+			janusCreateTokenDto.setDateUsage(GregorianCalendar.getInstance().getTime());
+			janusService.updateJanusToken(janusCreateTokenDto, tentantID);
 			ok = janusService.createJanusServer(janusServerDto, tentantID);
+		}else {
+			new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 
 		// JANUS PROCESS

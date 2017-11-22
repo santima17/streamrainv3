@@ -1,4 +1,4 @@
-package com.tsi2.streamraingenerdor.page.user.controller;
+package com.tsi2.streamraingenerador.page.user.controller;
 
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;

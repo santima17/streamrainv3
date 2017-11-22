@@ -1,4 +1,4 @@
-package com.tsi2.streamraingenerdor.page.content.controller;
+package com.tsi2.streamraingenerador.page.content.controller;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -37,7 +37,7 @@ import com.tsi2.streamrain.services.category.interfaces.ICategoryService;
 import com.tsi2.streamrain.services.content.interfaces.IContentService;
 import com.tsi2.streamrain.services.janus.interfaces.IJanusService;
 import com.tsi2.streamrain.services.session.interfaces.ISessionService;
-import com.tsi2.streamraingenerdor.page.general.controller.AbstractController;
+import com.tsi2.streamraingenerador.page.general.controller.AbstractController;
 
 @RestController
 @RequestMapping("/generator/createContent")
