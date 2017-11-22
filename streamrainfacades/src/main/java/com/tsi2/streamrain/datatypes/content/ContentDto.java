@@ -50,6 +50,11 @@ public class ContentDto {
     private Integer janus_audio_port;
     private Integer janus_video_port;
     
+    private String actorsName;
+    private String directorsName;
+    private String categoriesName;
+    private String similarContentsName;
+    
 	public Integer getId() {
 		return id;
 	}
@@ -232,4 +237,29 @@ public class ContentDto {
 	public void setJanus_video_port(Integer janus_video_port) {
 		this.janus_video_port = janus_video_port;
 	}
+	public String getActorsName() {
+		return actorsName;
+	}
+	public void setActorsName(String actorsName) {
+		this.actorsName = actorsName;
+	}
+	public String getDirectorsName() {
+		return directorsName;
+	}
+	public void setDirectorsName(String directorsName) {
+		this.directorsName = directorsName;
+	}
+	public String getCategoriesName() {
+		return categoriesName;
+	}
+	public void setCategoriesName(String categoriesName) {
+		this.categoriesName = categoriesName;
+	}
+	public String getSimilarContentsName() {
+		return similarContentsName;
+	}
+	public void setSimilarContentsName(String similarContentsName) {
+		this.similarContentsName = similarContentsName;
+	}
+	
 }

@@ -68,7 +68,11 @@ public class BLUserImpl implements IBLUser {
 
 	public String getJanusTokenForUser(String userNickname, String tenantID) {
 		Users user = daoService.getUserByNickname(userNickname, tenantID);
-		UserSubscriptions userSubscriptions = daoJanusService.getAvailablesUserSubscriptionsForUser(user.getId(), tenantID).get(0);
+		List<UserSubscriptions> list = daoJanusService.getAvailablesUserSubscriptionsForUser(user.getId(), tenantID);
+		if (list.isEmpty()) {
+			return null;
+		}
+		UserSubscriptions userSubscriptions = list.get(0);
 		return userSubscriptions.getJanusUserToken();
 	}
 

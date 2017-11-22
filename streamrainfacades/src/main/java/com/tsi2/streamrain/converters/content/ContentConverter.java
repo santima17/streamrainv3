@@ -39,24 +39,44 @@ public class ContentConverter implements IConverter<ContentDto, Contents>{
 		Set<ContentCastDto> actors = new HashSet<ContentCastDto>();
 		Set<ContentCastDto> directors = new HashSet<ContentCastDto>();
 		Iterator<ContentCasts> iterator = source.getContentCastses().iterator();
+		String actorsName = "";
+		String directorsName = "";
 	    while(iterator.hasNext()) {
 	    	ContentCasts cast = iterator.next();
 	    	if (cast.getIsActor() != null && cast.getIsActor()) {
-	    		actors.add(converter(cast));
+	    		ContentCastDto act = converter(cast);
+	    		actors.add(act);
+	    		actorsName += act.getFirstName() + " " + act.getLastName() + ", ";
 	    	}else {
+	    		ContentCastDto dir = converter(cast);
 	    		directors.add(converter(cast));
+	    		directorsName += dir.getFirstName() + " " + dir.getLastName() + ", ";
 	    	}
 	    }
 	    contentDto.setActors(actors);
 	    contentDto.setDirectors(directors);
+	    if (actorsName.length() > 2) {
+	    	actorsName = actorsName.substring(0, actorsName.length()-3);
+	    }
+	    contentDto.setActorsName(actorsName);
+	    if (directorsName.length() > 2) {
+	    	directorsName = directorsName.substring(0, directorsName.length()-3);
+	    }
+	    contentDto.setDirectorsName(directorsName);
 	    
+	    String categoriesName = "";
 	    List<Integer> idCategoriesList = new ArrayList<Integer>();
 	    Iterator<Categories> it = source.getCategorieses().iterator();
 	    while (it.hasNext()) {
 	    	Categories cat = it.next();
 	    	idCategoriesList.add(cat.getId());
+	    	categoriesName += cat.getName() + ", ";
 	    }
 	    contentDto.setIdCategories(idCategoriesList);
+	    if (categoriesName.length() > 2) {
+	    	categoriesName = categoriesName.substring(0, categoriesName.length()-3);
+	    }
+	    contentDto.setCategoriesName(categoriesName);
 	    
 	    if (source.getAlwaysAvailableContents() != null) {
 	    	contentDto.setAlwaysAvailable(true);
@@ -82,6 +102,17 @@ public class ContentConverter implements IConverter<ContentDto, Contents>{
 	    	contentDto.setFeaturedDateFinish(featuredContents.getDateFinish());
 	    	break;
 	    }
+	    
+	    String similarContentsName = "";
+	    Iterator<Contents> iter4 = source.getContentsesForIdContent1().iterator();
+	    while(iter4.hasNext()) {
+	    	Contents contentsSimilar = iter4.next();
+	    	similarContentsName += contentsSimilar.getName() + ", ";
+	    }
+	    if (similarContentsName.length() > 2) {
+	    	similarContentsName = similarContentsName.substring(0, similarContentsName.length()-3);
+	    }
+	    contentDto.setSimilarContentsName(similarContentsName);
 		
 		return contentDto;
 	}

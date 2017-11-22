@@ -1,4 +1,4 @@
-package com.tsi2.streamrain.security.authentication.managers;
+package com.tsi2.streamraingenerador.security.authentication.managers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,7 +10,7 @@ import org.springframework.security.core.AuthenticationException;
 import com.tsi2.streamrain.services.session.interfaces.ISessionService;
 import com.tsi2.streamrain.services.tenants.interfaces.ITenantService;
 import com.tsi2.streamrain.services.user.interfaces.IUserService;
-import com.tsi2.streamrain.utils.Utils;
+import com.tsi2.streamraingenerador.utils.Utils;
 
 public class UserAuthenticationManager implements AuthenticationManager {
 
@@ -29,8 +29,7 @@ public class UserAuthenticationManager implements AuthenticationManager {
 
 	@Override
 	public Authentication authenticate(final Authentication authentication) throws AuthenticationException {
-		//String passEncrptyed = Utils.encryptPassword(authentication.getCredentials().toString());
-		String passEncrptyed = authentication.getCredentials().toString();
+		String passEncrptyed = Utils.encryptPassword(authentication.getCredentials().toString());
 		String userName = authentication.getName();
 		boolean user = false;
 		if (!twitterLogin) {

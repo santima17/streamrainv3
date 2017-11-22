@@ -10,7 +10,7 @@
 
 	<!-- Scans within the base package of the application for @Component classes 
 		to configure as beans -->
-	<context:component-scan base-package="com.tsi2.streamrain.*" />
+	<context:component-scan base-package="com.tsi2.streamraingenerador.*" />
 
 	<context:property-placeholder location="classpath:application.properties" />
 
@@ -42,12 +42,12 @@
 	</bean>
 
 	<bean id="generatorAuthenticationManager"
-		class="com.tsi2.streamrain.security.authentication.managers.GeneratorAuthenticationManager" />
+		class="com.tsi2.streamraingenerador.security.authentication.managers.GeneratorAuthenticationManager" />
 
 	<bean id="administratorAuthenticationManager"
-		class="com.tsi2.streamrain.security.authentication.managers.AdministratorAuthenticationManager" />
+		class="com.tsi2.streamraingenerador.security.authentication.managers.AdministratorAuthenticationManager" />
 
 	<bean id="userAuthenticationManager"
-		class="com.tsi2.streamrain.security.authentication.managers.UserAuthenticationManager" />
+		class="com.tsi2.streamraingenerador.security.authentication.managers.UserAuthenticationManager" />
 
 </beans>
