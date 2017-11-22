@@ -148,7 +148,7 @@
 	</div>
 	
 	<div style="text-align:right">
-		<button type="submit" class="btn btn-primary">Guardar</button>
+		<button type="submit" class="btn btn-primary">Guardar LIVE</button>
 	</div>
 
 	</form>

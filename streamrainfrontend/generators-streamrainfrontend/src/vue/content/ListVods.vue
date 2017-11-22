@@ -2,9 +2,30 @@
 <div class="container-fluid text-left" style="width:95%">
 	<!-- Input buscar -->
 	<div class="input-group">
-		<input type="text" class="form-control" placeholder="Buscar por Nombre / Descripcion / Tipo / PayPerView / Featured / VOD / LIVE"  v-model="inputBuscar">
+		<label class="fancy-checkbox"> 
+	<input type="checkbox" v-model="isPayPerView">
+	<span>PayPerView</span>
+</label>
+<label class="fancy-checkbox"> 
+	<input type="checkbox" v-model="isFeatured">
+	<span>Destacado</span>
+</label>
+<label class="fancy-checkbox"> 
+	<input type="checkbox" v-model="isVOD">
+	<span>VOD</span>
+</label>
+<label class="fancy-checkbox"> 
+	<input type="checkbox" v-model="isLIVE">
+	<span>LIVE</span>
+</label>
+
+
+</div>
+	<div class="input-group">
+		
+		<input type="text" class="form-control" placeholder="Buscar por Nombre o Descripcion..."  v-model="inputBuscar">
 		<span class="input-group-btn">
-			<button class="btn btn-default" type="button" @click="buscar()">Buscar</button>
+			<button class="btn btn-default" type="button" @click="getContents()">Buscar</button>
 		</span>
 	</div><br>
 	<!-- Resultados -->
@@ -15,7 +36,7 @@
 				<div class="thumbnail">
 					<!-- Etiqueta PPV -->
 					<div v-if="c.isPayPerView ==='PayPerView'" style="padding-right:5px;top:0px;left:15px;color:white;position:absolute;background-color:green;font-weigth:bold">
-						PeyPerView
+						PayPerView
 					</div>
 					<!-- Etiqueta Destacado -->
 					<div v-if="c.featured" style="top:0px;right:15px;color:white;position:absolute;background-color:red;font-weigth:bold;">
@@ -26,7 +47,7 @@
 					<b><i class="fa fa-film" aria-hidden="true" v-if="c.alwaysAvailable==='VOD'"></i>
 							<i class="fa fa-podcast" aria-hidden="true" v-if="c.alwaysAvailable==='LIVE'"></i> {{c.type}}</b> 
 							<span  v-if="c.alwaysAvailable==='VOD'">{{c.duration}}minutos</span>
-								<span  v-if="c.alwaysAvailable==='LIVE'">Inicio {{c.dateStart}}</span>
+								<span  v-if="c.alwaysAvailable==='LIVE'">Inicio {{c.dateStartLiveOnly}}</span>
 					<!-- Ranking -->
 					<div style="font-weigth:bold;text-align:right">
 						<span v-for="r in 5">
@@ -75,19 +96,21 @@
 						<div class="col-sm-7">
 							<div class="caption">
 								<div style="text-align:right;font-weight:bold;">
-								 	<span v-if="selected.isPayPerView ==='PayPerView'" style="padding:5px;color:white;background-color:green;font-weigth:bold">PeyPerView</span>
+								 	<span v-if="selected.isPayPerView ==='PayPerView'" style="padding:5px;color:white;background-color:green;font-weigth:bold">PayPerView</span>
 									<span v-if="selected.featured" style="padding:5px;color:white;background-color:red;font-weigth:bold;">Destacado</span>
 								</div>
 								<p>
 								<b>Tipo: </b>{{selected.type}}<br>
-								<b>Categoria: </b>{{selected.idCategories}}<br><br>
+								<b>Categoria: </b>{{selected.categoriesName}}<br><br>
 								<span  v-if="selected.alwaysAvailable==='VOD'"><b>Duracion: </b>{{selected.duration}}minutos<br><br></span>
-								<span  v-if="selected.alwaysAvailable==='LIVE'"><b>Inicio: </b>{{selected.dateStart}}<br><br></span>
-								<b>Director(es): </b>{{selected.directors}}<br>
-								<b>Actor(es): </b>{{selected.actors}}<br><br>
+								<span  v-if="selected.alwaysAvailable==='LIVE'"><b>Inicio: </b>{{selected.dateStartLiveOnly}}<br>
+								<b>Datos para Emision:</b><br> audiopt:111, audiortpmap:opus/48000/2, videopt:100, videortpmap: VP8/90000<br><br>
+								</span>
+								<b>Director(es): </b>{{selected.directorsName}}<br>
+								<b>Actor(es): </b>{{selected.actorsName}}<br><br>
 								<b>Descripcion: </b><br>
 								{{selected.description}}<br><br>
-								<b>Contenidos Similares: </b><br>{{selected.idSimilarContents}}
+								<b>Contenidos Similares: </b><br>{{selected.similarContentsName}}
 								</p>
 							</div>
 						</div>
@@ -110,24 +133,29 @@ export default {
 			selected: '', 
 			contentsresult:[],
 			contents: [
-			{ "id": 1, "name": "Batman Batman22 Batman2 Batman2 Batman2", "description": "vive en una cueva mas grandevive en una cueva mas grandevive en una cueva mas grandevive en una cueva mas grandevive en una cueva mas grandevive en una cueva mas grande", "type": "Pelicula", "alwaysAvailable": false, "ranking": 3, "coverPictureUrl": "images_022.jpg", "storageUrl": "bbb.mp4", "isPayPerView": true, "mostrar": true, "actors":"Kim Bas, JAck Nic", "directors": "JAmes Cameron","picture": null, "video": null, "duration": 170, "dateStart": "20-12-17 12:30", "estimatedDuraction": null, "idCategories": "Terror, Futbol", "idSimilarContents": "Batman 1, La historia sin fin", "featured": true, "featuredDateStart": 1509877210000, "featuredDateFinish": 1509963610000, "tenantId": null, "pathTokenVOD": null }, { "id": 3, "name": "BaRman 3", "description": "vive en una cueva mas grande", "type": "Pelicula", "alwaysAvailable": true, "ranking": 1, "coverPictureUrl": "images_023.jpg", "storageUrl": "bbb.mp4", "isPayPerView": false, "mostrar": true, "actors": [ { "firstName": "JAck", "lastName": "Nic", "isActor": true, "isDirector": false }, { "firstName": "Kim", "lastName": "Bas", "isActor": true, "isDirector": false } ], "directors": [ { "firstName": "JAmes", "lastName": "Cameron", "isActor": false, "isDirector": true } ], "picture": null, "video": null, "duration": 170, "dateStart": null, "estimatedDuraction": null, "idCategories": [1,2], "idSimilarContents": null, "featured": true, "featuredDateStart": 1509877210000, "featuredDateFinish": 1509963610000, "tenantId": null, "pathTokenVOD": null }, { "id": 5, "name": "Los 7 magnificos", "description": "vive en una cueva", "type": "Serie", "alwaysAvailable": true, "ranking": null, "coverPictureUrl": "images_024.jpg", "storageUrl": "bbb.mp4", "isPayPerView": false, "mostrar": true, "actors": [ { "firstName": "JAck", "lastName": "Nic", "isActor": true, "isDirector": false }, { "firstName": "Kim", "lastName": "Bas", "isActor": true, "isDirector": false } ], "directors": [ { "firstName": "JAmes", "lastName": "Cameron", "isActor": false, "isDirector": true } ], "picture": null, "video": null, "duration": 170, "dateStart": null, "estimatedDuraction": null, "idCategories": [], "idSimilarContents": null, "featured": true, "featuredDateStart": 1509877210000, "featuredDateFinish": 1509963610000, "tenantId": null, "pathTokenVOD": null }, { "id": 1, "name": "Batman2", "description": "vive en una cueva mas grande", "type": "Pelicula", "alwaysAvailable": true, "ranking": null, "coverPictureUrl": "images_025.jpg", "storageUrl": "bbb.mp4", "isPayPerView": false, "mostrar": true, "actors": [ { "firstName": "Kim", "lastName": "Bas", "isActor": true, "isDirector": false }, { "firstName": "JAck", "lastName": "Nic", "isActor": true, "isDirector": false } ], "directors": [ { "firstName": "JAmes", "lastName": "Cameron", "isActor": false, "isDirector": true } ], "picture": null, "video": null, "duration": 170, "dateStart": null, "estimatedDuraction": null, "idCategories": [], "idSimilarContents": null, "featured": true, "featuredDateStart": 1509877210000, "featuredDateFinish": 1509963610000, "tenantId": null, "pathTokenVOD": null }, { "id": 3, "name": "BaRman 3", "description": "vive en una cueva mas grande", "type": "Pelicula", "alwaysAvailable": true, "ranking": null, "coverPictureUrl": "images_026.jpg", "storageUrl": "bbb.mp4", "isPayPerView": false, "mostrar": true, "actors": [ { "firstName": "JAck", "lastName": "Nic", "isActor": true, "isDirector": false }, { "firstName": "Kim", "lastName": "Bas", "isActor": true, "isDirector": false } ], "directors": [ { "firstName": "JAmes", "lastName": "Cameron", "isActor": false, "isDirector": true } ], "picture": null, "video": null, "duration": 170, "dateStart": null, "estimatedDuraction": null, "idCategories": [], "idSimilarContents": null, "featured": true, "featuredDateStart": 1509877210000, "featuredDateFinish": 1509963610000, "tenantId": null, "pathTokenVOD": null }, { "id": 5, "name": "Los 7 magnificos", "description": "vive en una cueva", "type": "Serie", "alwaysAvailable": true, "ranking": null, "coverPictureUrl": "images_027.jpg", "storageUrl": "bbb.mp4", "isPayPerView": false, "mostrar": true, "actors": [ { "firstName": "JAck", "lastName": "Nic", "isActor": true, "isDirector": false }, { "firstName": "Kim", "lastName": "Bas", "isActor": true, "isDirector": false } ], "directors": [ { "firstName": "JAmes", "lastName": "Cameron", "isActor": false, "isDirector": true } ], "picture": null, "video": null, "duration": 170, "dateStart": null, "estimatedDuraction": null, "idCategories": [], "idSimilarContents": null, "featured": true, "featuredDateStart": 1509877210000, "featuredDateFinish": 1509963610000, "tenantId": null, "pathTokenVOD": null }, { "id": 1, "name": "Batman2", "description": "vive en una cueva mas grande", "type": "Pelicula", "alwaysAvailable": true, "ranking": null, "coverPictureUrl": "images_028.jpg", "storageUrl": "bbb.mp4", "isPayPerView": false, "mostrar": true, "actors": [ { "firstName": "Kim", "lastName": "Bas", "isActor": true, "isDirector": false }, { "firstName": "JAck", "lastName": "Nic", "isActor": true, "isDirector": false } ], "directors": [ { "firstName": "JAmes", "lastName": "Cameron", "isActor": false, "isDirector": true } ], "picture": null, "video": null, "duration": 170, "dateStart": null, "estimatedDuraction": null, "idCategories": [], "idSimilarContents": null, "featured": true, "featuredDateStart": 1509877210000, "featuredDateFinish": 1509963610000, "tenantId": null, "pathTokenVOD": null }, { "id": 3, "name": "BaRman 3", "description": "vive en una cueva mas grande", "type": "Pelicula", "alwaysAvailable": true, "ranking": 1, "coverPictureUrl": "images_029.jpg", "storageUrl": "bbb.mp4", "isPayPerView": false, "mostrar": true, "actors": [ { "firstName": "JAck", "lastName": "Nic", "isActor": true, "isDirector": false }, { "firstName": "Kim", "lastName": "Bas", "isActor": true, "isDirector": false } ], "directors": [ { "firstName": "JAmes", "lastName": "Cameron", "isActor": false, "isDirector": true } ], "picture": null, "video": null, "duration": 170, "dateStart": null, "estimatedDuraction": null, "idCategories": [], "idSimilarContents": null, "featured": true, "featuredDateStart": 1509877210000, "featuredDateFinish": 1509963610000, "tenantId": null, "pathTokenVOD": null }, { "id": 5, "name": "Los 7 magnificos", "description": "vive en una cueva", "type": "Serie", "alwaysAvailable": true, "ranking": null, "coverPictureUrl": "images_030.jpg", "storageUrl": "bbb.mp4", "isPayPerView": false, "mostrar": true, "actors": [ { "firstName": "JAck", "lastName": "Nic", "isActor": true, "isDirector": false }, { "firstName": "Kim", "lastName": "Bas", "isActor": true, "isDirector": false } ], "directors": [ { "firstName": "JAmes", "lastName": "Cameron", "isActor": false, "isDirector": true } ], "picture": null, "video": null, "duration": 170, "dateStart": null, "estimatedDuraction": null, "idCategories": [], "idSimilarContents": null, "featured": true, "featuredDateStart": 1509877210000, "featuredDateFinish": 1509963610000, "tenantId": null, "pathTokenVOD": null }, { "id": 1, "name": "Batman2", "description": "vive en una cueva mas grande", "type": "Pelicula", "alwaysAvailable": true, "ranking": 2, "coverPictureUrl": "images_031.jpg", "storageUrl": "bbb.mp4", "isPayPerView": false, "mostrar": true, "actors": [ { "firstName": "Kim", "lastName": "Bas", "isActor": true, "isDirector": false }, { "firstName": "JAck", "lastName": "Nic", "isActor": true, "isDirector": false } ], "directors": [ { "firstName": "JAmes", "lastName": "Cameron", "isActor": false, "isDirector": true } ], "picture": null, "video": null, "duration": 170, "dateStart": null, "estimatedDuraction": null, "idCategories": [], "idSimilarContents": null, "featured": true, "featuredDateStart": 1509877210000, "featuredDateFinish": 1509963610000, "tenantId": null, "pathTokenVOD": null }, { "id": 3, "name": "BaRman 3", "description": "vive en una cueva mas grande", "type": "Pelicula", "alwaysAvailable": true, "ranking": 4, "coverPictureUrl": "images_032.jpg", "storageUrl": "bbb.mp4", "isPayPerView": false, "mostrar": true, "actors": [ { "firstName": "JAck", "lastName": "Nic", "isActor": true, "isDirector": false }, { "firstName": "Kim", "lastName": "Bas", "isActor": true, "isDirector": false } ], "directors": [ { "firstName": "JAmes", "lastName": "Cameron", "isActor": false, "isDirector": true } ], "picture": null, "video": null, "duration": 170, "dateStart": null, "estimatedDuraction": null, "idCategories": [], "idSimilarContents": null, "featured": true, "featuredDateStart": 1509877210000, "featuredDateFinish": 1509963610000, "tenantId": null, "pathTokenVOD": null }, { "id": 5, "name": "Los 7 magnificos", "description": "vive en una cueva", "type": "Serie", "alwaysAvailable": true, "ranking": 3, "coverPictureUrl": "images_033.jpg", "storageUrl": "bbb.mp4", "isPayPerView": false, "mostrar": true, "actors": [ { "firstName": "JAck", "lastName": "Nic", "isActor": true, "isDirector": false }, { "firstName": "Kim", "lastName": "Bas", "isActor": true, "isDirector": false } ], "directors": [ { "firstName": "JAmes", "lastName": "Cameron", "isActor": false, "isDirector": true } ], "picture": null, "video": null, "duration": 170, "dateStart": null, "estimatedDuraction": null, "idCategories": [], "idSimilarContents": null, "featured": true, "featuredDateStart": 1509877210000, "featuredDateFinish": 1509963610000, "tenantId": null, "pathTokenVOD": null }, { "id": 5, "name": "AAALos 7 magnificos", "description": "vive en una cueva", "type": "Serie", "alwaysAvailable": true, "ranking": 5, "coverPictureUrl": "images_034.jpg", "storageUrl": "bbb.mp4", "isPayPerView": false, "mostrar": true, "actors": [ { "firstName": "JAck", "lastName": "Nic", "isActor": true, "isDirector": false }, { "firstName": "Kim", "lastName": "Bas", "isActor": true, "isDirector": false } ], "directors": [ { "firstName": "JAmes", "lastName": "Cameron", "isActor": false, "isDirector": true } ], "picture": null, "video": null, "duration": 170, "dateStart": null, "estimatedDuraction": null, "idCategories": [], "idSimilarContents": null, "featured": true, "featuredDateStart": 1509877210000, "featuredDateFinish": 1509963610000, "tenantId": null, "pathTokenVOD": null }
+			{ "id": 1, "name": "Batman Batman22 Batman2 Batman2 Batman2", "description": "vive n una cueva mas grandevive en una cueva mas grandevive en una cueva mas grandevive en una cueva mas grandevive en una cueva mas grandevive en una cueva mas grande", "type": "Evento Espectaculo", "alwaysAvailable": false, "ranking": 3, "coverPictureUrl": "images_022.jpg", "storageUrl": "bbb.mp4", "isPayPerView": true, "mostrar": true, "actorsName":"Kim Bas, JAck Nic", "directorsName": "JAmes Cameron","picture": null, "video": null, "duration": 170, "dateStartLiveOnly": "20-12-17 12:30", "estimatedDuraction": null, "categoriesName": "Terror, Futbol", "similarContentsName": "Batman 1, La historia sin fin", "featured": true, "featuredDateStart": 1509877210000, "featuredDateFinish": 1509963610000, "tenantId": null, "pathTokenVOD": null }, { "id": 3, "name": "BaRman 3", "description": "vive en una cueva mas grande", "type": "Pelicula", "alwaysAvailable": true, "ranking": 1, "coverPictureUrl": "images_023.jpg", "storageUrl": "bbb.mp4", "isPayPerView": false, "mostrar": true, "actorsName": [ { "firstName": "JAck", "lastName": "Nic", "isActor": true, "isDirector": false }, { "firstName": "Kim", "lastName": "Bas", "isActor": true, "isDirector": false } ], "directorsName": [ { "firstName": "JAmes", "lastName": "Cameron", "isActor": false, "isDirector": true } ], "picture": null, "video": null, "duration": 170, "dateStartLiveOnly": null, "estimatedDuraction": null, "categoriesName": [1,2], "similarContentsName": null, "featured": true, "featuredDateStart": 1509877210000, "featuredDateFinish": 1509963610000, "tenantId": null, "pathTokenVOD": null }, { "id": 5, "name": "Los 7 magnificos", "description": "vive en una cueva", "type": "Serie", "alwaysAvailable": true, "ranking": null, "coverPictureUrl": "images_024.jpg", "storageUrl": "bbb.mp4", "isPayPerView": false, "mostrar": true, "actorsName": [ { "firstName": "JAck", "lastName": "Nic", "isActor": true, "isDirector": false }, { "firstName": "Kim", "lastName": "Bas", "isActor": true, "isDirector": false } ], "directorsName": [ { "firstName": "JAmes", "lastName": "Cameron", "isActor": false, "isDirector": true } ], "picture": null, "video": null, "duration": 170, "dateStartLiveOnly": null, "estimatedDuraction": null, "categoriesName": [], "similarContentsName": null, "featured": true, "featuredDateStart": 1509877210000, "featuredDateFinish": 1509963610000, "tenantId": null, "pathTokenVOD": null }, { "id": 1, "name": "Batman2", "description": "vive en una cueva mas grande", "type": "Pelicula", "alwaysAvailable": true, "ranking": null, "coverPictureUrl": "images_025.jpg", "storageUrl": "bbb.mp4", "isPayPerView": false, "mostrar": true, "actorsName": [ { "firstName": "Kim", "lastName": "Bas", "isActor": true, "isDirector": false }, { "firstName": "JAck", "lastName": "Nic", "isActor": true, "isDirector": false } ], "directorsName": [ { "firstName": "JAmes", "lastName": "Cameron", "isActor": false, "isDirector": true } ], "picture": null, "video": null, "duration": 170, "dateStartLiveOnly": null, "estimatedDuraction": null, "categoriesName": [], "similarContentsName": null, "featured": true, "featuredDateStart": 1509877210000, "featuredDateFinish": 1509963610000, "tenantId": null, "pathTokenVOD": null }, { "id": 3, "name": "BaRman 3", "description": "vive en una cueva mas grande", "type": "Pelicula", "alwaysAvailable": true, "ranking": null, "coverPictureUrl": "images_026.jpg", "storageUrl": "bbb.mp4", "isPayPerView": false, "mostrar": true, "actorsName": [ { "firstName": "JAck", "lastName": "Nic", "isActor": true, "isDirector": false }, { "firstName": "Kim", "lastName": "Bas", "isActor": true, "isDirector": false } ], "directorsName": [ { "firstName": "JAmes", "lastName": "Cameron", "isActor": false, "isDirector": true } ], "picture": null, "video": null, "duration": 170, "dateStartLiveOnly": null, "estimatedDuraction": null, "categoriesName": [], "similarContentsName": null, "featured": true, "featuredDateStart": 1509877210000, "featuredDateFinish": 1509963610000, "tenantId": null, "pathTokenVOD": null }, { "id": 5, "name": "Los 7 magnificos", "description": "vive en una cueva", "type": "Serie", "alwaysAvailable": true, "ranking": null, "coverPictureUrl": "images_027.jpg", "storageUrl": "bbb.mp4", "isPayPerView": false, "mostrar": true, "actorsName": [ { "firstName": "JAck", "lastName": "Nic", "isActor": true, "isDirector": false }, { "firstName": "Kim", "lastName": "Bas", "isActor": true, "isDirector": false } ], "directorsName": [ { "firstName": "JAmes", "lastName": "Cameron", "isActor": false, "isDirector": true } ], "picture": null, "video": null, "duration": 170, "dateStartLiveOnly": null, "estimatedDuraction": null, "categoriesName": [], "similarContentsName": null, "featured": true, "featuredDateStart": 1509877210000, "featuredDateFinish": 1509963610000, "tenantId": null, "pathTokenVOD": null }, { "id": 1, "name": "Batman2", "description": "vive en una cueva mas grande", "type": "Pelicula", "alwaysAvailable": true, "ranking": null, "coverPictureUrl": "images_028.jpg", "storageUrl": "bbb.mp4", "isPayPerView": false, "mostrar": true, "actorsName": [ { "firstName": "Kim", "lastName": "Bas", "isActor": true, "isDirector": false }, { "firstName": "JAck", "lastName": "Nic", "isActor": true, "isDirector": false } ], "directorsName": [ { "firstName": "JAmes", "lastName": "Cameron", "isActor": false, "isDirector": true } ], "picture": null, "video": null, "duration": 170, "dateStartLiveOnly": null, "estimatedDuraction": null, "categoriesName": [], "similarContentsName": null, "featured": true, "featuredDateStart": 1509877210000, "featuredDateFinish": 1509963610000, "tenantId": null, "pathTokenVOD": null }, { "id": 3, "name": "BaRman 3", "description": "vive en una cueva mas grande", "type": "Pelicula", "alwaysAvailable": true, "ranking": 1, "coverPictureUrl": "images_029.jpg", "storageUrl": "bbb.mp4", "isPayPerView": false, "mostrar": true, "actorsName": [ { "firstName": "JAck", "lastName": "Nic", "isActor": true, "isDirector": false }, { "firstName": "Kim", "lastName": "Bas", "isActor": true, "isDirector": false } ], "directorsName": [ { "firstName": "JAmes", "lastName": "Cameron", "isActor": false, "isDirector": true } ], "picture": null, "video": null, "duration": 170, "dateStartLiveOnly": null, "estimatedDuraction": null, "categoriesName": [], "similarContentsName": null, "featured": true, "featuredDateStart": 1509877210000, "featuredDateFinish": 1509963610000, "tenantId": null, "pathTokenVOD": null }, { "id": 5, "name": "Los 7 magnificos", "description": "vive en una cueva", "type": "Serie", "alwaysAvailable": true, "ranking": null, "coverPictureUrl": "images_030.jpg", "storageUrl": "bbb.mp4", "isPayPerView": false, "mostrar": true, "actorsName": [ { "firstName": "JAck", "lastName": "Nic", "isActor": true, "isDirector": false }, { "firstName": "Kim", "lastName": "Bas", "isActor": true, "isDirector": false } ], "directorsName": [ { "firstName": "JAmes", "lastName": "Cameron", "isActor": false, "isDirector": true } ], "picture": null, "video": null, "duration": 170, "dateStartLiveOnly": null, "estimatedDuraction": null, "categoriesName": [], "similarContentsName": null, "featured": true, "featuredDateStart": 1509877210000, "featuredDateFinish": 1509963610000, "tenantId": null, "pathTokenVOD": null }, { "id": 1, "name": "Batman2", "description": "vive en una cueva mas grande", "type": "Pelicula", "alwaysAvailable": true, "ranking": 2, "coverPictureUrl": "images_031.jpg", "storageUrl": "bbb.mp4", "isPayPerView": false, "mostrar": true, "actorsName": [ { "firstName": "Kim", "lastName": "Bas", "isActor": true, "isDirector": false }, { "firstName": "JAck", "lastName": "Nic", "isActor": true, "isDirector": false } ], "directorsName": [ { "firstName": "JAmes", "lastName": "Cameron", "isActor": false, "isDirector": true } ], "picture": null, "video": null, "duration": 170, "dateStartLiveOnly": null, "estimatedDuraction": null, "categoriesName": [], "similarContentsName": null, "featured": true, "featuredDateStart": 1509877210000, "featuredDateFinish": 1509963610000, "tenantId": null, "pathTokenVOD": null }, { "id": 3, "name": "BaRman 3", "description": "vive en una cueva mas grande", "type": "Pelicula", "alwaysAvailable": true, "ranking": 4, "coverPictureUrl": "images_032.jpg", "storageUrl": "bbb.mp4", "isPayPerView": false, "mostrar": true, "actorsName": [ { "firstName": "JAck", "lastName": "Nic", "isActor": true, "isDirector": false }, { "firstName": "Kim", "lastName": "Bas", "isActor": true, "isDirector": false } ], "directorsName": [ { "firstName": "JAmes", "lastName": "Cameron", "isActor": false, "isDirector": true } ], "picture": null, "video": null, "duration": 170, "dateStartLiveOnly": null, "estimatedDuraction": null, "categoriesName": [], "similarContentsName": null, "featured": true, "featuredDateStart": 1509877210000, "featuredDateFinish": 1509963610000, "tenantId": null, "pathTokenVOD": null }, { "id": 5, "name": "Los 7 magnificos", "description": "vive en una cueva", "type": "Serie", "alwaysAvailable": true, "ranking": 3, "coverPictureUrl": "images_033.jpg", "storageUrl": "bbb.mp4", "isPayPerView": false, "mostrar": true, "actorsName": [ { "firstName": "JAck", "lastName": "Nic", "isActor": true, "isDirector": false }, { "firstName": "Kim", "lastName": "Bas", "isActor": true, "isDirector": false } ], "directorsName": [ { "firstName": "JAmes", "lastName": "Cameron", "isActor": false, "isDirector": true } ], "picture": null, "video": null, "duration": 170, "dateStartLiveOnly": null, "estimatedDuraction": null, "categoriesName": [], "similarContentsName": null, "featured": true, "featuredDateStart": 1509877210000, "featuredDateFinish": 1509963610000, "tenantId": null, "pathTokenVOD": null }, { "id": 5, "name": "AAALos 7 magnificos", "description": "vive en una cueva", "type": "Serie", "alwaysAvailable": true, "ranking": 5, "coverPictureUrl": "images_034.jpg", "storageUrl": "bbb.mp4", "isPayPerView": false, "mostrar": true, "actorsName": [ { "firstName": "JAck", "lastName": "Nic", "isActor": true, "isDirector": false }, { "firstName": "Kim", "lastName": "Bas", "isActor": true, "isDirector": false } ], "directorsName": [ { "firstName": "JAmes", "lastName": "Cameron", "isActor": false, "isDirector": true } ], "picture": null, "video": null, "duration": 170, "dateStart": null, "estimatedDuraction": null, "categoriesName": [], "similarContentsName": null, "featured": true, "featuredDateStart": 1509877210000, "featuredDateFinish": 1509963610000, "tenantId": null, "pathTokenVOD": null }	
 			],
 			token: '',
-			inputBuscar:''
+			inputBuscar:'',
+			isPayPerView:false,
+			isFeatured:false,
+			isVOD:false,
+			isLIVE:false
 		}
 	},
-	created () {
+	mounted () {
 		var token = localStorage.getItem("token");
 		this.token = token;
 		//this.contentsresult = this.contents;//comentar
 		this.getContents();
-		this.buscar('');
+		//this.buscar();
 	},
 	methods: {
 		seleccionado (c) {
 			this.selected=c
 		},
 		buscar() {
+			//this.getContents();
 			var input, filter;
 			this.contentsresult = [];
 			input = this.inputBuscar;
@@ -138,11 +166,12 @@ export default {
 				var type; var alwaysAvailable;
 				var isPayPerView; var featured;
 				var coverPictureUrl; var duration;
-				var actors; var directors;
-				var idCategories;	var idSimilarContents
+				var actorsName; var directorsName;
+				var categoriesName;	var similarContentsName
 				var ranking;
 				var namemin;
-				var dateStart;
+				var dateStartLiveOnly;
+				var mostrar = true;
 				for (var key in content){
 					var value = content[key];
 					if (key === 'name') {
@@ -160,6 +189,16 @@ export default {
 					}
 					if (key === 'type') {
 						type = value;
+						console.log(type);
+						console.log(this.isVOD);
+						if (this.isVOD  && (type !== 'Pelicula' && type !== 'Serie')) {
+							mostrar = false
+							console.log('mostrar false peli');
+						}
+						if (this.isLIVE  && (type !== 'Evento Deportivo' && type !== 'Evento Espectaculo')) {
+							mostrar = false
+							console.log('mostrar false edepor');
+						}
 					}
 					if (key === 'isPayPerView') {
 						if (value ) {
@@ -167,12 +206,21 @@ export default {
 						} else {
 							isPayPerView = ''
 						}
+						if (this.isPayPerView && !value) {
+							mostrar = false
+							console.log('mostrar false ppv');
+						}
+						
 					}
 					if (key === 'featured') {
 						if (value ) {
 							featured = 'featured'
 						} else {
 							featured = ''
+						}
+						if (this.isFeatured && !value) {
+							mostrar = false
+							console.log('mostrar false featru');
 						}
 					}
 					if (key === 'coverPictureUrl') {
@@ -181,23 +229,23 @@ export default {
 					if (key === 'duration') {
 						duration = value;
 					}
-					if (key === 'idCategories') {
-						idCategories= value;
+					if (key === 'categoriesName') {
+						categoriesName= value;
 						
 					}
-					if (key === 'actors') {
-						actors= value;
+					if (key === 'actorsName') {
+						actorsName= value;
 						
 					}
-					if (key === 'directors') {
-						directors= value;
+					if (key === 'directorsName') {
+						directorsName= value;
 						
 					}
-					if (key === 'idSimilarContents') {
-						idSimilarContents= value;
+					if (key === 'similarContentsName') {
+						similarContentsName= value;
 					}
-					if (key === 'dateStart') {
-						dateStart= value;
+					if (key === 'dateStartLiveOnly') {
+						dateStartLiveOnly= value;
 					}	
 					if (key === 'ranking') {
 						if (value !== null) {
@@ -214,23 +262,24 @@ export default {
 						}
 					}
 				}
-				var mostrar;
-				if (name.toUpperCase().indexOf(filter) > -1 || description.toUpperCase().indexOf(filter)> -1
-				|| type.toUpperCase().indexOf(filter)> -1 || isPayPerView.toUpperCase() === filter
-				|| featured.toUpperCase()=== filter || alwaysAvailable.toUpperCase()=== filter){
+				
+				if ((name.toUpperCase().indexOf(filter) > -1 || description.toUpperCase().indexOf(filter)> -1)
+				//|| type.toUpperCase().indexOf(filter)> -1 || isPayPerView.toUpperCase() === filter
+				//|| featured.toUpperCase()=== filter || alwaysAvailable.toUpperCase()=== filter){
+				&& mostrar){
 					mostrar = true;
 				} else{
 					mostrar = false;
 				}
 					this.contentsresult.push({
 						name,namemin,description,type,isPayPerView,featured,mostrar,coverPictureUrl,duration,ranking,
-						idSimilarContents, idCategories, actors, directors,alwaysAvailable,dateStart
+						similarContentsName, categoriesName, actorsName, directorsName,alwaysAvailable,dateStartLiveOnly
 						})
 			}
 		},
 		getContents () {
 			const i = this;
-			i.$http.get(`${i.config.backend}/generator/createContent`,{
+			/*i.$http.get(`${i.config.backend}/generator/createContent`,{
 				headers: { 
 					'Authorization': i.token
 				}
@@ -242,11 +291,11 @@ export default {
 				var type; var alwaysAvailable;
 				var isPayPerView; var featured;
 				var coverPictureUrl; var duration;
-				var actors; var directors;
-				var idCategories;	var idSimilarContents
+				var actorsName; var directorsName;
+				var categoriesName;	var similarContentsName
 				var ranking;
 				var namemin;
-				var dateStart;
+				var dateStartLiveOnly;
 				for (var key in content){
 					var value = content[key];
 					if (key === 'name') {
@@ -270,20 +319,20 @@ export default {
 					if (key === 'duration') {
 						duration = value;
 					}
-					if (key === 'idCategories') {
-						idCategories= value;
+					if (key === 'categoriesName') {
+						categoriesName= value;
 					}
-					if (key === 'actors') {
-						actors= value;		
+					if (key === 'actorsName') {
+						actorsName= value;		
 					}
-					if (key === 'directors') {
-						directors= value;	
+					if (key === 'directorsName') {
+						directorsName= value;	
 					}
-					if (key === 'idSimilarContents') {
-						idSimilarContents= value;
+					if (key === 'similarContentsName') {
+						similarContentsName= value;
 					}
-					if (key === 'dateStart') {
-						dateStart= value;
+					if (key === 'dateStartLiveOnly') {
+						dateStartLiveOnly= value;
 					}	
 					if (key === 'ranking') {
 						ranking = value;
@@ -293,10 +342,12 @@ export default {
 					}
 				}
 					this.contents.push({
-						name,description,type,isPayPerView,featured,mostrar,coverPictureUrl,duration,ranking,
-						idSimilarContents, idCategories, actors, directors,alwaysAvailable,dateStart})	
-				}
-			})
+						name,description,type,isPayPerView,featured,coverPictureUrl,duration,ranking,
+						similarContentsName, categoriesName, actorsName, directorsName,alwaysAvailable,dateStartLiveOnly})	
+				}*/
+			//}).then((result) =>{
+				this.buscar();
+			//})
 		}
 	}
 }
