@@ -1,57 +1,49 @@
 <template>
-<div class="container-fluid text-left" style="width:88%">
-	<h2 class="heading"> Crear Contenido LIVE</h2>
-	
-	<form enctype="multipart/form-data" @submit.prevent="crearContenido()">
+<div class="container-fluid text-left" style="width:95%">
+		
+	<form enctype="multipart/form-data" @submit.prevent="crearContenidoLive()">
 
 	<div id="basic-form" >
 		<div class="form-group">
 			<label>Nombre</label>
-			<input type="text" class="form-control" required>
+			<input type="text" class="form-control" v-model="name" required>
 		</div>
 	</div>
 
 	<div class="form-group">
 		<label>Descripcion</label>
-		<textarea class="form-control" rows="5" cols="30" required></textarea>
+		<textarea class="form-control" rows="5" cols="30" v-model="description" required></textarea>
 	</div>
 
 	<div class="form-group">
 		<label>Tipo</label>
 		<br />
 		<label class="fancy-radio">
-			<input type="radio" name="tipo" value="1">
-			<span><i></i>Pelicula</span>
-		</label>
-
-		<label class="fancy-radio">
-			<input type="radio" name="tipo" value="2">
-			<span><i></i>Serie</span>
-		</label>
-
-		<label class="fancy-radio">
-			<input type="radio" name="tipo" value="3">
+			<input type="radio" name="tipo" value="3" v-model="type">
 			<span><i></i>Evento Deportivo</span>
 		</label>
 
 		<label class="fancy-radio">
-			<input type="radio" name="tipo" value="4">
+			<input type="radio" name="tipo" value="4" v-model="type">
 			<span><i></i>Evento Espectaculo</span>
 		</label>
 	</div>
+	
+<div class="form-group">
+
+<label for="live-picker" class="form-group">Fecha y hora de inicio (LIVE)</label>
+	<datetime v-model="dateStart" name="live-picker"
+		type="datetime"
+		input-format="DD-MM-YYYY HH:mm"
+		placeholder=""
+		locale="es"
+		required ></datetime>
+
+</div>
 
 	<div class="form-group">
-            <label>Fecha y hora de inicio (LIVE)</label>
-            <div class='input-group date' id='datetimepicker1'>
-                <input type='text' class="form-control" />
-                <span class="input-group-addon">
-                    <i class="fa fa-calendar"></i></span>
-                </span>
-            </div>
-        </div>
-	<div class="form-group">
 		<label>Duracion Estimada (minutos)</label>
-		<input type="number" class="form-control" required>
+		<input type="number" class="form-control" v-model="estimatedDuraction" required>
 	</div>
 
 	<div class="form-group">
@@ -59,86 +51,100 @@
 		<input type="file" @change="subirArchivo('picture', $event.target.files)" class="input-file">
 	</div>  
 
+
+	
 	<div class="form-group">
 		<label>Categorias</label>
-		<div class="fancy-checkbox">
-			<label><input type="checkbox"><span>Cat 1</span></label>
-		</div>
-		<div class="fancy-checkbox">
-		<label><input type="checkbox" ><span>Cat 2</span></label>
-		</div>
-		<div class="fancy-checkbox">
-		<label><input type="checkbox"><span>Cat 3</span></label>
+		<div v-for = "c in categorias">
+		<label  class="fancy-checkbox">
+			<input type="checkbox" :value="c.id" v-model="idCategories">
+			<span> {{ c.name }} </span>
+		</label>
 		</div>
 	</div>
 
-	<div class="form-group">
+	<div class="form-group" v-if="type==4">
 		<label for="directores" class="control-label">Directores</label>
 		<br>
 		<input type="text"  v-model="nombreDirector"  placeholder="Nombre">
 		<input type="text"  v-model="apellidoDirector"  placeholder="Apellido">
-		<button  @click="guardarDirector(nombreDirector,apellidoDirector)"> Agregar </button>
+		<button type="button" @click="guardarDirector(nombreDirector,apellidoDirector)"> Agregar </button>
 	</div>
 
-	<div class="form-group">
-		<ul v-for="d in directores" class="list-group">
+	<div class="form-group" v-if="type==4">
+		<ul v-for="d in directors" class="list-group">
 			<li class="list-group-item">
 				<a class="fa fa-times" aria-hidden="true"  @click="eliminarDirector(d)"></a>
-				{{d.nombre}}  {{d.apellido}}
+				{{d.firstName}}  {{d.lastName}}
 			</li>
 		</ul> 
 	</div>
 
-	<div class="form-group">
+	<div class="form-group" v-if="type==4">
 		<label for="actores" class="control-label">Actores</label>
 		<br>
 		<input type="text"   v-model="nombreActor"  placeholder="Nombre">
 		<input type="text"  v-model="apellidoActor"  placeholder="Apellido">
-		<button  @click="guardarActor(nombreActor,apellidoActor)"> Agregar </button>
+		<button type="button" @click="guardarActor(nombreActor,apellidoActor)"> Agregar </button>
 	</div>
 
-	<div class="form-group">
-		<ul v-for="a in actores" class="list-group">
+	<div class="form-group" v-if="type==4">
+		<ul v-for="a in actors" class="list-group">
 			<li class="list-group-item">
 				<a class="fa fa-times" aria-hidden="true"  @click="eliminarActor(a)"></a>
-				{{a.nombre}}  {{a.apellido}}
+				{{a.firstName}}  {{a.lastName}}
 			</li>
 		</ul> 
 	</div>
 
 	<div class="form-group">
-		<label>Pay Per View (PPV)</label>
-		<br />
-		<label class="fancy-radio">
-			<input type="radio" name="ppv" value="1">
-			<span><i></i>Es PPV</span>
-		</label>
-	</div>
+		<label>Contenidos Similares</label>
+		<multi-select :options="options"
+			:selected-options="idSimilarContents"
+			placeholder="seleccionar contenidos similares"
+			@select="onSelect">
+		</multi-select>
+	</div>		
+
+<div class="form-group">
+<label class="fancy-checkbox">
+	<input type="checkbox" v-model="isPayPerView">
+	<span>Pay Per View (PPV)</span>
+</label>
+</div>
 
 	<div class="form-group">
-		<label>Destacado</label>
-		<br />
-		<label class="fancy-radio">
-			<input type="radio" name="destacado" value="1" >
-			<span><i></i>Es destacado</span>
-		</label> 
-	</div>
+<label class="fancy-checkbox">
+	<input type="checkbox" v-model="featured">
+	<span>Destacado</span>
+</label>
+</div>
 
-	<div class="form-group">
-		<label>Desde</label>
-		<div class='input-group date' id='datetimepicker2'>
-			<input type='text' class="form-control" />
-			<span class="input-group-addon">
-				<i class="fa fa-calendar"></i>
-			</span>
+
+	<div v-if="featured">
+
+		<label for="start-picker" class="col-sm-3 control-label">Desde: </label>
+		<div class='input-group date'>
+			<datetime v-model="featuredDateStart" name="start-picker"
+				type="datetime"
+				input-format="DD-MM-YYYY HH:mm"
+				placeholder=""
+				locale="es"
+				required ></datetime>
 		</div>
-		<label>Hasta</label>
-		<div class='input-group date' id='datetimepicker3'>
-			<input type='text' class="form-control" />
-			<span class="input-group-addon">
-				<i class="fa fa-calendar"></i>
-			</span>
-		</div>
+
+<br>
+
+		<label for="end-picker" class="col-sm-3 control-label">	Hasta: </label>
+		<div class='input-group date'>
+			
+			<datetime v-model="featuredDateFinish" name="end-picker" 
+			type="datetime"
+			input-format="DD-MM-YYYY HH:mm"
+			placeholder=""
+			locale="es"
+			required ></datetime>
+    	</div>
 	</div>
 	
 	<div style="text-align:right">
@@ -151,103 +157,214 @@
 </template>
 
 <script>
+import _ from 'lodash';
+import { MultiSelect } from 'vue-search-select';
+
 export default {
+	components: {
+     MultiSelect
+  },
 	props: [
     'config',
     'eventBus'
   ],
 	data () {
 		return {
+			// json datos
+			name:'',
+			description: '',
+			type: '',
+			dateStart: '',
+			estimatedDuraction: 0,
+			idCategories: [],
+			directors: [],
+			actors: [],
+			idSimilarContents: [],
+			idSimilarContentsIDS: [],
+			isPayPerView: false,
+			featured: false,
+			featuredDateStart: '',  
+			featuredDateFinish: '',
+			//picture, video
+			formData: new FormData(),
+
+			// datos auxiliares
+			categorias: [],
 			nombreDirector: '',
 			apellidoDirector: '',
 			nombreActor: '',
 			apellidoActor: '',
-			categorias: [
-				{id: '1', nombre: 'cat 1'},
-				{id: '2', nombre: 'cat 2'},
-				{id: '3', nombre: 'cat 3'}
-			],
-			directores: [],
-			actores: [],
-			similar: [],
-			formData: null
+			options: [],
+			searchText: '', 
+			lastSelectItem: {},
+
+			token: ''
 		}
 	},
+	created () {
+			var token = localStorage.getItem("token");
+    		this.token = token;
+			this.getCategories();
+			this.getContents();
+    },
 	mounted () {
-		this.efectosForm();
+		//this.efectosForm();
 	},
 	updated () {
-		this.efectosForm();
+		//this.efectosForm();
 	},
 	methods: {
-		subirArchivo(fieldName, fileList) {
-				if (this.formData === null ) {
-					this.formData = new FormData();
-				}		    
-        this.formData.append(fieldName, fileList[0], fileList[0].name);
+		getContents () {
+			const i = this;
+			i.$http.get(`${i.config.backend}/generator/createContent`,
+			{
+				headers: { 
+					'Authorization': i.token
+					}
+			}).then((result) => {
+				// [{"id":1,"name":"Pelicula 1",...},{"id":2,"name":"Pelicula 2",..}]	
+			for (var i = 0; i < result.body.length; i++){
+						var content = result.body[i];
+						var idC;
+						var nameC;
+						for (var key in content){
+							var value = content[key];
+							if (key === 'id') {
+									idC = value;
+							}
+							if (key === 'name') {
+									nameC = value;
+							}
+						}
+						this.options.push({value: idC, text: nameC})	
+				}
+			})
+		},		
+		getCategories () {
+			const i = this;
+			i.$http.get(`${i.config.backend}/generator/category`,
+			{
+				headers: {
+					'Authorization': i.token
+				}
+			}
+			)
+			.then((result) => {
+				// [{"id":1,"name":"Terror","description":"Me asusto...","coverPictureUrl":null},{"id":2,"name":"Futbol","description":"Copa Mundial de Rusia en vivo","coverPictureUrl":null}]	
+			for (var i = 0; i < result.body.length; i++){
+						var cat = result.body[i];
+						var idC;
+						var nameC;
+						for (var key in cat){
+							var value = cat[key];
+							if (key === 'id') {
+									idC = value;
+							}
+							if (key === 'name') {
+									nameC = value;
+							}
+						}
+						this.categorias.push({id: idC, name: nameC})
+				}
+			})
+		},
+		onSelect (idSimilarContents, lastSelectItem) {
+        	this.idSimilarContents = idSimilarContents
+        	this.lastSelectItem = lastSelectItem
+      	},
+      // deselect option
+      reset () {
+        this.idSimilarContents = [] // reset
       },
-		crearContenido() {
+      // select option from parent component
+      selectOption () {
+        this.idSimilarContents = _.unionWith(this.idSimilarContents, [this.options[0]], _.isEqual)
+      },
+		subirArchivo(fieldName, fileList) {	    
+			this.formData.append(fieldName, fileList[0], fileList[0].name);
+			this.formData.append('video', fileList[0], fileList[0].name);
+      	},
+		crearContenidoLive() {
+			for (var i = 0; i < this.idSimilarContents.length; i++){
+						var idsc = this.idSimilarContents[i];
+						var idc;
+						for (var key in idsc){
+							var id = idsc[key];
+							if (key === 'value') {
+									this.idSimilarContentsIDS.push(id)
+							}
+						}
+						
+				}
+
 			const datos = JSON.parse('{'
-					+'"name":"Batman2",'
-					+'"description":"vive en una cueva mas grande",'
-					+'"type":"1",'
-					+'"duration":170,'
-					+'"idCategories":[1,2],'
-					+'"directors": [{"firstName": "JAmes", "lastName": "Cameron", "isActor":false, "isDirector":true}],'
-					+'"actors": [{"firstName": "JAck", "lastName": "Nic", "isActor":true, "isDirector":false},{"firstName": "Kim", "lastName": "Bas", "isActor":true, "isDirector":false}],'
-					+'"isPayPerView":false,'
-					+'"featured": true,'
-					+'"featuredDateStart":"2017-11-05T10:20:10",'
-					+'"featuredDateFinish":"2017-11-06T10:20:10"'
+					+`"name":"${this.name}",`
+					+`"description":"${this.description}",`
+					+`"type":"${this.type}",`
+					+`"dateStart":"${this.dateStart}",`
+					+`"estimatedDuraction":${this.estimatedDuraction},`
+					+`"idCategories":${JSON.stringify(this.idCategories)},`
+					+`"directors":${JSON.stringify(this.directors)},`
+					+`"actors":${JSON.stringify(this.actors)},`
+					+`"idSimilarContents":${JSON.stringify(this.idSimilarContentsIDS)},`
+					+`"isPayPerView":${this.isPayPerView},`
+					+`"featured":${this.featured},`
+					+`"featuredDateStart":"${this.featuredDateStart}",`
+					+`"featuredDateFinish":"${this.featuredDateFinish}",`
+					//JANUS
+					+`"janus_audio_pt":111,`
+					+`"janus_audio_rtp_map":"opus/48000/2",`
+					+`"janus_video_pt":100,`
+					+`"janus_video_rtp_map":"VP8/90000"`
+					//JANUS
 					+'}');
+					console.log(datos);
 			this.formData.append('datos', new Blob([JSON.stringify(datos)],{type: "application/json"}));
-			const url = `${this.config.backendPOSTA}/generator/createContent`;
+			const url = `${this.config.backend}/generator/createContent`;
 			this.$http.post(url, this.formData,
 				{
 				headers: {
-					Authorization : 'Barer TOKEN:eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ2dHYiLCJleHAiOjE1MTAyNzQwMjh9.thCY9Ik_dkfb3GdxcGnsUKZSkSgT5Ry-gdi-CWi668dDbqaEM6qBWhFAh2rxY5npNmUWN7jNgnPGzsmiJAOPrQ'
+					Authorization : this.token
 					}
 				}).then((response) => {	
 					// exito
+					//mostrar resultado
+					// ir a home o crear nuevo
+					this.$router.push("/");
 				}).catch((error) => {						
 					// error
-					for (var item of this.formData.entries()) {
-							console.log(item[0]+ ', ' +item[1]); 
-					}	
+					//for (var item of this.formData.entries()) {
+					//		console.log(item[0]+ ', ' +item[1]); 
+					//}	
 			});
-		},
-		efectosForm: function () {
-			$('#datetimepicker1').datetimepicker();
-			$('#datetimepicker2').datetimepicker();
-			$('#datetimepicker3').datetimepicker();
 		},
 		guardarDirector: function (nombre,apellido) {
 			if (nombre.trim() !== '' && apellido.trim() !== '') {
-				var idd = this.directores.length + 1
-				this.directores.push(
-					{id: idd, nombre: nombre, apellido:apellido}
+				var idd = this.directors.length + 1
+				this.directors.push(
+					{firstName:nombre, lastName:apellido, isActor:false, isDirector:true}
 				)
 				this.nombreDirector = ''
 				this.apellidoDirector = ''
 			} 
 		},
 		eliminarDirector: function (d) {
-			var index = this.directores.indexOf(d)
-			this.directores.splice(index, 1)
+			var index = this.directors.indexOf(d)
+			this.directors.splice(index, 1)
 		},
 		guardarActor: function (nombre,apellido) {
 			if (nombre.trim() !== '' && apellido.trim() !== '') {
-				var ida = this.actores.length + 1
-				this.actores.push(
-					{id: ida, nombre: nombre, apellido:apellido}
+				var ida = this.actors.length + 1
+				this.actors.push(
+					{firstName:nombre, lastName:apellido, isActor:true, isDirector:false}
 				)
 				this.nombreActor = ''
 				this.apellidoActor = ''
 			} 
 		},
 		eliminarActor: function (a) {
-			var index = this.actores.indexOf(a)
-			this.actores.splice(index, 1)
+			var index = this.actors.indexOf(a)
+			this.actors.splice(index, 1)
 		}
 	}
 }

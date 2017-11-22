@@ -1,10 +1,6 @@
 <template>
-  <div class="container-fluid text-center">    
-    <div class="row content">
-      <div class="col-sm-2 sidenav">
-      </div>
-      <div class="col-sm-8 text-left"> 
-        <h1 class="text-left">Janus Resources</h1>
+<div class="container-fluid text-left" style="width:95%">
+        
         <ul class="nav nav-tabs">
           <li class="active"><a href="#servers" data-toggle="tab" aria-expanded="true">Servers</a></li>
           <li><a href="#creation-tokens" data-toggle="tab" aria-expanded="true">Creation Tokens</a></li>
@@ -99,10 +95,7 @@
           </div>
         </div>
         <hr>
-      </div>
-      <div class="col-sm-2 sidenav">
-      </div>
-    </div>
+
   </div>
 </template>
 

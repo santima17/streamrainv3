@@ -1,7 +1,5 @@
 <template>
-<div class="container-fluid text-left" style="width:88%">
-	<h2 class="heading"> Crear Contenido VOD</h2>
-	
+<div class="container-fluid text-left" style="width:95%">	
 	<form enctype="multipart/form-data" @submit.prevent="crearContenido()">
 
 	<div id="basic-form" >
@@ -29,15 +27,7 @@
 			<span><i></i>Serie</span>
 		</label>
 
-		<label class="fancy-radio">
-			<input type="radio" name="tipo" value="3" v-model="type">
-			<span><i></i>Evento Deportivo</span>
-		</label>
 
-		<label class="fancy-radio">
-			<input type="radio" name="tipo" value="4" v-model="type">
-			<span><i></i>Evento Espectaculo</span>
-		</label>
 	</div>
 
 	<div class="form-group">
@@ -50,15 +40,19 @@
 		<input type="file" @change="subirArchivo('picture', $event.target.files)" class="input-file">
 	</div>  
 
+	
 	<div class="form-group">
 		<label for="video" class="control-label">Video</label>
-		<input type="file" @change="subirArchivo('video', $event.target.files)" class="input-file">
+		<input type="file" @change="subirArchivo('video', $event.target.files)" class="input-file" >
 	</div>
-
+	
 	<div class="form-group">
 		<label>Categorias</label>
 		<div v-for = "c in categorias">
-			<label><input type="checkbox" :value="c.id" v-model="idCategories"><span> {{ c.name }}</span></label>
+		<label  class="fancy-checkbox">
+			<input type="checkbox" :value="c.id" v-model="idCategories">
+			<span> {{ c.name }} </span>
+		</label>
 		</div>
 	</div>
 
@@ -105,17 +99,22 @@
 		</multi-select>
 	</div>		
 
-	<div class="form-group">
-		<label>Pay Per View (PPV)  </label>
-		<input type="checkbox" v-model="isPayPerView">
-	</div>
+<div class="form-group">
+<label class="fancy-checkbox">
+	<input type="checkbox" v-model="isPayPerView">
+	<span>Pay Per View (PPV)</span>
+</label>
+</div>
 
 	<div class="form-group">
-		<label>Destacado </label>
-		<input type="checkbox"  v-model="featured" >
-	</div>
+<label class="fancy-checkbox">
+	<input type="checkbox" v-model="featured">
+	<span>Destacado</span>
+</label>
+</div>
 
-	<div class="form-group" v-if="featured">
+
+	<div v-if="featured">
 
 		<label for="start-picker" class="col-sm-3 control-label">Desde: </label>
 		<div class='input-group date'>
@@ -127,8 +126,11 @@
 				required ></datetime>
 		</div>
 
+<br>
+
 		<label for="end-picker" class="col-sm-3 control-label">	Hasta: </label>
 		<div class='input-group date'>
+			
 			<datetime v-model="featuredDateFinish" name="end-picker" 
 			type="datetime"
 			input-format="DD-MM-YYYY HH:mm"
@@ -138,19 +140,6 @@
     	</div>
 	</div>
 	
-		name {{name}} <br><br>
-		description	{{description}} <br><br>
-		type	{{type}} <br><br>
-		duration	{{duration}} <br><br>
-		idCategories	{{idCategories}} <br><br>
-    directors  {{directors}} <br><br>
-    actors  {{actors}} <br><br>
-     idSimilarContents {{idSimilarContents}} <br><br>
-     isPayPerView {{isPayPerView}} <br><br>
-     featured {{featured}} <br><br>
-    featuredDateStart  {{featuredDateStart}} <br><br>
-		featuredDateFinish	{{featuredDateFinish}} <br><br>
-
 
 	<div style="text-align:right">
 		<button type="submit" class="btn btn-primary">Guardar</button>
@@ -184,6 +173,7 @@ export default {
 			directors: [],
 			actors: [],
 			idSimilarContents: [],
+			idSimilarContentsIDS: [],
 			isPayPerView: false,
 			featured: false,
 			featuredDateStart: '',  
@@ -221,12 +211,10 @@ export default {
 			const i = this;
 			i.$http.get(`${i.config.backend}/generator/createContent`,
 			{
-			//	headers: { quedo sin Authorization???
-					//'Authorization': i.token
-			//	}
-			}
-			)
-			.then((result) => {
+				headers: { 
+					'Authorization': i.token
+					}
+			}).then((result) => {
 				// [{"id":1,"name":"Pelicula 1",...},{"id":2,"name":"Pelicula 2",..}]	
 			for (var i = 0; i < result.body.length; i++){
 						var content = result.body[i];
@@ -289,6 +277,19 @@ export default {
         	this.formData.append(fieldName, fileList[0], fileList[0].name);
       	},
 		crearContenido() {
+
+			for (var i = 0; i < this.idSimilarContents.length; i++){
+						var idsc = this.idSimilarContents[i];
+						var idc;
+						for (var key in idsc){
+							var id = idsc[key];
+							if (key === 'value') {
+									this.idSimilarContentsIDS.push(id)
+							}
+						}
+						
+				}
+
 			const datos = JSON.parse('{'
 					+`"name":"${this.name}",`
 					+`"description":"${this.description}",`
@@ -297,7 +298,7 @@ export default {
 					+`"idCategories":${JSON.stringify(this.idCategories)},`
 					+`"directors":${JSON.stringify(this.directors)},`
 					+`"actors":${JSON.stringify(this.actors)},`
-					+`"idSimilarContents":${JSON.stringify(this.idSimilarContents)},`
+					+`"idSimilarContents":${JSON.stringify(this.idSimilarContentsIDS)},`
 					+`"isPayPerView":${this.isPayPerView},`
 					+`"featured":${this.featured},`
 					+`"featuredDateStart":"${this.featuredDateStart}",`
@@ -308,16 +309,19 @@ export default {
 			const url = `${this.config.backend}/generator/createContent`;
 			this.$http.post(url, this.formData,
 				{
-				//headers: { quedo sin Authorization
-				//	Authorization : 'Barer ' + this.token
-				//	}
+				headers: {
+					Authorization : this.token
+					}
 				}).then((response) => {	
 					// exito
+					//mostrar resultado
+					// ir a home o crear nuevo
+					this.$router.push("/");
 				}).catch((error) => {						
 					// error
-					for (var item of this.formData.entries()) {
-							console.log(item[0]+ ', ' +item[1]); 
-					}	
+					//for (var item of this.formData.entries()) {
+					//		console.log(item[0]+ ', ' +item[1]); 
+					//}	
 			});
 		},
 		guardarDirector: function (nombre,apellido) {

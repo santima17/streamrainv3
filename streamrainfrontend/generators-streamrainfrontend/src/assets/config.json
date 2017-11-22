@@ -1,5 +1,6 @@
 {
-  "backend": "http://localhost:3000",
+  "backend": "http://generator3.127.0.0.1:8080/streamrainRESTUIGenerador",
+  "vod": "http://192.168.99.100:3030/html/",
   "tenant": {
     "name": "FOCCS"
   }

@@ -1,5 +1,5 @@
 <template>
-<div class="row">
+<div class="container-fluid text-left" style="width:95%">
 	<div class="col-md-6">
 		<div class="panel-content">
 			<h2 class="heading margin-bottom-50"></i> Usuarios activos</h2>

@@ -9,7 +9,7 @@ import Casts from './vue/content/Casts.vue';
 import Categories from './vue/content/Categories.vue';
 import Featured from './vue/content/Featured.vue';
 import LiveOnly from './vue/content/LiveOnly.vue';
-import Similar from './vue/content/Similar.vue';
+import Listvods from './vue/content/ListVods.vue';
 // Resources
 import Janus from './vue/resources/janus/Janus.vue';
 import JanusServer from './vue/resources/janus/JanusServer.vue';
@@ -21,6 +21,7 @@ import Login from './vue/session/Login.vue';
 import Logout from './vue/session/Logout.vue';
 // Statistics
 import Statistics from './vue/statistics/Statistics.vue';
+// libs 
 import Datetime from 'vue-datetime';
 
 Vue.use(Datetime);
@@ -71,12 +72,12 @@ const routes = [
     }
   },
   {
-    path: '/content/similar',
-    component: Similar,
+    path: '/content/listvods',
+    component: Listvods,
     meta: {
-      title: `${config.tenant.name} | Similar Content`
+      title: `${config.tenant.name} | List Vods`
     }
-  },
+},
   // Resources
   {
     path: '/resources/janus',
