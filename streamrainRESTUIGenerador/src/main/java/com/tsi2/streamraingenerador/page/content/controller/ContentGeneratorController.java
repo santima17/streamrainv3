@@ -46,7 +46,7 @@ public class ContentGeneratorController extends AbstractController {
 	@Value("${location.file.path.video}")
 	private String locationVideo;
 	
-	@Value("${location.file.path.video}")
+	@Value("${location.file.path.picture}")
 	private String locationPicture;
 	
 	@Value("${location.file.path.docker.vod}")
@@ -111,7 +111,7 @@ public class ContentGeneratorController extends AbstractController {
 			contentDto =  new ObjectMapper().readValue(datos, ContentDto.class);
 			boolean isLiveContent = false;
 			contentDto.setTenantId(sessionService.getCurrentTenant());
-			String pictureName = locationDockerVOD + "/" + picture.getOriginalFilename();
+			String pictureName = locationDockerVOD + "/html/" + picture.getOriginalFilename();
 			contentDto.setCoverPictureUrl(pictureName);
 			if ("1".equals(contentDto.getType())) {
 				contentDto.setType("Pelicula");

@@ -10,13 +10,18 @@ import com.tsi2.streamrain.context.StremRainFacadesContextLoader;
 import com.tsi2.streamrain.context.StremRainUserBussinesContextLoader;
 import com.tsi2.streamrain.converters.interfaces.IConverter;
 import com.tsi2.streamrain.converters.user.UserConverter;
+import com.tsi2.streamrain.converters.user.UserSuscriptionConverter;
 import com.tsi2.streamrain.datatypes.user.UserDto;
+import com.tsi2.streamrain.datatypes.user.UserSuscriptionDto;
+import com.tsi2.streamrain.model.generator.UserSubscriptions;
 import com.tsi2.streamrain.model.generator.Users;
 import com.tsi2.streamrain.services.user.interfaces.IUserService;
 
 public class UserServiceImpl implements IUserService{
-
+ 
 	IConverter<UserDto, Users> userConverter = (UserConverter) StremRainFacadesContextLoader.contextLoader().getBean("userConverter");
+	IConverter<UserSuscriptionDto, UserSubscriptions> userSuscriptionConverter = (UserSuscriptionConverter) StremRainFacadesContextLoader.contextLoader().getBean("userSuscriptionConverter");
+	
 	IBLUser userBussines = (BLUserImpl) StremRainUserBussinesContextLoader.contextLoader().getBean("userBussines");
 	
 	public boolean saveUser(final UserDto u, final String tenantID) {
@@ -60,6 +65,11 @@ public class UserServiceImpl implements IUserService{
 	@Override
 	public List<String> getJanusPinForUser(final String userNickname, final String tenantID) {
 		return userBussines.getJanusPinForUser(userNickname, tenantID);
+	}
+
+	@Override 
+	public List<UserSuscriptionDto> getAllSuscriptions(final String userNickname, final String tenantID) {
+		return userSuscriptionConverter.convertAll(userBussines.getAllSuscriptions(userNickname,tenantID)); 
 	}
 
 

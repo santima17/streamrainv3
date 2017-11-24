@@ -29,5 +29,12 @@
 	<bean id="janusServerConverter" class="com.tsi2.streamrain.converters.janus.JanusServerConverter" />
 	
 	<bean id="janusLiveContentInfoConverter" class="com.tsi2.streamrain.converters.janus.JanusLiveContentConverter" />
+	
+	<bean id="sharedContentConverter" class="com.tsi2.streamrain.converters.content.SharedContentConverter" />
+	
+	<bean id="userSuscriptionConverter" class="com.tsi2.streamrain.converters.user.UserSuscriptionConverter" />
+	
+	
+	
 			
 </beans>

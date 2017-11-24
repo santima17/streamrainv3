@@ -1,9 +1,14 @@
 package com.tsi2.streamrain.dao.implementations;
 
+import java.util.List;
+
+import org.hibernate.Query;
 import org.hibernate.Session;
 
 import com.tsi2.streamrain.context.DBHibernateUtil;
 import com.tsi2.streamrain.dao.interfaces.IDAOUserService;
+import com.tsi2.streamrain.model.generator.UserPpvs;
+import com.tsi2.streamrain.model.generator.UserRatings;
 import com.tsi2.streamrain.model.generator.Users;
 
 public class StreamRainMySQLUserDAO extends StreamRainMySQLDAO implements IDAOUserService {
@@ -11,34 +16,41 @@ public class StreamRainMySQLUserDAO extends StreamRainMySQLDAO implements IDAOUs
 	public boolean findByNickname(String nickname, String tenantID) {
 		Session dbSession = DBHibernateUtil.getSessionFactoryGenerator(tenantID);
 		Users user = (Users) dbSession.createQuery("select u from Users u where u.nickname = :nickname")
-        .setString("nickname", nickname)
-        .uniqueResult();
+				.setString("nickname", nickname).uniqueResult();
 		return user != null;
 	}
 
 	public boolean findByNicknamePassword(String nickname, String password, String tenantID) {
 		Session dbSession = DBHibernateUtil.getSessionFactoryGenerator(tenantID);
-		Users user = (Users) dbSession.createQuery("select u from Users u where u.nickname = :nickname and u.password = :pass")
-        .setString("nickname", nickname)
-        .setString("pass", password)
-        .uniqueResult();
+		Users user = (Users) dbSession
+				.createQuery("select u from Users u where u.nickname = :nickname and u.password = :pass")
+				.setString("nickname", nickname).setString("pass", password).uniqueResult();
 		return user != null;
 	}
 
 	public boolean findByTwitterId(String twitterId, String tenantID) {
 		Session dbSession = DBHibernateUtil.getSessionFactoryGenerator(tenantID);
 		Users user = (Users) dbSession.createQuery("select u from Users u where u.twitterUserId = :twitterUserId")
-        .setString("twitterUserId", twitterId)
-        .uniqueResult();
+				.setString("twitterUserId", twitterId).uniqueResult();
 		return user != null;
 	}
 
 	public Users getUserByNickname(String userNickname, String tenantID) {
 		Session dbSession = DBHibernateUtil.getSessionFactoryGenerator(tenantID);
 		Users user = (Users) dbSession.createQuery("select u from Users u where u.nickname = :nickname")
-        .setString("nickname", userNickname)
-        .uniqueResult();
+				.setString("nickname", userNickname).uniqueResult();
 		return user;
+	}
+
+	public List<UserRatings> getRankForUser(Integer contentID, Integer userID, String tenantID) {
+
+		Session dbSession = DBHibernateUtil.getSessionFactoryGenerator(tenantID);
+
+		Query query = dbSession
+				.createSQLQuery("select * from user_ratings where user_id = :userID and content_id = :contentID order by date")
+				.setParameter("userID", userID).setParameter("contentID", contentID);
+
+		return query.list();
 	}
 
 }

@@ -41,6 +41,9 @@ public class UserSecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers("/index.jsp").permitAll()
 		.antMatchers(HttpMethod.POST, "/user").permitAll()
 		.antMatchers(HttpMethod.POST, "/user/login").permitAll()
+		.antMatchers(HttpMethod.GET, "/auth/twitter/callback").permitAll()
+		.antMatchers(HttpMethod.GET, "/*/auth/twitter").permitAll()
+		.antMatchers(HttpMethod.POST, "/user/payment/subscription/paypal/*").permitAll()
 		.antMatchers(HttpMethod.OPTIONS, "/user/login").permitAll()
 		.antMatchers("/user/*").authenticated().and()
 				// Las peticiones /login pasaran previamente por este filtro

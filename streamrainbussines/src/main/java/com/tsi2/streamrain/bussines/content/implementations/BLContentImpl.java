@@ -15,6 +15,7 @@ import com.tsi2.streamrain.dao.interfaces.IDAOService;
 import com.tsi2.streamrain.dao.interfaces.IDAOUserService;
 import com.tsi2.streamrain.model.generator.Categories;
 import com.tsi2.streamrain.model.generator.Contents;
+import com.tsi2.streamrain.model.generator.SharedContents;
 import com.tsi2.streamrain.model.generator.SpoilerMarks;
 import com.tsi2.streamrain.model.generator.SpoilerMarksId;
 import com.tsi2.streamrain.model.generator.UserComments;
@@ -22,6 +23,7 @@ import com.tsi2.streamrain.model.generator.UserFavs;
 import com.tsi2.streamrain.model.generator.UserFavsId;
 import com.tsi2.streamrain.model.generator.UserRatings;
 import com.tsi2.streamrain.model.generator.UserRatingsId;
+import com.tsi2.streamrain.model.generator.UserSubscriptions;
 import com.tsi2.streamrain.model.generator.UserViews;
 import com.tsi2.streamrain.model.generator.Users;
 
@@ -189,6 +191,37 @@ public class BLContentImpl implements IBLContent {
 		daoMongoDbService.saveChatMessageToContent(idJanusServer, jsonChatMessage, tenantID);
 		return true;
 	}
+  
+	public Integer getContentRaitingOfUser(Integer contentID, String userNickName, String tenantID) { 
+		Users user = daoUserService.getUserByNickname(userNickName, tenantID);
+		List<UserRatings> urList = daoUserService.getRankForUser(contentID, user.getId(), tenantID);
+		if (urList.isEmpty())
+			return 0;
+		return urList.get(0).getRate();
+	}
+
+	public boolean shareContent(final Integer contentId, final Date date, final Integer usersByDestinationUserId, final Integer usersByUserId,
+			final String tenantID) {
+		SharedContents sharedContent = new SharedContents();
+		sharedContent.setDate(date);
+		sharedContent.setContents(daoService.get(Contents.class, contentId, tenantID));
+		sharedContent.setUsersByDestinationUserId(daoUserService.get(Users.class, usersByDestinationUserId, tenantID));
+		sharedContent.setUsersByUserId(daoUserService.get(Users.class, usersByUserId, tenantID));
+		daoService.save(sharedContent, tenantID);
+		return true;
+	}
 	
+	public List<SharedContents> getShareContent(final String userNickName, final Integer searchType, final String tenantID) {
+		Users user = daoUserService.getUserByNickname(userNickName, tenantID);
+		
+		SharedContents objectQuery = new SharedContents();
+		if(searchType == 0) {//los que compartió
+			objectQuery.setUsersByUserId(user);
+		}else {
+			objectQuery.setUsersByDestinationUserId(user); 
+		}
+		return daoService.getAllByExample(SharedContents.class, objectQuery, tenantID);
+	}
+	 
 
 }

@@ -32,6 +32,7 @@ public class ContentConverter implements IConverter<ContentDto, Contents>{
 	public ContentDto converter(Contents source) {
 		ContentDto contentDto = new ContentDto();
 		contentDto.setId(source.getId());
+		contentDto.setRanking(source.getRanking());
 		contentDto.setCoverPictureUrl(source.getCoverPictureUrl());
 		contentDto.setDescription(source.getDescription());
 		contentDto.setIsPayPerView(source.getIsPayPerView());

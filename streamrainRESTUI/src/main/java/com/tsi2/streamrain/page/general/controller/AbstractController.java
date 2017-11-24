@@ -25,6 +25,7 @@ import com.tsi2.streamrain.datatypes.janus.JanusCreateSessionDto;
 import com.tsi2.streamrain.datatypes.janus.JanusCreateSessionResponseDto;
 import com.tsi2.streamrain.datatypes.janus.JanusLiveOnlyDto;
 import com.tsi2.streamrain.datatypes.janus.JanusLiveOnlyInfoDto;
+import com.tsi2.streamrain.security.user.User;
 import com.tsi2.streamrain.services.content.interfaces.IContentService;
 import com.tsi2.streamrain.services.session.interfaces.ISessionService;
 
@@ -132,6 +133,46 @@ public class AbstractController {
 			connection.disconnect();
 			JanusCreateSessionResponseDto response = gson.fromJson(responseBody, JanusCreateSessionResponseDto.class);
 			return response.getData().getId();
+		} catch (IOException e) {
+			System.out.print("Open connection failed");
+			return "ERROR";
+		}
+	}
+	
+	public String sentJSONByPOSTGetToken(final String url, final User json) {
+		URL postURL;
+		try {
+			postURL = new URL(url);
+		} catch (MalformedURLException e) {
+			System.out.print("URL invalid:" + url);
+			return "ERROR";
+		}
+		HttpURLConnection connection;
+		try {
+			connection = (HttpURLConnection) postURL.openConnection();
+			connection.setConnectTimeout(5000);// 5 secs
+			connection.setReadTimeout(5000);// 5 secs
+			try {
+				connection.setRequestMethod(POST);
+			} catch (ProtocolException e) {
+				System.out.print("Protocol POST invalid o not permited");
+				return "ERROR";
+			}
+			connection.setDoOutput(true);
+			connection.setRequestProperty(CONTENT_TYPE, APPLICATION_TYPE_JSON);
+			OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
+			Gson gson = new GsonBuilder().create();
+			out.write(gson.toJson(json));
+			out.flush();
+			out.close();
+			int res = connection.getResponseCode();
+			if(res == 200) {
+				String token = connection.getHeaderField("Authentication");
+				connection.disconnect();
+				return token;
+			}else {
+				return "FORBIDEN";
+			}
 		} catch (IOException e) {
 			System.out.print("Open connection failed");
 			return "ERROR";

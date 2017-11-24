@@ -13,7 +13,9 @@ public interface IDAOJanusService extends IDAOService {
 
 	List<UserSubscriptions> getAllAvailablesUserSubscriptions(final String tenantID);
 	
-	List<UserSubscriptions> getAvailablesUserSubscriptionsForUser(final int idUser, final String tenantID);
+	List<UserSubscriptions> getAllAvailablesUserSubscriptionsByUser(final String tenantID);
+	
+	String getAvailablesUserSubscriptionsForUser(final int idUser, final String tenantID);
 	
 	List<UserPpvs> getPpvsForUser(final int userID, final String tenantID);
 }

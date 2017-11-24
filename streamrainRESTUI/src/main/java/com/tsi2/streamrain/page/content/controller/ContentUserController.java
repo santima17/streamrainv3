@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tsi2.streamrain.datatypes.content.ContentDto;
 import com.tsi2.streamrain.datatypes.content.ContentVoteDto;
+import com.tsi2.streamrain.datatypes.content.SharedContentViewDto;
 import com.tsi2.streamrain.datatypes.content.SpoilerMarkDto;
 import com.tsi2.streamrain.datatypes.content.UserContentCommentDto;
 import com.tsi2.streamrain.datatypes.content.UserContentFavDto;
@@ -98,6 +99,14 @@ public class ContentUserController {
         return new ResponseEntity<Double>(rank, HttpStatus.OK);
     }
     
+    @RequestMapping(value = "/rank/{contentID}/{userNickName}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PathTokenVODDto> rankOfUser(@PathVariable Integer contentID, @PathVariable String userNickName) {
+    	Integer rank = contentService.getContentRaitingOfUser(contentID, userNickName, sessionService.getCurrentTenant());
+    	PathTokenVODDto value = new PathTokenVODDto();
+    	value.setPathTokenVOD(rank.toString());
+    	return new ResponseEntity<PathTokenVODDto>(value, HttpStatus.OK);
+    }
+    
     @RequestMapping(value = "/addContentToFav", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserContentFavDto> voteContent(@RequestBody UserContentFavDto userContentFavDto) {
     	boolean addOk = contentService.addContentToFav(userContentFavDto, sessionService.getCurrentTenant());
@@ -158,6 +167,26 @@ public class ContentUserController {
     	boolean ok = contentService.spolierMarkComment(userNickName, userCommentId, sessionService.getCurrentTenant());
     	if (ok) {
     		return new ResponseEntity<>(HttpStatus.OK);
+    	}else {
+    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    	}
+    }
+    
+    @RequestMapping(value = "/shareContent", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<SharedContentViewDto> shareContent(@RequestBody SharedContentViewDto sharedContent) {
+    	boolean ok = contentService.shareContent(sharedContent, sessionService.getCurrentTenant());
+    	if (ok) {
+    		return new ResponseEntity<>(HttpStatus.OK);
+    	}else {
+    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    	}
+    }
+    
+    @RequestMapping(value = "/getShareContent/{userNickName}/{searchType}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<SharedContentViewDto>> getShareContent(@PathVariable String userNickName, @PathVariable Integer searchType) {
+    	List<SharedContentViewDto> sharedContent = contentService.getShareContent(userNickName, searchType, sessionService.getCurrentTenant());
+    	if (sharedContent != null && !sharedContent.isEmpty()) {
+    		return new ResponseEntity<>(sharedContent, HttpStatus.OK);
     	}else {
     		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     	}
