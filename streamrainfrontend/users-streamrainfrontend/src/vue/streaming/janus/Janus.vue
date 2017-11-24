@@ -163,6 +163,12 @@
             Janus.error(reason);
           }
         });
+        const body = {
+          request: "stop" 
+        };
+	      this.streaming.handle.send({
+          message: body
+        });
       },
       updateStreamId: function (streamId) {
         this.streamId = parseInt(streamId);
@@ -262,7 +268,6 @@
                             message: body,
                             jsep: jsep
                           });
-                          // $('#watch').html("Stop").removeAttr('disabled').click(stopStream);
                         },
                         error: function(error) {
                           Janus.error('WebRTC error: ', error);

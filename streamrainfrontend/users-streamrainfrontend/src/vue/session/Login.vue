@@ -41,9 +41,9 @@
               <input v-model="password" class="form-control input-sm" type="password" value="Password">
             </div>
             <br> -->
-            <div class="form-group">
+            <!-- <div class="form-group">
               <button v-on:click="twitterLogin" class="btn btn-primary" :disabled="!buttonEnable">Twitter <i v-if="!buttonEnable" class="fa fa-spinner fa-spin" style="font-size"></i></button>
-            </div>
+            </div> -->
             <br>
           </div>
         </div>
@@ -183,6 +183,8 @@
             'Authorization': newSession.token
           }
         }).then((response) => {
+          console.error('then')
+          console.error(JSON.stringify(response));
           newSession.janusToken = response.body.janusToken;
           newSession.banned = response.body.banned;
           newSession.janusPins = response.body.janusPins;
@@ -190,6 +192,7 @@
           eventBus.$emit('setVueSession', newSession);
           router.push('/');
         }).catch((response) => {
+          console.error('catch')
           console.log(JSON.stringify(response));
         });
       }

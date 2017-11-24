@@ -5,14 +5,14 @@
       </div>
       <div class="col-sm-8 text-left">
         <h1>{{ stream.name }} <i v-if="!stream.ready && !alert.show && !janusAlert" class="fa fa-spinner fa-spin" style="font-size"></i></h1>
-        <hr v-if="stream.ready">
-        <div class="row" v-if="!stream.ready">
+        <hr>
+        <!-- <div class="row" v-if="!stream.ready">
           <div class="col-sm-12">
             <div class="progress progress-striped active">
               <div class="progress-bar" v-bind:style="progressBar"></div>
             </div>
           </div>
-        </div>
+        </div> -->
         <div class="row">
           <div class="col-sm-12" v-if="janusAlert">
             <div class="alert alert-dismissible alert-warning">
@@ -88,24 +88,15 @@
             </div>
           </div>
           <div class="col-sm-6 text-right">
-            <div>
-              <div v-if="stream.id && !sendingRank" v-on:mouseleave="loadMyRank(myRank)" >
-                <i v-bind:class="stars.s1.class" v-on:mouseover="paintStars(1)" v-on:click="sendRank(1)"></i>
-                <i v-bind:class="stars.s2.class" v-on:mouseover="paintStars(2)" v-on:click="sendRank(2)"></i>
-                <i v-bind:class="stars.s3.class" v-on:mouseover="paintStars(3)" v-on:click="sendRank(3)"></i>
-                <i v-bind:class="stars.s4.class" v-on:mouseover="paintStars(4)" v-on:click="sendRank(4)"></i>
-                <i v-bind:class="stars.s5.class" v-on:mouseover="paintStars(5)" v-on:click="sendRank(5)"></i>
-              </div>
-              <div v-if="sendingRank">
-                <i class="fa fa-spinner fa-spin text-info" style="font-size"></i>
-              </div>
-              <div v-if="stream.ranking">
-                <b>Ranking:</b> {{ stream.ranking }}
-              </div>
-              <div v-if="stream.id && !stream.ranking">
-                <b>Ranking:</b> Unranked
-              </div>
-            </div>
+            <streamrain-fivestarsrating ref="fivestarsrating"
+              :session="session"
+              :stream="stream"
+              :myRank="myRank"
+              :postRank="`${config.backend}/user/COMPLETAR-1}`"
+              :getRank="`${config.backend}/user/COMPLETAR-2}`"
+              :eventBus="eventBus"
+            >
+            </streamrain-fivestarsrating>
           </div>
         </div>
         <div v-if="stream.description">
@@ -149,6 +140,7 @@
 </template>
 
 <script>
+  import FiveStarsRating from '../utils/FiveStarsRating.vue';
   export default {
     props: [
       'config',
@@ -156,32 +148,13 @@
       'janusAlert',
       'session'
     ],
+    components: {
+      'streamrain-fivestarsrating': FiveStarsRating
+    },
     data () {
       return {
-        progressBar: 'width: 15%',
+        // progressBar: 'width: 15%',
         //
-        stars: {
-          s1: {
-            class: 'star glyphicon glyphicon-star',
-            painted: false
-          },
-          s2: {
-            class: 'star glyphicon glyphicon-star',
-            painted: false
-          },
-          s3: {
-            class: 'star glyphicon glyphicon-star',
-            painted: false
-          },
-          s4: {
-            class: 'star glyphicon glyphicon-star',
-            painted: false
-          },
-          s5: {
-            class: 'star glyphicon glyphicon-star',
-            painted: false
-          }
-        },
         myRank: 0,
         sendingRank: false,
         //
@@ -217,54 +190,33 @@
       });
 
       this.eventBus.$on('janusStartingStream', function () {
+        // i.updateProgressBar('width: 50%');
+        console.log('janusStartingStream')
       });
 
       this.eventBus.$on('janusStartedStream', function () {
         i.stream.ready = true;
+        // i.updateProgressBar('width: 70%');
+        console.log('janusStartedStream')
       });
 
       this.eventBus.$on('janusRemoteStream', function (obj) {
         const stream = obj.stream;
         const browser = obj.browser;
         this.currentStream = stream;
-        if (i.$refs.video.length > 0) {
-          // Been here already: let's see if anything changed
+        if (i.$refs.video && i.$refs.video.length > 0) {
           const videoTracks = stream.getVideoTracks();
           if (videoTracks && videoTracks.length > 0 && !videoTracks[0].muted) {
-            // $('#novideo').remove();
             if (i.$refs.video.videoWidth) i.$refs.video.show();
           }
           return;
         }
-        const videoTracks = stream.getVideoTracks();
-        if (videoTracks && videoTracks.length &&
-          (
-            browser.name === "chrome" ||
-            browser.name === "firefox" ||
-            browser.name === "safari"
-          )
-        ){
-          // $('#curbitrate').removeClass('hide').show();
-          // bitrateTimer = setInterval(function() {
-          //   // Display updated bitrate, if supported
-          //   var bitrate = streaming.getBitrate();
-          //   //~ Janus.debug("Current bitrate is " + streaming.getBitrate());
-          //   $('#curbitrate').text(bitrate);
-          //   // Check if the resolution changed too
-          //   var width = $("#remotevideo").get(0).videoWidth;
-          //   var height = $("#remotevideo").get(0).videoHeight;
-          //   if(width > 0 && height > 0)
-          //     $('#curres').removeClass('hide').text(width+'x'+height).show();
-          // }, 1000);
-        }
-
-        //Janus.attachMediaStream($('#remotevideo').get(0), stream);
-        // A ver si funciona de esta forma lo que está en la línea anterior
-        if(browser.name === 'chrome') {
-          var chromever = browser.version;
-          if(chromever >= 43) {
+        if (i.$refs.video === undefined || i.$refs.video === null) return;
+        if (browser.name === 'chrome') {
+          const chromever = browser.version;
+          if (chromever >= 43) {
             i.$refs.video.srcObject = stream;
-          } else if(typeof element.src !== 'undefined') {
+          } else if (typeof element.src !== 'undefined') {
             i.$refs.video.src = URL.createObjectURL(stream);
           } else {
             console.error("Error attaching stream to element");
@@ -272,18 +224,6 @@
         } else {
           i.$refs.video.srcObject = stream;
         }
-
-        // var videoTracks = stream.getVideoTracks();
-        // if(videoTracks === null || videoTracks === undefined || videoTracks.length === 0 || videoTracks[0].muted) {
-        //   // No remote video
-        //   $('#remotevideo').hide();
-        //   $('#stream').append(
-        //     '<div id="novideo" class="no-video-container">' +
-        //       '<i class="fa fa-video-camera fa-5 no-video-icon"></i>' +
-        //       '<span class="no-video-text">No remote video available</span>' +
-        //     '</div>');
-        // }
-
       });
 
       this.eventBus.$on('janusStoppedStream', function () {
@@ -368,12 +308,12 @@
           'Authorization': session.token
         }
       }).then((response) => {
-        console.log(JSON.stringify(response))
         const newStream = response.body;
         newStream.ready = false;
         i.updateStream(newStream);
         i.updateProgressBar('width: 30%');
         this.eventBus.$emit('JanusReady?', null);
+        i.getMyRank();
       }).catch((response) => {
         switch(response.status) {
           case 500:
@@ -398,133 +338,38 @@
             });
             break;
           default:
-            updateAlert({
+            i.updateAlert({
               show: true,
               message: 'An error has occurred'
             });
         }
       });
-
-      // this.$http.get(`${this.config.backend}/user/content/rank/${streamId}/${session.nickname}`,
-      // {
-      //   headers: {
-      //     'Authorization': session.token
-      //   }
-      // }).then((resp) => {
-      //   console.error('hola1');
-      //   console.error(JSON.stringify(resp))
-      //   i.loadMyRank(resp.body.pathTokenVOD);
-      // }).catch((resp) => {
-      //   console.error('hola2');
-      //   console.error(JSON.stringify(resp))
-      // });
-
     },
     beforeDestroy () {
       this.eventBus.$emit('leaveStreaming', null);
     },
-    methods: {   
-      sendRank: function (rank) {
-        if (rank === this.myRank) return;
+    methods: {
+      getMyRank: function () {
         const i = this;
-        this.sendingRank = true;
-        this.$http.post(`${this.config.backend}/user/COMPLETAR`,
-        {
-          idPaymentMethod: 1,
-        },
+        const streamId = i.$route.params.streamId;
+        i.$http.get(`${i.config.backend}/user/content/rank/${streamId}/${i.session.nickname}`,
         {
           headers: {
             'Authorization': i.session.token
           }
         }).then((response) => {
-          i.paintStars(rank);
-          this.sendingRank = false;
+          i.setMyRank(response.body.pathTokenVOD);
         }).catch((response) => {
-          console.log(JSON.stringify(response));
+          console.error(JSON.stringify(response));
+          // TODO: mostrar una alerta
         });
       },
-      loadMyRank: function (myRank) {
+      setMyRank: function (myRank) {
         this.myRank = myRank;
-        this.paintStars(myRank);
-      },
-      paintStars: function (star) {
-        switch (star) {
-          case 0:
-            this.stars.s1.class = 'star glyphicon glyphicon-star';
-            this.stars.s1.painted = false;
-            this.stars.s2.class = 'star glyphicon glyphicon-star';
-            this.stars.s2.painted = false;
-            this.stars.s3.class = 'star glyphicon glyphicon-star';
-            this.stars.s3.painted = false;
-            this.stars.s4.class = 'star glyphicon glyphicon-star';
-            this.stars.s4.painted = false;
-            this.stars.s5.class = 'star glyphicon glyphicon-star';
-            this.stars.s5.painted = false;
-            break;
-          case 1:
-            this.stars.s1.class = 'star glyphicon glyphicon-star text-info';
-            this.stars.s1.painted = true;
-            this.stars.s2.class = 'star glyphicon glyphicon-star';
-            this.stars.s2.painted = false;
-            this.stars.s3.class = 'star glyphicon glyphicon-star';
-            this.stars.s3.painted = false;
-            this.stars.s4.class = 'star glyphicon glyphicon-star';
-            this.stars.s4.painted = false;
-            this.stars.s5.class = 'star glyphicon glyphicon-star';
-            this.stars.s5.painted = false;
-            break;
-          case 2:
-            this.stars.s1.class = 'star glyphicon glyphicon-star text-info';
-            this.stars.s1.painted = true;
-            this.stars.s2.class = 'star glyphicon glyphicon-star text-info';
-            this.stars.s2.painted = true;
-            this.stars.s3.class = 'star glyphicon glyphicon-star';
-            this.stars.s3.painted = false;
-            this.stars.s4.class = 'star glyphicon glyphicon-star';
-            this.stars.s4.painted = false;
-            this.stars.s5.class = 'star glyphicon glyphicon-star';
-            this.stars.s5.painted = false;
-            break;
-          case 3:
-            this.stars.s1.class = 'star glyphicon glyphicon-star text-info';
-            this.stars.s1.painted = true;
-            this.stars.s2.class = 'star glyphicon glyphicon-star text-info';
-            this.stars.s2.painted = true;
-            this.stars.s3.class = 'star glyphicon glyphicon-star text-info';
-            this.stars.s3.painted = true;
-            this.stars.s4.class = 'star glyphicon glyphicon-star';
-            this.stars.s4.painted = false;
-            this.stars.s5.class = 'star glyphicon glyphicon-star';
-            this.stars.s5.painted = false;
-            break;
-          case 4:
-            this.stars.s1.class = 'star glyphicon glyphicon-star text-info';
-            this.stars.s1.painted = true;
-            this.stars.s2.class = 'star glyphicon glyphicon-star text-info';
-            this.stars.s2.painted = true;
-            this.stars.s3.class = 'star glyphicon glyphicon-star text-info';
-            this.stars.s3.painted = true;
-            this.stars.s4.class = 'star glyphicon glyphicon-star text-info';
-            this.stars.s4.painted = true;
-            this.stars.s5.class = 'star glyphicon glyphicon-star';
-            this.stars.s5.painted = false;
-            break;
-          case 5:
-            this.stars.s1.class = 'star glyphicon glyphicon-star text-info';
-            this.stars.s1.painted = true;
-            this.stars.s2.class = 'star glyphicon glyphicon-star text-info';
-            this.stars.s2.painted = true;
-            this.stars.s3.class = 'star glyphicon glyphicon-star text-info';
-            this.stars.s3.painted = true;
-            this.stars.s4.class = 'star glyphicon glyphicon-star text-info';
-            this.stars.s4.painted = true;
-            this.stars.s5.class = 'star glyphicon glyphicon-star text-info';
-            this.stars.s5.painted = true;
-            break;
-        }
+        this.$refs.fivestarsrating.paintStars(myRank);
       },
       updateProgressBar: function (progressBar) {
-        this.progressBar = progressBar;
+        // this.progressBar = progressBar;
       },
       updateStream: function (stream) {
         this.stream = stream;
@@ -533,23 +378,9 @@
         this.alert = alert;
       },
       playingVideo: function () {
-        // $('#waitingvideo').remove();
-        // if (this.videoWidth) $('#remotevideo').removeClass('hide').show();
-        // if (spinner !== null && spinner !== undefined) spinner.stop();
-        // spinner = null;
+        if (!this.currentStream) return;
         const videoTracks = this.currentStream.getVideoTracks();
         if (videoTracks === null || videoTracks === undefined || videoTracks.length === 0) return;
-        // const width = this.videoWidth;
-        // const height = this.videoHeight;
-        // $('#curres').removeClass('hide').text(width+'x'+height).show();
-        if (browser.name === 'firefox') {
-          // Firefox Stable has a bug: width and height are not immediately available after a playing
-          // setTimeout(function() {
-          //   const width = $("#remotevideo").get(0).videoWidth;
-          //   const height = $("#remotevideo").get(0).videoHeight;
-          //   $('#curres').removeClass('hide').text(width+'x'+height).show();
-          // }, 2000);
-        }
       },
       activePrivateMessageMode: function () {
         this.chatroom.participantsSelected = [];
@@ -586,6 +417,7 @@
         }
       },
       getDate: function(UNIX_timestamp){
+        // TODO: arreglar.
         let a = new Date(UNIX_timestamp * 1000);
         let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
         let year = a.getFullYear();
