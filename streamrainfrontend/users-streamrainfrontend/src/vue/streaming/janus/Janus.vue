@@ -89,7 +89,7 @@
         janus: null,
         opaqueId: `STREAMRAIN:${Janus.randomString(12)}`,
         started: false,
-        userToken: null,
+        userToken: this.session.janusToken,
         streamId: null,
         // Streaming
         streaming: {
@@ -149,8 +149,6 @@
       },
       updateJanusInf: function (servers) {
         this.server = servers;
-        // HARDCODEADO
-        this.userToken = 'userToken1';
       },
       leaveStreaming: function () {
         const request = {

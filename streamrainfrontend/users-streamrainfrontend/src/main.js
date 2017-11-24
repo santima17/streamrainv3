@@ -11,6 +11,7 @@ import Signup from './vue/session/Signup.vue';
 import NotFound from './vue/nav/NotFound.vue';
 import Home from './vue/nav/Home.vue';
 import Catalog from './vue/nav/Catalog.vue';
+import Subscription from './vue/nav/Subscription.vue';
 // Streaming
 import LiveOnly from './vue/streaming/LiveOnly.vue'; 
 import AlwaysAvailable from './vue/streaming/AlwaysAvailable.vue';
@@ -68,6 +69,13 @@ const routes = [
     }
   },
   {
+    path: '/subscription',
+    component: Subscription,
+    meta: {
+      title: `${config.tenant.name} | Subscription`
+    }
+  },
+  {
     path: '/live/:streamId',
     component: LiveOnly,
     meta: {
@@ -75,7 +83,7 @@ const routes = [
     }
   },
   {
-    path: '/vod',
+    path: '/vod/:streamId',
     component: AlwaysAvailable,
     meta: {
       title: `${config.tenant.name} | Vod!`

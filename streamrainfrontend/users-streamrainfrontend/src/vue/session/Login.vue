@@ -31,6 +31,21 @@
             </div>
             <br>
           </div>
+          <div class="col-sm-6 text-right">
+            <!-- <div class="form-group">
+              <p>Nickname</p>
+              <input v-model="nickname" class="form-control input-sm" type="text" value="Nickname">
+            </div>
+            <div class="form-group">
+              <p>Password</p>
+              <input v-model="password" class="form-control input-sm" type="password" value="Password">
+            </div>
+            <br> -->
+            <div class="form-group">
+              <button v-on:click="twitterLogin" class="btn btn-primary" :disabled="!buttonEnable">Twitter <i v-if="!buttonEnable" class="fa fa-spinner fa-spin" style="font-size"></i></button>
+            </div>
+            <br>
+          </div>
         </div>
         <hr>
       </div>
@@ -38,7 +53,9 @@
       </div>
     </div>
   </div>
-</template><script>
+</template>
+
+<script>
   export default {
   props: [
     'config',
@@ -70,17 +87,31 @@
       }
       return true;
     },
+    twitterLogin: function () {
+      const router = this.$router;
+      this.$http.get(`${this.config.backend}/auth/twitter`)
+      .then((response) => { 
+        // consol.error(JSON.stringify(response));
+        const redirect = response.body.pathTokenVOD;
+        window.location.href = redirect;
+        // router.go(redirect);
+      })
+      .catch((response) => {
+        consol.error(JSON.stringify(response));
+      });
+    },
     login: function () {
       if (!this.buttonEnable) return;
       if (!this.validation()) return;
       const eventBus = this.eventBus;
       const router = this.$router;
       const nickname = this.nickname;
-      const password = this.password;
+      const password = CryptoJS.SHA1(this.password).toString();
       const updateLoginError = this.updateLoginError;
       const updateButtonEnable = this.updateButtonEnable;
       const updateButtonText = this.updateButtonText;
       const config = this.config;
+      const getUserInfo = this.getUserInfo;
       if (nickname.trim() !== '' && password.trim() !== '') {
         if (this.buttonEnable) {
           updateButtonEnable(false);
@@ -97,12 +128,10 @@
                 'Access-Control-Expose-Headers': 'Authorization'
               }
             }).then((response) => {
-              let newSession = response.body;
+              let newSession = {};
               newSession.nickname = nickname;
               newSession.token = response.headers.get('Authorization');
-              localStorage.setItem(`streamrain-${config.tenant.name.replace(/\s/g, '')}-session`, JSON.stringify(newSession));
-              eventBus.$emit('setVueSession', newSession);
-              router.push('/');
+              getUserInfo(newSession);
             }).catch((response) => {
               updateButtonText('Log In');
               switch(response.status) {
@@ -143,6 +172,26 @@
       },
       updateButtonText: function (buttonText) {
         this.buttonText = buttonText;
+      },
+      getUserInfo: function(newSession) {
+        const router = this.$router;
+        const eventBus = this.eventBus;
+        const config = this.config;
+        this.$http.get(`${this.config.backend}/user/accesinformation/${newSession.nickname}`,
+        {
+          headers: {
+            'Authorization': newSession.token
+          }
+        }).then((response) => {
+          newSession.janusToken = response.body.janusToken;
+          newSession.banned = response.body.banned;
+          newSession.janusPins = response.body.janusPins;
+          localStorage.setItem(`streamrain-${config.tenant.name.replace(/\s/g, '')}-session`, JSON.stringify(newSession));
+          eventBus.$emit('setVueSession', newSession);
+          router.push('/');
+        }).catch((response) => {
+          console.log(JSON.stringify(response));
+        });
       }
     }
   }

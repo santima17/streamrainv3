@@ -143,8 +143,8 @@
         {
           nickname: this.nickname,
           email: this.email,
-          password: this.password,
-          confirmPass: this.confirmPassword,
+          password: CryptoJS.SHA1(this.password).toString(),
+          confirmPass: CryptoJS.SHA1(this.confirmPassword).toString(),
           country: this.country,
           city: this.city,
           facebookUserId: null,
@@ -180,7 +180,6 @@
                 message: 'An error has occurred'
               });
           } 
-          console.log(JSON.stringify(error));
           updateAlert({
             show: true,
             message: 'An error has occurred'

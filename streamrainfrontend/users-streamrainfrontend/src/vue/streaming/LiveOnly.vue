@@ -89,7 +89,7 @@
           </div>
           <div class="col-sm-6 text-right">
             <div>
-              <div v-if="stream.id && !sendingRank" v-on:mouseleave="loadMyRank()" >
+              <div v-if="stream.id && !sendingRank" v-on:mouseleave="loadMyRank(myRank)" >
                 <i v-bind:class="stars.s1.class" v-on:mouseover="paintStars(1)" v-on:click="sendRank(1)"></i>
                 <i v-bind:class="stars.s2.class" v-on:mouseover="paintStars(2)" v-on:click="sendRank(2)"></i>
                 <i v-bind:class="stars.s3.class" v-on:mouseover="paintStars(3)" v-on:click="sendRank(3)"></i>
@@ -368,6 +368,7 @@
           'Authorization': session.token
         }
       }).then((response) => {
+        console.log(JSON.stringify(response))
         const newStream = response.body;
         newStream.ready = false;
         i.updateStream(newStream);
@@ -404,16 +405,47 @@
         }
       });
 
+      // this.$http.get(`${this.config.backend}/user/content/rank/${streamId}/${session.nickname}`,
+      // {
+      //   headers: {
+      //     'Authorization': session.token
+      //   }
+      // }).then((resp) => {
+      //   console.error('hola1');
+      //   console.error(JSON.stringify(resp))
+      //   i.loadMyRank(resp.body.pathTokenVOD);
+      // }).catch((resp) => {
+      //   console.error('hola2');
+      //   console.error(JSON.stringify(resp))
+      // });
+
     },
     beforeDestroy () {
       this.eventBus.$emit('leaveStreaming', null);
     },
-    methods: {
+    methods: {   
       sendRank: function (rank) {
+        if (rank === this.myRank) return;
+        const i = this;
         this.sendingRank = true;
+        this.$http.post(`${this.config.backend}/user/COMPLETAR`,
+        {
+          idPaymentMethod: 1,
+        },
+        {
+          headers: {
+            'Authorization': i.session.token
+          }
+        }).then((response) => {
+          i.paintStars(rank);
+          this.sendingRank = false;
+        }).catch((response) => {
+          console.log(JSON.stringify(response));
+        });
       },
-      loadMyRank: function () {
-        this.paintStars(this.myRank);
+      loadMyRank: function (myRank) {
+        this.myRank = myRank;
+        this.paintStars(myRank);
       },
       paintStars: function (star) {
         switch (star) {

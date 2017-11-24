@@ -15,6 +15,7 @@
           <ul class="nav navbar-nav">
             <li><router-link to="/">Home</router-link></li>
             <li><router-link to="/catalog">Catalog</router-link></li>
+            <li><router-link to="/subscription">Subscription</router-link></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li v-if="!session"><router-link to="/login">Log In</router-link></li>
@@ -61,7 +62,8 @@
       }
     },
     created () {
-      this.session = JSON.parse(localStorage.getItem(`streamrain-${this.config.tenant.name.replace(/\s/g, '')}-session`)) || {};
+      const localStorageSession = JSON.parse(localStorage.getItem(`streamrain-${this.config.tenant.name.replace(/\s/g, '')}-session`)) || {};
+      if (Object.keys(localStorageSession).length) this.session = localStorageSession;
 
       const updateSession = this.updateSession;
       const removeSession = this.removeSession;
