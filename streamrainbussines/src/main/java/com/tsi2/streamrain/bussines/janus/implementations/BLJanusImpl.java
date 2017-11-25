@@ -88,6 +88,7 @@ public class BLJanusImpl implements IBLJanus {
 		if (!list.isEmpty()) {
 			JanusCreationTokens janusCreationTokens = list.get(0);
 			JanusServers janusServersExample = new JanusServers();
+			janusServersExample.setIsEnable(true);
 			janusServersExample.setJanusCreationTokens(janusCreationTokens);
 			List<JanusServers> listJanusServer = daoJanusService.getAllByExample(JanusServers.class, janusServersExample, tenantID);
 			if (!listJanusServer.isEmpty()) {

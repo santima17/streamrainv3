@@ -109,6 +109,7 @@ public class ContentGeneratorController extends AbstractController {
     	ContentDto contentDto;
 		try {
 			contentDto =  new ObjectMapper().readValue(datos, ContentDto.class);
+			Thread.sleep(5000);
 			boolean isLiveContent = false;
 			contentDto.setTenantId(sessionService.getCurrentTenant());
 			String pictureName = locationDockerVOD + "/html/" + picture.getOriginalFilename();
