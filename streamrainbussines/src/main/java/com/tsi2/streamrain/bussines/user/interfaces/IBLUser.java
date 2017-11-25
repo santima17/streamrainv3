@@ -2,6 +2,7 @@ package com.tsi2.streamrain.bussines.user.interfaces;
 
 import java.util.List;
 
+import com.tsi2.streamrain.model.generator.UserSubscriptions;
 import com.tsi2.streamrain.model.generator.Users;
 
 public interface IBLUser {
@@ -25,5 +26,7 @@ public interface IBLUser {
 	String getJanusTokenForUser(final String userNickname, final String tenantID);
 
 	List<String> getJanusPinForUser(final String userNickname, final String tenantID);
+
+	List<UserSubscriptions> getAllSuscriptions(final String userNickname, final String tenantID);
 
 }

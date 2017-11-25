@@ -4,6 +4,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionKey;
 import org.springframework.social.oauth1.AuthorizedRequestToken;
@@ -22,12 +24,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.tsi2.streamrain.datatypes.user.UserDto;
+import com.tsi2.streamrain.page.general.controller.AbstractController;
+import com.tsi2.streamrain.security.user.User;
 import com.tsi2.streamrain.services.session.interfaces.ISessionService;
 import com.tsi2.streamrain.services.tenants.interfaces.ITenantService;
 import com.tsi2.streamrain.services.user.interfaces.IUserService;
+import com.tsi2.streamrain.springmvc.model.PathTokenVODDto;
 
 @Controller
-public class SocialRedController {
+public class SocialRedController extends AbstractController{
 	
 	@Autowired
 	TwitterConnectionFactory connectionFactoryTwitter;
@@ -38,28 +43,33 @@ public class SocialRedController {
 	@Autowired
 	ISessionService sessionService;
 			
-	@RequestMapping(value = "/{tenant}/auth/twitter", method = RequestMethod.GET)
-	public String showLogin(@PathVariable("tenant") String tenant, HttpServletRequest request, HttpServletResponse response) {
-		try {		
-			sessionService.setCurrentTenant(tenant);
+	@RequestMapping(value = "/auth/twitter", method = RequestMethod.GET)
+	public ResponseEntity<PathTokenVODDto> showLogin(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			
+			String url = request.getRequestURL().toString();
+			String tenantID = url.substring(7,url.indexOf("."));
+			
+			sessionService.setCurrentTenant(tenantID);
 			
 			OAuth1Operations oauth1Operations = connectionFactoryTwitter.getOAuthOperations();
 						 
 			OAuth1Parameters oAuth1Parameters=new OAuth1Parameters();
-			 
-			OAuthToken requestToken=oauth1Operations.fetchRequestToken("http://127.0.0.1:8080/streamrainRESTUI/auth/twitter/callback",null);
+			String pathPrefix = request.getRequestURL().toString().split("auth")[0];
+			OAuthToken requestToken=oauth1Operations.fetchRequestToken( pathPrefix + "auth/twitter/callback",null);
 			 
 			String authorizeUrl = oauth1Operations.buildAuthorizeUrl(requestToken.getValue(),oAuth1Parameters);
-						
-			return "redirect:"+authorizeUrl;
+			PathTokenVODDto redirect = new PathTokenVODDto();
+			redirect.setPathTokenVOD(authorizeUrl);
+			return new ResponseEntity<>(redirect, HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return null;
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
 	
 	@RequestMapping(value = "/auth/twitter/callback", method = RequestMethod.GET)
-	public ModelAndView twitterCallback(@RequestParam(value="oauth_token", required=false) String oauthToken,
+	public ResponseEntity<User> twitterCallback(@RequestParam(value="oauth_token", required=false) String oauthToken,
 			@RequestParam(value="oauth_verifier", required=false) String oauthVerifier, HttpServletRequest request, HttpServletResponse response) {
 		try {						
 			OAuth1Operations oauth1Operations = connectionFactoryTwitter.getOAuthOperations();
@@ -88,18 +98,23 @@ public class SocialRedController {
 				user.setEmail("");
 				user.setPassword("");
 				user.setCity("");
+				user.setBlocked(true);
 				userService.saveUser(user, tenantId);
+				
 			}
+			User userdto = new User();
+			userdto.setTwitter(true);
+			userdto.setUsername(name);
+			userdto.setTwitterID(connectionKey.getProviderUserId());
+			userdto.setPassword(connectionKey.getProviderUserId());
+			//String pathPrefix = request.getRequestURL().toString().split("auth")[0];
+			//String token = sentJSONByPOSTGetToken(pathPrefix + "user/login", userdto);		    
+			//response.setHeader("Athentication", token);
+			return new ResponseEntity<>(userdto, HttpStatus.OK);
 			
-		    ModelAndView mav = null;
-		    	    
-	    	mav = new ModelAndView("welcome");
-	        mav.addObject("firstname", name);
-		    
-		    return mav;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return null;
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
 

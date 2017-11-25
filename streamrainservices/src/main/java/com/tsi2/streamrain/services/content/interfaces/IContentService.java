@@ -3,6 +3,7 @@ package com.tsi2.streamrain.services.content.interfaces;
 import java.util.List;
 
 import com.tsi2.streamrain.datatypes.content.ContentDto;
+import com.tsi2.streamrain.datatypes.content.SharedContentViewDto;
 import com.tsi2.streamrain.datatypes.content.UserContentCommentDto;
 import com.tsi2.streamrain.datatypes.content.UserContentFavDto;
 import com.tsi2.streamrain.datatypes.content.UserContentViewDto;
@@ -41,5 +42,11 @@ public interface IContentService {
 	List<JanusLiveOnlyInfoDto> getAllLiveOnlyContents(final String tenantID);
 
 	boolean addChatMessageToContent(final Integer idJanusServer, final String jsonChatMessage, final String tenantID);
+
+	Integer getContentRaitingOfUser(final Integer contentID, final String userNickName, final String tenantID);
+
+	boolean shareContent(final SharedContentViewDto sharedContent, final String tenantID);
+
+	List<SharedContentViewDto> getShareContent(final String userNickName, final Integer searchType, final String tenantID);
 
 }

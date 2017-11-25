@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tsi2.streamrain.datatypes.janus.JanusAccessInformationDto;
 import com.tsi2.streamrain.datatypes.user.UserDto;
+import com.tsi2.streamrain.datatypes.user.UserSuscriptionDto;
 import com.tsi2.streamrain.services.session.interfaces.ISessionService;
 import com.tsi2.streamrain.services.user.interfaces.IUserService;
 import com.tsi2.streamrain.utils.Utils;
@@ -76,6 +77,16 @@ public class UserController {
             response = new ResponseEntity<>(accessInfo, HttpStatus.OK);
         }
         return response;
+    }
+    
+    @RequestMapping(value = "/suscriptions/{userNickname}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<UserSuscriptionDto>> getAllSuscriptions(@PathVariable String userNickname) {
+    	List<UserSuscriptionDto> suscriptions = userService.getAllSuscriptions(userNickname, sessionService.getCurrentTenant());
+        if (suscriptions.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(suscriptions, HttpStatus.OK);
+        }
     }
     
     @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)

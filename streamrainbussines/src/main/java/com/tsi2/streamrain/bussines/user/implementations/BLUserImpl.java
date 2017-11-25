@@ -66,17 +66,12 @@ public class BLUserImpl implements IBLUser {
 		daoService.saveOrUpdate(userOld, tenantID);
 	}
 
-	public String getJanusTokenForUser(String userNickname, String tenantID) {
+	public String getJanusTokenForUser(final String userNickname, final String tenantID) {
 		Users user = daoService.getUserByNickname(userNickname, tenantID);
-		List<UserSubscriptions> list = daoJanusService.getAvailablesUserSubscriptionsForUser(user.getId(), tenantID);
-		if (list.isEmpty()) {
-			return null;
-		}
-		UserSubscriptions userSubscriptions = list.get(0);
-		return userSubscriptions.getJanusUserToken();
+		return daoJanusService.getAvailablesUserSubscriptionsForUser(user.getId(), tenantID);
 	}
 
-	public List<String> getJanusPinForUser(String userNickname, String tenantID) {
+	public List<String> getJanusPinForUser(final String userNickname, final String tenantID) {
 		Users user = daoService.getUserByNickname(userNickname, tenantID);
 		List<UserPpvs> userPpvs = daoJanusService.getPpvsForUser(user.getId(), tenantID);
 		List<String> pinList = new ArrayList<String> ();
@@ -85,6 +80,19 @@ public class BLUserImpl implements IBLUser {
 			pinList.add("CID="+p.getId().getContentId()+"PIN="+loc.getJanusPin());
 		}
 		return pinList;
+	}
+
+	public List<UserSubscriptions> getAllSuscriptions(final String userNickname, final String tenantID) {
+		Users user = daoService.getUserByNickname(userNickname, tenantID);
+		List<UserSubscriptions> usList =  daoJanusService.getAllAvailablesUserSubscriptionsByUser(tenantID);
+		List<UserSubscriptions> finalList = new ArrayList<UserSubscriptions>();
+		for(UserSubscriptions sus : usList) {
+			if(sus.getUsers().getId() == user.getId()) {
+				finalList.add(sus);
+			}
+		}
+		return finalList;
+		
 	}
 
 }

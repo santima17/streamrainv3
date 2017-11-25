@@ -3,8 +3,9 @@ package com.tsi2.streamrain.services.user.interfaces;
 import java.util.List;
 
 import com.tsi2.streamrain.datatypes.user.UserDto;
+import com.tsi2.streamrain.datatypes.user.UserSuscriptionDto;
 
-public interface IUserService {
+public interface IUserService { 
 	
 	boolean saveUser(final UserDto u, final String tenantID);
 	
@@ -25,5 +26,7 @@ public interface IUserService {
 	String getJanusTokenForUser(final String userNickname, final String tenantID);
 
 	List<String> getJanusPinForUser(final String userNickname, final String tenantID);
+
+	List<UserSuscriptionDto> getAllSuscriptions(final String userNickname, final String tenantID);
 
 }

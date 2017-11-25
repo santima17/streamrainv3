@@ -11,12 +11,15 @@ import com.tsi2.streamrain.converters.interfaces.IConverter;
 import com.tsi2.streamrain.converters.janus.JanusLiveContentConverter;
 import com.tsi2.streamrain.converters.content.ContentConverter;
 import com.tsi2.streamrain.converters.content.UserContentViewConverter;
+import com.tsi2.streamrain.converters.content.SharedContentConverter;
 import com.tsi2.streamrain.datatypes.content.ContentDto;
+import com.tsi2.streamrain.datatypes.content.SharedContentViewDto;
 import com.tsi2.streamrain.datatypes.content.UserContentCommentDto;
 import com.tsi2.streamrain.datatypes.content.UserContentFavDto;
 import com.tsi2.streamrain.datatypes.content.UserContentViewDto;
 import com.tsi2.streamrain.datatypes.janus.JanusLiveOnlyInfoDto;
 import com.tsi2.streamrain.model.generator.Contents;
+import com.tsi2.streamrain.model.generator.SharedContents;
 import com.tsi2.streamrain.model.generator.UserViews;
 import com.tsi2.streamrain.services.content.interfaces.IContentService;
 
@@ -33,6 +36,9 @@ public class ContentServiceImpl implements IContentService {
 	
 	IConverter<JanusLiveOnlyInfoDto, Contents>  janusLiveContentInfoConverter = (JanusLiveContentConverter) StremRainFacadesContextLoader.contextLoader()
 			.getBean("janusLiveContentInfoConverter");
+	
+	IConverter<SharedContentViewDto, SharedContents>  sharedContentConverter = (SharedContentConverter) StremRainFacadesContextLoader.contextLoader()
+			.getBean("sharedContentConverter"); 
 
 	public Integer saveContent(final ContentDto content, final String tenantID) {
 		return contentBussines.saveContent((Contents) contentConverter.deConverter(content), content.getIdCategories(), content.getIdSimilarContents(), tenantID);
@@ -127,6 +133,21 @@ public class ContentServiceImpl implements IContentService {
 
 	public boolean addChatMessageToContent(final Integer idJanusServer, final String jsonChatMessage, final String tenantID) {
 		return contentBussines.addChatMessageToContent(idJanusServer, jsonChatMessage, tenantID);
+	}
+
+	@Override
+	public Integer getContentRaitingOfUser(final Integer contentID, final String userNickName, final String tenantID) {
+		return contentBussines.getContentRaitingOfUser(contentID, userNickName, tenantID);
+	}
+
+	@Override 
+	public boolean shareContent(final SharedContentViewDto sharedContent, final String tenantID) {
+		return contentBussines.shareContent(sharedContent.getContentId(), sharedContent.getDate(), sharedContent.getUsersByDestinationUserId(), sharedContent.getUsersByUserId(), tenantID);
+	} 
+
+	@Override
+	public List<SharedContentViewDto> getShareContent(final String userNickName, final Integer searchType, final String tenantID) {
+		return sharedContentConverter.convertAll(contentBussines.getShareContent(userNickName, searchType, tenantID));
 	}
 
 }
