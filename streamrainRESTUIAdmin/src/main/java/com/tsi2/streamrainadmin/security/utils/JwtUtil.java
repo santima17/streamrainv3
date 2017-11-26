@@ -32,12 +32,12 @@ public class JwtUtil {
 	public static Authentication getAuthentication(HttpServletRequest request) {
 		String token = request.getHeader(TOKEN_HEADER);
 		if (token != null) {
-			//String user = Jwts.parser().setSigningKey(KEY).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().getSubject();
+			String user = Jwts.parser().setSigningKey(KEY).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().getSubject();
 			// para las demás peticiones que no sean /login
 			// no requerimos una autenticacion por username/password
 			// por este motivo podemos devolver un UsernamePasswordAuthenticationToken sin
 			// password
-			String user = "kaque";
+			//String user = "kaque";
 			return user != null ? new UsernamePasswordAuthenticationToken(user, null, new ArrayList<GrantedAuthority>()) : null;
 		}
 		return null;

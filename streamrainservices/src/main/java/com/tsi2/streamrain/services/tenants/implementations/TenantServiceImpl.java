@@ -15,7 +15,6 @@ import com.tsi2.streamrain.services.tenants.interfaces.ITenantService;
 
 public class TenantServiceImpl implements ITenantService{
 
-	
 	IBLTenant tenantBussines = (BLTenantImpl) StremRainUserBussinesContextLoader.contextLoader().getBean("tenantBussines");
 	IConverter<TenantDto, Tenants> tenantConverter = (TenantConverter)StremRainFacadesContextLoader.contextLoader().getBean("tenantConverter");
 	
@@ -49,6 +48,14 @@ public class TenantServiceImpl implements ITenantService{
 
 	public boolean updateTenant(final TenantDto tenant) {
 		return tenantBussines.updateTenant((Tenants)tenantConverter.deConverter(tenant));
+	}
+
+	public boolean unblockUser(final String userNickName, final String tenantId) {
+		return tenantBussines.unblockUser(userNickName, tenantId);
+	}
+
+	public boolean unblockContent(final Integer contentId, final String tenantId) {
+		return tenantBussines.unblockContent(contentId, tenantId);
 	}
 
 

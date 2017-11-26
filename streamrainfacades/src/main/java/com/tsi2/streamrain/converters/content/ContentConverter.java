@@ -39,6 +39,7 @@ public class ContentConverter implements IConverter<ContentDto, Contents>{
 		contentDto.setName(source.getName());
 		contentDto.setStorageUrl(source.getStorageUrl());
 		contentDto.setType(source.getType());
+		contentDto.setBlocked(source.isBlocked());
 		Set<ContentCastDto> actors = new HashSet<ContentCastDto>();
 		Set<ContentCastDto> directors = new HashSet<ContentCastDto>();
 		Iterator<ContentCasts> iterator = source.getContentCastses().iterator();
@@ -152,6 +153,7 @@ public class ContentConverter implements IConverter<ContentDto, Contents>{
 		contents.setName(source.getName());
 		contents.setStorageUrl(source.getStorageUrl());
 		contents.setType(source.getType());
+		contents.setBlocked(source.getBlocked());
 		Set<ContentCasts> actors = deConvertAllContentCasts(source.getActors());
 		Set<ContentCasts> directors = deConvertAllContentCasts(source.getDirectors());
 		actors.addAll(directors);

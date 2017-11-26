@@ -49,6 +49,7 @@ public class ContentDto {
     private String janus_pin;
     private Integer janus_audio_port;
     private Integer janus_video_port;
+    private Boolean blocked;
     
     private String actorsName;
     private String directorsName;
@@ -268,5 +269,11 @@ public class ContentDto {
 	public void setDateStartLiveOnly(String dateStartLiveOnly) {
 		this.dateStartLiveOnly = dateStartLiveOnly;
 	}
-		
+	public Boolean getBlocked() {
+		return blocked;
+	}
+	public void setBlocked(Boolean blocked) {
+		this.blocked = blocked;
+	}
+			
 }

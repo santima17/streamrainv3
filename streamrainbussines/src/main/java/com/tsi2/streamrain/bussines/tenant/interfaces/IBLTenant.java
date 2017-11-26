@@ -20,4 +20,8 @@ public interface IBLTenant {
 
 	public boolean updateTenant(final Tenants tenant);
 
+	public boolean unblockUser(final String userNickName, final String tenantId);
+
+	public boolean unblockContent(final Integer contentId, final String tenantId);
+
 }

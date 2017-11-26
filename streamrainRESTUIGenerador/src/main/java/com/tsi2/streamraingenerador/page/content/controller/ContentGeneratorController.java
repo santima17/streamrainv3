@@ -1,7 +1,5 @@
 package com.tsi2.streamraingenerador.page.content.controller;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -38,6 +36,7 @@ import com.tsi2.streamrain.services.content.interfaces.IContentService;
 import com.tsi2.streamrain.services.janus.interfaces.IJanusService;
 import com.tsi2.streamrain.services.session.interfaces.ISessionService;
 import com.tsi2.streamraingenerador.page.general.controller.AbstractController;
+import com.tsi2.streamraingenerador.utils.Utils;
 
 @RestController
 @RequestMapping("/generator/createContent")
@@ -149,9 +148,9 @@ public class ContentGeneratorController extends AbstractController {
 			}
 			Integer idContent = contentService.saveContent(contentDto, sessionService.getCurrentTenant());
 			if (idContent != null) {
-				recordFile(locationPicture, picture);
+				Utils.recordFile(locationPicture, picture);
 				if (!isLiveContent) {
-					recordFile(locationVideo, video);
+					Utils.recordFile(locationVideo, video);
 				}else {
 					ContentDto newContentDto = contentService.getContentById(idContent, sessionService.getCurrentTenant());
 					//newContentDto.setJanus_audio_port(5000 + idContent);
@@ -229,9 +228,9 @@ public class ContentGeneratorController extends AbstractController {
         	return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }else {
         	try {
-	        	String pictureName = recordFile(locationPicture, contentDto.getPicture());
+	        	String pictureName = Utils.recordFile(locationPicture, contentDto.getPicture());
 	    		contentDto.setCoverPictureUrl(pictureName);
-	    		String videoName = recordFile(locationVideo, contentDto.getVideo());
+	    		String videoName = Utils.recordFile(locationVideo, contentDto.getVideo());
 	    		contentDto.setStorageUrl(videoName);
 	    		if ("1".equals(contentDto.getType())) {
 	    			contentDto.setType("Pelicula");
@@ -260,25 +259,7 @@ public class ContentGeneratorController extends AbstractController {
     	contentService.deleteContent(contentID, sessionService.getCurrentTenant());
     }
 	
-	private String recordFile(String path, MultipartFile uploaded) throws Exception {
-				
-		String pathFile = path+uploaded.getOriginalFilename();
-    	File localFile = new File(pathFile);
-    	FileOutputStream os = null;
-    	try {
-    		os = new FileOutputStream(localFile);
-    		os.write(uploaded.getBytes());
-    		return uploaded.getOriginalFilename();
-    	} finally {
-    		if (os != null) {
-    			try {
-					os.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-    		}
-    	}
-	}
+	
 	
 	
 	private JanusChatRoomInfoDto fillChatRoomInformation(final JanusLiveOnlyInfoDto liveOnlyContents) {

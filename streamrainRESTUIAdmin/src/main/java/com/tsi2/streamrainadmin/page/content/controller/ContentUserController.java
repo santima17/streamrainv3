@@ -24,7 +24,7 @@ import com.tsi2.streamrain.services.content.interfaces.IContentService;
 import com.tsi2.streamrain.services.session.interfaces.ISessionService;
 
 @RestController
-@RequestMapping("/user/content")
+@RequestMapping("/administrator/content")
 public class ContentUserController {
 	
 	@Autowired
@@ -36,9 +36,9 @@ public class ContentUserController {
 	@Autowired
 	ISessionService sessionService;
 		
-	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<ContentDto> getAllContent() {
-        return contentService.getAllContents(sessionService.getCurrentTenant());
+	@RequestMapping(value = "/all/{tenantID}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<ContentDto> getAllContent(@PathVariable String tenantID) {
+        return contentService.getAllContents(tenantID);
     }
 	
     @RequestMapping(value = "/{contentID}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)

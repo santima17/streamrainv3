@@ -1,6 +1,5 @@
 package com.tsi2.streamrainadmin.page.user.controller;
 
-import java.util.HashSet;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -28,7 +27,7 @@ import com.tsi2.streamrain.services.user.interfaces.IUserService;
 import com.tsi2.streamrainadmin.utils.Utils;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/administrator/user")
 
 public class UserController {
 	
@@ -45,9 +44,9 @@ public class UserController {
         binder.setValidator(new ValidadorUser());
     }
 	
-    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<UserDto> getAllUsers() {
-        return userService.getAll(sessionService.getCurrentTenant());
+    @RequestMapping(value = "/all/{tenantID}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<UserDto> getAllUsers(@PathVariable String tenantID) {
+        return userService.getAll(tenantID);
     }
     
     @RequestMapping(value = "/{userNickname}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)

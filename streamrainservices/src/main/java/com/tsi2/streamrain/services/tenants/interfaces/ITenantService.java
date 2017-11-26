@@ -13,4 +13,6 @@ public interface ITenantService {
 	boolean blockUser(final String userNickName, final String tenantName);
 	boolean blockContent(final Integer contentId, final String tenantId);
 	boolean updateTenant(final TenantDto tenant);
+	boolean unblockUser(final String userNickName, final String tenantId);
+	boolean unblockContent(final Integer contentId, final String tenantId);
 }

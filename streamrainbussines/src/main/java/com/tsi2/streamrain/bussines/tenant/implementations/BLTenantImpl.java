@@ -16,7 +16,7 @@ import com.tsi2.streamrain.model.generator.Users;
 import com.tsi2.streamrain.model.main.Tenants;
 
 public class BLTenantImpl implements IBLTenant{
-
+	
 	IDAOService daoMainService = (StreamRainMySQLMainDAO) StremRainDataContextLoader.contextLoader().getBean("daoMainService");
 	IDAOTenantService daoTenant = (StreamRainMySQLTenantDAO) StremRainDataContextLoader.contextLoader().getBean("daoTenant");
 	IDAOUserService daoUserService = (StreamRainMySQLUserDAO) StremRainDataContextLoader.contextLoader().getBean("daoUserService");
@@ -55,6 +55,18 @@ public class BLTenantImpl implements IBLTenant{
 
 	public boolean updateTenant(final Tenants tenant) {
 		return daoMainService.saveOrUpdate(tenant, null);
+	}
+
+	public boolean unblockUser(String userNickName, String tenantId) {
+		Users users = daoUserService.getUserByNickname(userNickName, tenantId);
+		users.setBlocked(false);
+		return daoUserService.saveOrUpdate(users, tenantId);
+	}
+
+	public boolean unblockContent(Integer contentId, String tenantId) {
+		Contents content = daoService.get(Contents.class, contentId, tenantId);
+		content.setBlocked(false);
+		return daoService.saveOrUpdate(content, tenantId);
 	}
 
 }

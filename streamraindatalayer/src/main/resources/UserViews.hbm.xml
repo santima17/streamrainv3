@@ -18,7 +18,7 @@
             <column name="date_start" length="19" not-null="true" />
         </property>
         <property name="dateFinish" type="timestamp">
-            <column name="date_finish" length="19" not-null="true" />
+            <column name="date_finish" length="19" />
         </property>
         <property name="second" type="int">
             <column name="second" not-null="true" />

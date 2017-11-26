@@ -1,5 +1,6 @@
 package com.tsi2.streamrain.page.content.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,14 +74,28 @@ public class ContentUserController {
             response = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {
         	ContentDto contentDto = contentService.getContentById(contentID, sessionService.getCurrentTenant());
-        	String pathTokenVOD = Utils.obtainPathTokenVOD(contentDto.getStorageUrl(), days.intValue());
+        	//Guardar en UserView
+        	UserContentViewDto userContentViewDto = new UserContentViewDto();
+        	userContentViewDto.setContentID(contentID);
+        	userContentViewDto.setUserNickname(userNickName);
+        	userContentViewDto.setDateStart(new Date());
+        	userContentViewDto.setSecond(0);
+        	contentService.addViewToContent(userContentViewDto, sessionService.getCurrentTenant());
+        	
         	PathTokenVODDto dto = new PathTokenVODDto();
-        	dto.setPathTokenVOD(locationDockerVOD + pathTokenVOD);
+        	if (contentDto.getAlwaysAvailable() != null) {
+	        	String pathTokenVOD = Utils.obtainPathTokenVOD(contentDto.getStorageUrl(), days.intValue());
+	        	dto.setPathTokenVOD(locationDockerVOD + pathTokenVOD);
+        	}else {
+        		dto.setPathTokenVOD("OK");
+        	}
+        	        	
             response = new ResponseEntity<PathTokenVODDto>(dto, HttpStatus.OK);
         }
         return response;
     }
     
+        
     @RequestMapping(value = "/voteContent", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ContentVoteDto> voteContent(@RequestBody ContentVoteDto contentVoteDto) {
     	boolean voteOk = contentService.voteContent(contentVoteDto.getContentID(), contentVoteDto.getUserNickname(), contentVoteDto.getRank(), sessionService.getCurrentTenant());

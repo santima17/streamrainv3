@@ -62,7 +62,7 @@ import com.tsi2.streamrainadmin.page.general.controller.AbstractController;
 @RequestMapping("/generator/createContent")
 public class ContentGeneratorController extends AbstractController {
 	
-	@Value("${location.file.path}")
+	@Value("${location.file.path.video}")
 	private String location;
 		
 	@Value("${janus.chatRoom.url}")

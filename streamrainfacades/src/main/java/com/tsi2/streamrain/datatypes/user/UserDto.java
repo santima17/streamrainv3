@@ -13,7 +13,7 @@ public class UserDto {
     private String facebookUserId;
     private String twitterUserId;
     private Integer integratorId;
-    private Boolean blocked;
+    private boolean blocked;
     
 	public Integer getId() {
 		return id;
@@ -81,10 +81,10 @@ public class UserDto {
 	public void setConfirmPass(String confirmPass) {
 		this.confirmPass = confirmPass;
 	}
-	public Boolean getBlocked() {
+	public boolean isBlocked() {
 		return blocked;
 	}
-	public void setBlocked(Boolean blocked) {
+	public void setBlocked(boolean blocked) {
 		this.blocked = blocked;
-	}    
+	} 
 }

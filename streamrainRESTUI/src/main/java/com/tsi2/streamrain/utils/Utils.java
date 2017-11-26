@@ -1,5 +1,8 @@
 package com.tsi2.streamrain.utils;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -11,6 +14,8 @@ import java.util.Formatter;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.springframework.web.multipart.MultipartFile;
 
 public class Utils {
 	
@@ -314,5 +319,24 @@ public class Utils {
 		    return null;
 		}
 	 }
+	 
+	 public static String recordFile(String path, MultipartFile uploaded) throws Exception {
+		String pathFile = path+uploaded.getOriginalFilename();
+    	File localFile = new File(pathFile);
+    	FileOutputStream os = null;
+    	try {
+    		os = new FileOutputStream(localFile);
+    		os.write(uploaded.getBytes());
+    		return uploaded.getOriginalFilename();
+    	} finally {
+    		if (os != null) {
+    			try {
+					os.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+    		}
+    	}
+	}
 
 }
