@@ -44,7 +44,7 @@
             <!-- <div class="form-group">
               <button v-on:click="twitterLogin" class="btn btn-primary" :disabled="!buttonEnable">Twitter <i v-if="!buttonEnable" class="fa fa-spinner fa-spin" style="font-size"></i></button>
             </div> -->
-            <br>
+          <br>
           </div>
         </div>
         <hr>
@@ -183,16 +183,20 @@
             'Authorization': newSession.token
           }
         }).then((response) => {
-          console.error('then')
-          console.error(JSON.stringify(response));
           newSession.janusToken = response.body.janusToken;
-          newSession.banned = response.body.banned;
+          newSession.isBanned = response.body.isBanned;
           newSession.janusPins = response.body.janusPins;
+          let pins = {};
+          newSession.janusPins.forEach((entry) => {
+            const regexMatch = entry.match(/CID=(.*)PIN=(.*)/);
+            pins[`cid${regexMatch[1]}`] = regexMatch[2];
+          });
+          newSession.janusPins = pins;
+          console.log(JSON.stringify(newSession));
           localStorage.setItem(`streamrain-${config.tenant.name.replace(/\s/g, '')}-session`, JSON.stringify(newSession));
           eventBus.$emit('setVueSession', newSession);
           router.push('/');
         }).catch((response) => {
-          console.error('catch')
           console.log(JSON.stringify(response));
         });
       }

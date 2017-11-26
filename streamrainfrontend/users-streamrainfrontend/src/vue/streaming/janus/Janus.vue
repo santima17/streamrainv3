@@ -123,12 +123,14 @@
         }).catch((response) => {
           switch(response.status) {
             case 500:
-              i.eventBus.$emit('setJanusAlert', {
+              i.eventBus.$emit('setAlert', {
+                show: true,
                 message: 'Janus: connection error (Internal Server Error)'
               });
               break;
             case 404:
-              i.eventBus.$emit('setJanusAlert', {
+              i.eventBus.$emit('setAlert', {
+                show: true,
                 message: 'Janus: connection error (Not Found)'
               });
               break;
@@ -136,12 +138,14 @@
             case 403:
               localStorage.removeItem(`streamrain-${i.config.tenant.name.replace(/\s/g, '')}-session`);
               i.eventBus.$emit('removeVueSession', null);
-              i.eventBus.$emit('setJanusAlert', {
+              i.eventBus.$emit('setAlert', {
+                show: true,
                 message: 'The session has expired, please log in again'
               });
               break;
             default:
-              i.eventBus.$emit('setJanusAlert', {
+              i.eventBus.$emit('setAlert', {
+                show: true,
                 message: 'Janus: connection error'
               });
           }
@@ -151,24 +155,28 @@
         this.server = servers;
       },
       leaveStreaming: function () {
-        const request = {
-          textroom: 'leave',
-          transaction: Janus.randomString(12),
-          room: this.streamId,
-          username: this.textroom.myusername,
-        };
-        this.textroom.handle.data({
-          text: JSON.stringify(request),
-          error: function(reason) {
-            Janus.error(reason);
-          }
-        });
-        const body = {
-          request: "stop" 
-        };
-	      this.streaming.handle.send({
-          message: body
-        });
+        if (this.textroom.handle) {
+          const request = {
+            textroom: 'leave',
+            transaction: Janus.randomString(12),
+            room: this.streamId,
+            username: this.textroom.myusername,
+          };
+          this.textroom.handle.data({
+            text: JSON.stringify(request),
+            error: function(reason) {
+              Janus.error(reason);
+            }
+          });
+        }
+        if (this.streaming.handle) {
+          const body = {
+            request: "stop" 
+          };
+          this.streaming.handle.send({
+            message: body
+          });
+        } 
       },
       updateStreamId: function (streamId) {
         this.streamId = parseInt(streamId);
@@ -286,6 +294,11 @@
                     // TODO
                   }
                 });
+                if (i.session.isBanned) {
+                  // Si está baneado no hacemos attach del textroom
+                  i.setTextroomReady();
+                  return;
+                }
                 i.janus.attach({
                   plugin: 'janus.plugin.textroom',
                   opaqueId: i.opaqueId,
@@ -400,7 +413,8 @@
               },
               error: function(error) {
                 Janus.error(error);
-                eventBus.$emit('setJanusAlert', {
+                eventBus.$emit('setAlert', {
+                  show: true,
                   message: `Janus ${error}`
                 });
               },
@@ -412,8 +426,10 @@
         });
       },
       janusGetLiveContent: function (streamId) {
-        if (this.textroom.ready &&  this.streaming.ready) {
+        if (!this.session.isBanned && this.textroom.ready && this.streaming.ready) {
           this.janusJoinTextroom(streamId);
+          this.janusWatchStream(streamId);
+        } else if (this.session.isBanned && this.streaming.ready) {
           this.janusWatchStream(streamId);
         }
       },

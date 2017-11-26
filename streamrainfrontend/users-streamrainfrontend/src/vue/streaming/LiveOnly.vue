@@ -4,39 +4,33 @@
       <div class="col-sm-2 sidenav">
       </div>
       <div class="col-sm-8 text-left">
-        <h1>{{ stream.name }} <i v-if="!stream.ready && !alert.show && !janusAlert" class="fa fa-spinner fa-spin" style="font-size"></i></h1>
+        <h1>
+          {{ stream.name }} <i v-if="titleSpinner && !alert.show" class="fa fa-spinner fa-spin" style="font-size"></i>
+          <streamrain-favbutton v-if="myFav !== null" ref="errorshelper"
+            :session="session"
+            :contentId="$route.params.streamId"
+            :myFav="myFav"
+          >
+          </streamrain-favbutton>
+        </h1>
         <hr>
-        <!-- <div class="row" v-if="!stream.ready">
-          <div class="col-sm-12">
-            <div class="progress progress-striped active">
-              <div class="progress-bar" v-bind:style="progressBar"></div>
-            </div>
-          </div>
-        </div> -->
-        <div class="row">
-          <div class="col-sm-12" v-if="janusAlert">
-            <div class="alert alert-dismissible alert-warning">
-              <button type="button" class="close" data-dismiss="alert">&times;</button>
-              <p><strong>Oops!</strong></p>
-              <p>{{ janusAlert.message }}</p>
-            </div>
-          </div>
-        </div>
+        <!-- alert -->
         <div class="row">
           <div class="col-sm-12" v-if="alert.show">
-            <div class="alert alert-dismissible alert-warning">
-              <button type="button" class="close" data-dismiss="alert">&times;</button>
-              <p><strong>Oops!</strong></p>
+            <div v-if="alert.show" class="alert alert-dismissible alert-warning">
+              <button class="close" v-on:click="eventBus.$emit('setAlert', {show: false, message: null})">&times;</button>
+              <p>Oops!</p>
               <p>{{ alert.message }}</p>
             </div>
           </div>
         </div>
+        <!-- alert -->
         <div class="row" id="room">
           <div class="col-sm-7">
             <video ref="video" width="100%" v-on:playing="playingVideo" autoplay />
           </div>
           <div class="col-sm-5">
-            <div class="panel panel-info" v-if="chatroom.ready">
+            <div class="panel panel-info" v-if="chatroom.ready && !session.isBanned">
               <div class="panel-heading">
                 <div class="btn-group pull-right">
                   <button class="btn btn-info dropdown-toggle btn-xs" data-toggle="dropdown" aria-expanded="false">
@@ -73,6 +67,9 @@
                   <span v-on:click="sendMessage" class="input-group-addon btn btn-info">Send</span>
                 </div>
               </div>
+            </div>
+            <div v-if="session.isBanned">
+              <p class="text-right text-danger">You are banned from chatroom</p> 
             </div>
           </div>
         </div>
@@ -130,7 +127,12 @@
               </div>
             </div>
           </div>
-        </div> 
+        </div>
+        <streamrain-errorshelper ref="errorshelper"
+          :eventBus="eventBus"
+          :config="config"
+        >
+        </streamrain-errorshelper>
         <hr>
       </div>
       <div class="col-sm-2 sidenav">
@@ -141,21 +143,24 @@
 
 <script>
   import FiveStarsRating from '../utils/FiveStarsRating.vue';
+  import FavButton from '../utils/FavButton.vue';
+  import ErrorsHelper from '../utils/ErrorsHelper.vue';
   export default {
     props: [
       'config',
       'eventBus',
-      'janusAlert',
-      'session'
+      'session',
+      'alert'
     ],
     components: {
-      'streamrain-fivestarsrating': FiveStarsRating
+      'streamrain-fivestarsrating': FiveStarsRating,
+      'streamrain-favbutton': FavButton,
+      'streamrain-errorshelper': ErrorsHelper
     },
     data () {
       return {
-        // progressBar: 'width: 15%',
-        //
         myRank: 0,
+        myFav: null,
         sendingRank: false,
         //
         currentStream: null,
@@ -173,11 +178,7 @@
           privateMessageMode: false
         },
         messageToSend: null,
-        //
-        alert: {
-          show: false,
-          message: null
-        }
+        titleSpinner: true,
       }
     },
     created () {
@@ -190,14 +191,10 @@
       });
 
       this.eventBus.$on('janusStartingStream', function () {
-        // i.updateProgressBar('width: 50%');
-        console.log('janusStartingStream')
       });
 
       this.eventBus.$on('janusStartedStream', function () {
         i.stream.ready = true;
-        // i.updateProgressBar('width: 70%');
-        console.log('janusStartedStream')
       });
 
       this.eventBus.$on('janusRemoteStream', function (obj) {
@@ -309,40 +306,17 @@
         }
       }).then((response) => {
         const newStream = response.body;
+        console.log(JSON.stringify(newStream))
+        if (newStream.isPayPerView && !session.janusPins[`cid${streamId}`]) {
+          return i.$router.push(`/buyPPVContent/${streamId}`);
+        }
         newStream.ready = false;
         i.updateStream(newStream);
-        i.updateProgressBar('width: 30%');
         this.eventBus.$emit('JanusReady?', null);
         i.getMyRank();
+        i.getMyFav();
       }).catch((response) => {
-        switch(response.status) {
-          case 500:
-            i.updateAlert({
-              show: true,
-              message: 'Internal server error'
-            });
-            break;
-          case 404:
-            i.updateAlert({
-              show: true,
-              message: 'Not found'
-            });
-            break;
-          case 401:
-          case 403:
-            localStorage.removeItem(`streamrain-${i.config.tenant.name.replace(/\s/g, '')}-session`);
-            i.eventBus.$emit('removeVueSession', null);
-            i.updateAlert({
-              show: true,
-              message: 'The session has expired, please log in again'
-            });
-            break;
-          default:
-            i.updateAlert({
-              show: true,
-              message: 'An error has occurred'
-            });
-        }
+        this.$refs.errorshelper.processHttpResponse(response);
       });
     },
     beforeDestroy () {
@@ -360,18 +334,33 @@
         }).then((response) => {
           i.setMyRank(response.body.pathTokenVOD);
         }).catch((response) => {
-          console.error(JSON.stringify(response));
-          // TODO: mostrar una alerta
+          this.$refs.errorshelper.processHttpResponse(response);
+        });
+      },
+      getMyFav: function () {
+        const i = this;
+        const streamId = i.$route.params.streamId;
+        i.$http.get(`${i.config.backend}/user/content/fav/${streamId}/${i.session.nickname}`,
+        {
+          headers: {
+            'Authorization': i.session.token
+          }
+        }).then((response) => {
+          i.setMyFav(response.body.pathTokenVOD);
+        }).catch((response) => {
+          this.$refs.errorshelper.processHttpResponse(response);
         });
       },
       setMyRank: function (myRank) {
         this.myRank = myRank;
         this.$refs.fivestarsrating.paintStars(myRank);
       },
-      updateProgressBar: function (progressBar) {
-        // this.progressBar = progressBar;
+      setMyFav: function (myFav) {
+        this.myFav = myFav;
+        // this.$refs.fivestarsrating.paintStars(myRank);
       },
       updateStream: function (stream) {
+        this.titleSpinner = false;
         this.stream = stream;
       },
       updateAlert: function (alert) {

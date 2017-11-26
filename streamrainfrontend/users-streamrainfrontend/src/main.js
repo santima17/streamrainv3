@@ -12,6 +12,7 @@ import NotFound from './vue/nav/NotFound.vue';
 import Home from './vue/nav/Home.vue';
 import Catalog from './vue/nav/Catalog.vue';
 import Subscription from './vue/nav/Subscription.vue';
+import BuyPPVContent from './vue/nav/BuyPPVContent.vue';
 // Streaming
 import LiveOnly from './vue/streaming/LiveOnly.vue'; 
 import AlwaysAvailable from './vue/streaming/AlwaysAvailable.vue';
@@ -73,6 +74,13 @@ const routes = [
     component: Subscription,
     meta: {
       title: `${config.tenant.name} | Subscription`
+    }
+  },
+  {
+    path: '/buyPPVContent/:contentId',
+    component: BuyPPVContent,
+    meta: {
+      title: `${config.tenant.name} | Buy PPV Content`
     }
   },
   {

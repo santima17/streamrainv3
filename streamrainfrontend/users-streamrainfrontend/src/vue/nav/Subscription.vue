@@ -40,6 +40,11 @@
               <img alt="" border="0" src="https://www.paypalobjects.com/es_XC/i/scr/pixel.gif" width="1" height="1">    
           </form>
         </div> -->
+        <streamrain-errorshelper ref="errorshelper"
+          :eventBus="eventBus"
+          :config="config"
+        >
+        </streamrain-errorshelper>
       </div>
       <div class="col-sm-2 sidenav">
       </div>
@@ -48,12 +53,16 @@
 </template>
 
 <script>
+  import ErrorsHelper from '../utils/ErrorsHelper.vue';
   export default {
     props: [
       'config',
       'eventBus',
       'session'
     ],
+    components: {
+      'streamrain-errorshelper': ErrorsHelper
+    },
     data () {
       return {
         subscriptionType: null
@@ -81,17 +90,21 @@
         });
       },
       newSubscription: function () {
-        //const session = this.session;
-
         const i = this;
         const now = new Date();
+        let days = 7;
+        if (subscriptionType === 'Month') {
+          days = 31;
+        } else if (subscriptionType === 'Year') {
+          days = 365;
+        }
         this.$http.post(`${this.config.backend}/user/payment/subscription`,
         {
           idPaymentMethod: 1,
           userNickName: i.session.nickname,
           datePayment: now,
           dateStart: now,
-          dateFinish: addDays(now, 7)
+          dateFinish: addDays(now, days)
         },
         {
           headers: {
@@ -103,40 +116,8 @@
           newSession.token = i.session.token;
           i.getUserInfo(newSession);
         }).catch((response) => {
-          switch(response.status) {
-            case 500:
-              i.updateAlert({
-                show: true,
-                message: 'Internal server error'
-              });
-              break;
-            case 404:
-              i.updateAlert({
-                show: true,
-                message: 'Not found'
-              });
-              break;
-            case 401:
-            case 403:
-              localStorage.removeItem(`streamrain-${i.config.tenant.name.replace(/\s/g, '')}-session`);
-              i.eventBus.$emit('removeVueSession', null);
-              i.updateAlert({
-                show: true,
-                message: 'The session has expired, please log in again'
-              });
-              break;
-            default:
-              i.updateAlert({
-                show: true,
-                message: 'An error has occurred'
-              });
-          }
+          i.$refs.errorshelper.processHttpResponse(response);
         });
-
-
-        // localStorage.removeItem(`streamrain-${this.config.tenant.name.replace(/\s/g, '')}-session`);
-        // this.eventBus.$emit('removeVueSession', null);
-        // this.$router.push('/');
       }
     }
   }

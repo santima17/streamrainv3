@@ -6,15 +6,17 @@
       <div class="col-sm-8 text-left">
         <h1>{{ config.tenant.name }} Catalog <i v-if="!catalog && !alert.show" class="fa fa-spinner fa-spin" style="font-size"></i></h1>
         <hr>
+        <!-- alert -->
         <div class="row">
           <div class="col-sm-12" v-if="alert.show">
-            <div class="alert alert-dismissible alert-warning">
-              <button type="button" class="close" data-dismiss="alert">&times;</button>
-              <p><strong>Oops!</strong></p>
+            <div v-if="alert.show" class="alert alert-dismissible alert-warning">
+              <button class="close" v-on:click="eventBus.$emit('setAlert', {show: false, message: null})">&times;</button>
+              <p>Oops!</p>
               <p>{{ alert.message }}</p>
             </div>
           </div>
         </div>
+        <!-- alert -->
         <div class="row">
           <div class="col-sm-12">
             <div v-if="catalog != null">
@@ -72,6 +74,11 @@
             </div>
           </div>
         </div>
+        <streamrain-errorshelper ref="errorshelper"
+          :eventBus="eventBus"
+          :config="config"
+        >
+        </streamrain-errorshelper>
         <hr>
       </div>
       <div class="col-sm-2 sidenav">
@@ -81,19 +88,20 @@
 </template>
 
 <script>
+  import ErrorsHelper from '../utils/ErrorsHelper.vue';
   export default {
     props: [
       'config',
       'eventBus',
-      'session'
+      'session',
+      'alert'
     ],
+    components: {
+      'streamrain-errorshelper': ErrorsHelper
+    },
     data () {
       return {
-        catalog: null,
-        alert: {
-          show: false,
-          message: null
-        }
+        catalog: null
       }
     },
     created () {
@@ -109,34 +117,7 @@
       }).then((response) => {
         i.updateCatalog(response.body);
       }).catch((response) => {
-        switch(response.status) {
-          case 500:
-            i.updateAlert({
-              show: true,
-              message: 'Internal server error'
-            });
-            break;
-          case 404:
-            i.updateAlert({
-              show: true,
-              message: 'Not found'
-            });
-            break;
-          case 401:
-          case 403:
-            localStorage.removeItem(`streamrain-${i.config.tenant.name.replace(/\s/g, '')}-session`);
-            i.eventBus.$emit('removeVueSession', null);
-            i.updateAlert({
-              show: true,
-              message: 'The session has expired, please log in again'
-            });
-            break;
-          default:
-            i.updateAlert({
-              show: true,
-              message: 'An error has occurred'
-            });
-        }
+        i.$refs.errorshelper.processHttpResponse(response);
       });
     },
     methods: {

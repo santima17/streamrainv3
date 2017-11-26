@@ -28,8 +28,8 @@
     <router-view
       :config="config"
       :eventBus="eventBus"
-      :janusAlert="janusAlert"
       :session="session"
+      :alert="alert"
     >
     </router-view>
     <streamrain-janus v-if="session"
@@ -57,8 +57,11 @@
     },
     data () {
       return {
-        janusAlert: null,
-        session: null
+        session: null,
+        alert: {
+          show: false,
+          message: null
+        }
       }
     },
     created () {
@@ -67,21 +70,24 @@
 
       const updateSession = this.updateSession;
       const removeSession = this.removeSession;
-      const eventBus = this.eventBus;
+      const updateAlert = this.updateAlert;
 
-      this.eventBus.$on('setJanusAlert', function (janusAlert) {
-        this.janusAlert = janusAlert;
-      }, this);
+      this.eventBus.$on('setAlert', function (alert) {
+        updateAlert(alert);
+      });
 
       this.eventBus.$on('setVueSession', function (session) {
         updateSession(session);
-      }, this);
+      });
 
       this.eventBus.$on('removeVueSession', function () {
         removeSession();
-      }, this);
+      });
     },
     methods: {
+      updateAlert: function (alert) {
+        this.alert = alert;
+      },
       updateSession: function (session) {
         this.session = session;
       },
