@@ -13,8 +13,7 @@
 			<!-- Contenido -->
 			<div class="col-md-4" v-if="g.mostrar" v-for="g in generators" :key="g">
 				<div class="thumbnail">
-					<!-- Portada -->
-					<img style="width:280;height:200" :src="g.logo" alt="...">
+		
 					
 					<!-- Datos del contenido -->
 					<div class="caption">
