@@ -1,10 +1,10 @@
 <template>
 <!-- WEB, NO LOGIN -->
-<div id="wrapper" v-if="token !== null"  style="background-color:white">
+<div id="wrapper" v-if="session!== undefined && session !== null"  style="background-color:white">
   <!-- NAVBAR -->
   <nav class="navbar navbar-default navbar-fixed-top" >
     <div class="container-fluid">
-      <router-link to="/"><img src="../assets/img/tenantLogo.png"></router-link>
+      <router-link to="/"><img src="../assets/img/tenantLogo.png" ></router-link>
       <div class="navbar-right">				
         <div id="navbar-menu">
           <ul class="nav navbar-nav">	
@@ -14,10 +14,8 @@
               </a>
               <ul class="dropdown-menu user-menu menu-icon">
                 <li class="menu-heading">Cuenta de Usuario</li>
-                <li><a><i class="fa fa-user-o" aria-hidden="true"></i>adminfoccs</a> </li>
-                <li><a><i class="fa fa-building-o" aria-hidden="true"></i>Empresa FOCCS</a></li>
-                <!-- 
-                <li><a href="foccs.127.0.0.1.nio.io:8080/" target="_blanck"><i class="fa fa-globe" aria-hidden="true"></i> Portal de Contenidos</a></li> -->
+                <li><a><i class="fa fa-user-o" aria-hidden="true"></i>{{ session.nickname }}</a> </li>
+                <li><a><i class="fa fa-building-o" aria-hidden="true"></i>{{config.tenant.name}}</a></li>
                 <li class="menu-button">
                   <button v-on:click="logout" class="btn btn-primary btn-lg btn-block"><i class="fa fa-sign-out"></i>Logout</button>
                 </li>
@@ -33,43 +31,24 @@
   <div id="left-sidebar" class="sidebar">
     <nav id="left-sidebar-nav" class="sidebar-nav">
       <ul id="main-menu" class="metismenu">
-        <!-- <li class="">
-          <a href="#" class="has-arrow" aria-expanded="false"><i class="fa fa-film"></i> <span>VOD</span></a>
-          <ul aria-expanded="true">
-            <li class=""><router-link to="/content/AlwaysAvailable">Crear</router-link></li>
-            <li class=""><router-link to="/content/Listvods">Listar</router-link></li>
-          </ul>
-        </li> 
-        <li class="">	
-          <a href="#" class="has-arrow" aria-expanded="false"><i class="fa fa-podcast" ></i> <span>Live</span></a>
-          <ul aria-expanded="true">
-            <li class=""><router-link to="/content/LiveOnly">Crear</router-link></li>
-            <li class=""><router-link to="/content/Listvods">Listar</router-link></li>
-          </ul>
-        </li>-->
-        <li class=""><router-link to="/content/AlwaysAvailable"><i class="fa fa-film" aria-expanded="true"></i> Nuevo VOD</router-link></li>
-         <li class=""><router-link to="/content/LiveOnly"><i class="fa fa-podcast" aria-expanded="true"></i> Nuevo LIVE</router-link></li>
-         <li class=""><router-link to="/resources/janus"><i class="fa fa-server" aria-expanded="true"></i> JANUS</router-link></li>
-          <li class=""><router-link to="/content/Listvods"><i class="fa fa-list-alt" aria-expanded="true"></i> CATALOGO </router-link></li>
-         
-       <!-- <li class="">	
-          <a href="#" class="has-arrow" aria-expanded="false"><i class="fa fa-server" ></i> <span>Servidores</span></a>
-          <ul aria-expanded="true">
-            <li class=""><router-link to="/resources/janus">Janus</router-link></li>
-            <li class=""><router-link to="/resources/nginx">Nginx</router-link></li>
-          </ul>
-        </li>-->
-        <li class=""><router-link to="/statistics/Statistics"><i class="fa fa-bar-chart" aria-expanded="true"></i> Reportes</router-link></li>
+        <li :class="activevod"><router-link to="/vod"><i class="fa fa-film" aria-expanded="false"></i> Nuevo VOD</router-link></li>
+         <li :class="activelive"><router-link to="/live"><i class="fa fa-podcast" aria-expanded="false"></i> Nuevo LIVE</router-link></li>
+         <li :class="activejanus"><router-link to="/janus"><i class="fa fa-server" aria-expanded="false"></i> JANUS</router-link></li>
+          <li :class="activecatalog"><router-link to="/catalog"><i class="fa fa-list-alt" aria-expanded="false"></i> CATALOGO </router-link></li>
+        <li :class="activestatistics"><router-link to="/statistics"><i class="fa fa-bar-chart" aria-expanded="false"></i> Reportes</router-link></li>
       </ul>
     </nav>
   </div>
   <!-- END SIDEBAR -->
   <!-- MAIN CONTENT -->
   <div id="main-content">
+   
     <div class="container-fluid">
       <router-view 
       :config="config"
-      :eventBus="eventBus">
+      :eventBus="eventBus"
+      :session="session"
+      :message="message">
       </router-view>
     </div>
   </div>
@@ -100,15 +79,41 @@ export default {
   ],
   data () {
     return {
-      token: null
+       session: null,
+       message: '',
+       activevod: '',
+       activelive: '',
+       activecatalog: '',
+       activejanus: '',
+       activestatistics: ''
     }
   },
   created () {
-    var token = localStorage.getItem("token");
-    this.token = token;
-    this.eventBus.$on('setToken', (token) => {
-      this.token = token;
-      localStorage.setItem("token", token);}, this);
+     this.session = JSON.parse(
+       localStorage.getItem(`streamrain-${this.config.tenant.name.replace(/\s/g, '')}-session`)) || null ;
+      
+      const updateSession = this.updateSession;
+      const removeSession = this.removeSession;
+      const updateMessage = this.updateMessage;
+       const pathActve = this.pathActve;
+      const eventBus = this.eventBus;
+
+      eventBus.$on('setVueSession', function (session) {
+        updateSession(session);
+      }, this);
+
+    eventBus.$on('removeVueSession', function () {
+        removeSession();
+      }, this);
+
+      eventBus.$on('updateMessage', function (message) {
+        updateMessage(message);
+      }, this);
+
+       eventBus.$on('pathActve', function (path) {
+        pathActve(path);
+      }, this);
+
   },
   mounted () {
     this.efectos();
@@ -117,20 +122,63 @@ export default {
     this.efectos();
   },
   methods: {
-    logout: function () {
-      this.token = null;
-      this.$router.push("/login");
-    },
+     updateMessage: function (message) {
+        this.message = message;
+      },
+    updateSession: function (session) {
+        this.session = session;
+      },
+      removeSession: function () {
+        localStorage.removeItem(`streamrain-${this.config.tenant.name.replace(/\s/g, '')}-session`);
+        this.session = null;
+      },
+      logout: function () {
+        this.removeSession();
+        this.$router.push('/login');
+      },
+      pathActve: function (path) {
+      if (path==='/vod') {
+        this.activevod = 'active';
+       this.activelive= '',
+       this.activecatalog= '',
+       this.activejanus= '',
+       this.activestatistics= ''
+      } else if (path==='/live') {
+        this.activevod = '';
+       this.activelive= 'active',
+       this.activecatalog= '',
+       this.activejanus= '',
+       this.activestatistics= ''
+      }else if (path==='/catalog') {
+        this.activevod = '';
+       this.activelive= '',
+       this.activecatalog= 'active',
+       this.activejanus= '',
+       this.activestatistics= ''
+      }else if (path==='/janus') {
+        this.activevod = '';
+       this.activelive= '',
+       this.activecatalog= '',
+       this.activejanus= 'active',
+       this.activestatistics= ''
+      }else if (path==='/statistics') {
+        this.activevod = '';
+       this.activelive= '',
+       this.activecatalog= '',
+       this.activejanus= '',
+       this.activestatistics= 'active'
+      }else {
+        this.activevod = '';
+       this.activelive= '',
+       this.activecatalog= '',
+       this.activejanus= '',
+       this.activestatistics= ''
+      }
+      },
     efectos: function () {
       // sidebar navigation
       $('#main-menu').metisMenu();
-      // sidebar nav scrolling
-      $('#left-sidebar .sidebar-scroll').slimScroll({
-        height: '95%',
-        wheelStep: 5,
-        touchScrollStep: 50,
-        color: '#cecece'
-      });
+
       // adding effect dropdown menu
       $('.dropdown').on('show.bs.dropdown', function() {
         $(this).find('.dropdown-menu').first().stop(true, true).animate({
@@ -144,20 +192,7 @@ export default {
       if($('#main-content').height() < $('#left-sidebar').height()) {
         $('#main-content').css('min-height', $('#left-sidebar').innerHeight() - $('footer').innerHeight());
       }
-      // toggle function
-      $.fn.clickToggle = function( f1, f2 ) {
-        return this.each( function() {
-          var clicked = false;
-          $(this).bind('click', function() {
-            if(clicked) {
-              clicked = false;
-              return f2.apply(this, arguments);
-            }
-            clicked = true;
-            return f1.apply(this, arguments);
-          });
-        });
-      };
+      
     }
   }
 }

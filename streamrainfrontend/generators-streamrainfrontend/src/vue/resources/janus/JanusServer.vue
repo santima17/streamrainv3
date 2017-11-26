@@ -130,7 +130,8 @@
   export default {
     props: [
       'config',
-      'eventBus'
+      'eventBus',
+      'session'
     ],
     components: {
       'janus-connector': JanusConnector
@@ -140,10 +141,7 @@
         id: this.$route.params.id,
         selectedServer: null,
         janusInfo: null,
-        authTokens: null,
-        session: {
-          userToken: localStorage.getItem('token')
-        }
+        authTokens: null
       }
     },
     created () {
@@ -156,7 +154,7 @@
       // Obtenemos la información del Janus Server
       this.$http.get(`${this.config.backend}/generator/janus/janusServers/${this.id}`, {
         headers: {
-          'Authorization': this.session.userToken
+          'Authorization': this.session.token
         }
       })
       .then((result) => { 

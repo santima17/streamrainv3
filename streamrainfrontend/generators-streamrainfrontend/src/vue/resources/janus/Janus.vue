@@ -103,15 +103,13 @@
   export default {
     props: [
       'config',
-      'eventBus'
+      'eventBus',
+      'session'
     ],
     data () {
       return {
         janusServers: [],
         janusCreationTokens: [],
-        session: {
-          userToken: localStorage.getItem('token')
-        }
       }
     },
     created () {
@@ -122,7 +120,7 @@
         // Obtenemos los servidores Janus del Generator
         this.$http.get(`${this.config.backend}/generator/janus/janusServers`, {
           headers: {
-            'Authorization': this.session.userToken
+            'Authorization': this.session.token
           }
         })
         .then((result) => {
@@ -131,7 +129,7 @@
         // Obtenemos los Janus Creation Token del Generator
         this.$http.get(`${this.config.backend}/generator/janus/janusCreationTokens`, {
           headers: {
-            'Authorization': this.session.userToken
+            'Authorization': this.session.token
           }
         })
         .then((result) => { 

@@ -166,7 +166,8 @@ export default {
   },
 	props: [
     'config',
-    'eventBus'
+	'eventBus',
+	'session'
   ],
 	data () {
 		return {
@@ -197,29 +198,19 @@ export default {
 			options: [],
 			searchText: '', 
 			lastSelectItem: {},
-
-			token: ''
 		}
 	},
 	created () {
-			var token = localStorage.getItem("token");
-    		this.token = token;
 			this.getCategories();
 			this.getContents();
     },
-	mounted () {
-		//this.efectosForm();
-	},
-	updated () {
-		//this.efectosForm();
-	},
 	methods: {
 		getContents () {
 			const i = this;
 			i.$http.get(`${i.config.backend}/generator/createContent`,
 			{
 				headers: { 
-					'Authorization': i.token
+					'Authorization': i.session.token
 					}
 			}).then((result) => {
 				// [{"id":1,"name":"Pelicula 1",...},{"id":2,"name":"Pelicula 2",..}]	
@@ -245,7 +236,7 @@ export default {
 			i.$http.get(`${i.config.backend}/generator/category`,
 			{
 				headers: {
-					'Authorization': i.token
+					'Authorization': i.session.token
 				}
 			}
 			)
@@ -314,8 +305,8 @@ export default {
 					//JANUS
 					+`"janus_audio_pt":111,`
 					+`"janus_audio_rtp_map":"opus/48000/2",`
-					+`"janus_video_pt":100,`
-					+`"janus_video_rtp_map":"VP8/90000"`
+					+`"janus_video_pt":126,`
+					+`"janus_video_rtp_map":"H264/90000"`
 					//JANUS
 					+'}');
 					console.log(datos);
@@ -324,12 +315,10 @@ export default {
 			this.$http.post(url, this.formData,
 				{
 				headers: {
-					Authorization : this.token
+					Authorization : this.session.token
 					}
 				}).then((response) => {	
-					// exito
-					//mostrar resultado
-					// ir a home o crear nuevo
+					this.eventBus.$emit('updateMessage', 'Contenido LIVE Creado!');
 					this.$router.push("/");
 				}).catch((error) => {						
 					// error

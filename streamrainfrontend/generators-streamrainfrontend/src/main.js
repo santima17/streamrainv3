@@ -5,11 +5,8 @@ import VueResource from 'vue-resource'
 import Streamrain from './vue/Streamrain.vue'
 // Content
 import AlwaysAvailable from './vue/content/AlwaysAvailable.vue';
-import Casts from './vue/content/Casts.vue';
-import Categories from './vue/content/Categories.vue';
-import Featured from './vue/content/Featured.vue';
 import LiveOnly from './vue/content/LiveOnly.vue';
-import Listvods from './vue/content/ListVods.vue';
+import Catalogo from './vue/content/Catalogo.vue';
 // Resources
 import Janus from './vue/resources/janus/Janus.vue';
 import JanusServer from './vue/resources/janus/JanusServer.vue';
@@ -18,7 +15,6 @@ import NotFound from './vue/nav/NotFound.vue';
 import Home from './vue/nav/Home.vue'; 
 // Session
 import Login from './vue/session/Login.vue';
-import Logout from './vue/session/Logout.vue';
 // Statistics
 import Statistics from './vue/statistics/Statistics.vue';
 // libs 
@@ -37,57 +33,36 @@ const eventBus = new Vue();
 const routes = [
   // Content
   {
-    path: '/content/alwaysAvailable',
+    path: '/vod',
     component: AlwaysAvailable,
     meta: {
       title: `${config.tenant.name} | Always Available Content`
     }
   },
   {
-    path: '/content/casts',
-    component: Casts,
-    meta: {
-      title: `${config.tenant.name} | Casts`
-    }
-  },
-  {
-    path: '/content/categories',
-    component: Categories,
-    meta: {
-      title: `${config.tenant.name} | Categories`
-    }
-  },
-  {
-    path: '/content/featured',
-    component: Featured,
-    meta: {
-      title: `${config.tenant.name} | Featured Content`
-    }
-  },
-  {
-    path: '/content/liveOnly',
+    path: '/live',
     component: LiveOnly,
     meta: {
       title: `${config.tenant.name} | Live Only Content`
     }
   },
   {
-    path: '/content/listvods',
-    component: Listvods,
+    path: '/catalog',
+    component: Catalogo,
     meta: {
-      title: `${config.tenant.name} | List Vods`
+      title: `${config.tenant.name} | Catalogo`
     }
 },
   // Resources
   {
-    path: '/resources/janus',
+    path: '/janus',
     component: Janus,
     meta: {
       title: `${config.tenant.name} | Janus Resources`
     }
   },
   {
-    path: '/resources/janus/:id',
+    path: '/janus/:id',
     component: JanusServer,
     meta: {
       title: `${config.tenant.name} | Janus Server`
@@ -116,16 +91,9 @@ const routes = [
       title: `${config.tenant.name} | Log In`
     }
   },
-  {
-    path: '/logout',
-    component: Logout,
-    meta: {
-      title: `${config.tenant.name} | Log Out`
-    }
-  },
   // Statistics  
   {
-    path: '/statistics/Statistics',
+    path: '/statistics',
     component: Statistics,
     meta: {
       title: `${config.tenant.name} | Reportes`
@@ -145,14 +113,17 @@ router.beforeEach((to, from, next) => {
   else { // para cada pagina solicitada
     document.title = to.meta.title;
     if(to.path != '/login') { // si la pagina solicitada no es la de login
-      var token = localStorage.getItem("token"); //obtengo token de localstorage
-        if(token) { // si tengo un token muestro la pagina solicitada
-            next();
-        } else { // si no tengo token redirecciono a login
-            next('/login');
+      const path = to.path;
+      const session = JSON.parse(localStorage.getItem(`streamrain-${config.tenant.name.replace(/\s/g, '')}-session`)) || null;
+      if(session !== undefined && session !== null) { // si tengo un token muestro la pagina solicitada   
+        eventBus.$emit('pathActve',path); 
+        next();
+        } else { // si no tengo token redirecciono a login  
+          next('/login');    
         }
     } else { // si la pagina solicitada es login borro el token de localstorage y muesto la pagina login
-      localStorage.removeItem("token");
+      eventBus.$emit('removeVueSession',null); 
+      localStorage.removeItem(`streamrain-${config.tenant.name.replace(/\s/g, '')}-session`);
       next();
     }
   }

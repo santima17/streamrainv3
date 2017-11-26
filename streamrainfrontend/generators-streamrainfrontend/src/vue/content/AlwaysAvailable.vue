@@ -112,10 +112,7 @@
 	<span>Destacado</span>
 </label>
 </div>
-
-
 	<div v-if="featured">
-
 		<label for="start-picker" class="col-sm-3 control-label">Desde: </label>
 		<div class='input-group date'>
 			<datetime v-model="featuredDateStart" name="start-picker"
@@ -125,12 +122,9 @@
 				locale="es"
 				required ></datetime>
 		</div>
-
 <br>
-
 		<label for="end-picker" class="col-sm-3 control-label">	Hasta: </label>
-		<div class='input-group date'>
-			
+		<div class='input-group date'>	
 			<datetime v-model="featuredDateFinish" name="end-picker" 
 			type="datetime"
 			input-format="DD-MM-YYYY HH:mm"
@@ -140,7 +134,6 @@
     	</div>
 	</div>
 	
-
 	<div style="text-align:right">
 		<button type="submit" class="btn btn-primary">Guardar VOD</button>
 	</div>
@@ -160,7 +153,8 @@ export default {
   },
 	props: [
     'config',
-    'eventBus'
+	'eventBus',
+	'session'
   ],
 	data () {
 		return {
@@ -190,29 +184,20 @@ export default {
 			options: [],
 			searchText: '', 
 			lastSelectItem: {},
-
-			token: ''
 		}
 	},
 	created () {
-			var token = localStorage.getItem("token");
-    		this.token = token;
 			this.getCategories();
 			this.getContents();
     },
-	mounted () {
-		//this.efectosForm();
-	},
-	updated () {
-		//this.efectosForm();
-	},
 	methods: {
 		getContents () {
 			const i = this;
+			const session = i.session;
 			i.$http.get(`${i.config.backend}/generator/createContent`,
 			{
 				headers: { 
-					'Authorization': i.token
+					'Authorization': session.token
 					}
 			}).then((result) => {
 				// [{"id":1,"name":"Pelicula 1",...},{"id":2,"name":"Pelicula 2",..}]	
@@ -235,10 +220,11 @@ export default {
 		},		
 		getCategories () {
 			const i = this;
+			const session = i.session;
 			i.$http.get(`${i.config.backend}/generator/category`,
 			{
 				headers: {
-					'Authorization': i.token
+					'Authorization': session.token
 				}
 			}
 			)
@@ -304,24 +290,20 @@ export default {
 					+`"featuredDateStart":"${this.featuredDateStart}",`
 					+`"featuredDateFinish":"${this.featuredDateFinish}"`
 					+'}');
-					console.log(datos);
+					console.log(JSON.stringify(datos));
 			this.formData.append('datos', new Blob([JSON.stringify(datos)],{type: "application/json"}));
 			const url = `${this.config.backend}/generator/createContent`;
 			this.$http.post(url, this.formData,
 				{
 				headers: {
-					Authorization : this.token
+					Authorization : this.session.token
 					}
 				}).then((response) => {	
 					// exito
-					//mostrar resultado
+					this.eventBus.$emit('updateMessage', 'Contenido VOD Creado!');
 					// ir a home o crear nuevo
 					this.$router.push("/");
 				}).catch((error) => {						
-					// error
-					//for (var item of this.formData.entries()) {
-					//		console.log(item[0]+ ', ' +item[1]); 
-					//}	
 			});
 		},
 		guardarDirector: function (nombre,apellido) {
