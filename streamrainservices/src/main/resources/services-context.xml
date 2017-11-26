@@ -7,16 +7,21 @@
 
 	<bean id="userService"
 		class="com.tsi2.streamrain.services.user.implementations.UserServiceImpl" />
-		
+
 	<bean id="categoryService"
 		class="com.tsi2.streamrain.services.category.implementations.UserServiceImpl" />
-		
+
 	<bean id="tenantService"
 		class="com.tsi2.streamrain.services.tenants.implementations.TenantServiceImpl" />
-	
+
 	<bean id="paymentService"
 		class="com.tsi2.streamrain.services.payment.implementations.PaymentServiceImpl" />
-		
+
 	<bean id="janusService"
 		class="com.tsi2.streamrain.services.janus.implementations.JanusServiceImpl" />
+
+	<bean id="reportService"
+		class="com.tsi2.streamrain.services.report.implementation.ReportServiceImpl" />
+
+	
 </beans>

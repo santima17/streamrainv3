@@ -34,6 +34,11 @@
 		
 	<bean id="janusService"
 		class="com.tsi2.streamrain.services.janus.implementations.JanusServiceImpl" />
+		
+		
+	<bean id="reportService"
+		class="com.tsi2.streamrain.services.report.implementation.ReportServiceImpl" />
+		
 
 	<bean id="connectionFactoryTwitter"
 		class="org.springframework.social.twitter.connect.TwitterConnectionFactory">

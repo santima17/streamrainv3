@@ -7,6 +7,8 @@ import org.hibernate.Session;
 
 import com.tsi2.streamrain.context.DBHibernateUtil;
 import com.tsi2.streamrain.dao.interfaces.IDAOUserService;
+import com.tsi2.streamrain.model.generator.UserFavs;
+import com.tsi2.streamrain.model.generator.UserFavsId;
 import com.tsi2.streamrain.model.generator.UserPpvs;
 import com.tsi2.streamrain.model.generator.UserRatings;
 import com.tsi2.streamrain.model.generator.Users;
@@ -51,6 +53,15 @@ public class StreamRainMySQLUserDAO extends StreamRainMySQLDAO implements IDAOUs
 				.setParameter("userID", userID).setParameter("contentID", contentID);
 
 		return query.list();
+	}
+	
+	public Boolean getFav(UserFavsId id, String tenantID) {
+ 
+		Session dbSession = DBHibernateUtil.getSessionFactoryGenerator(tenantID);
+		Query query = dbSession
+				.createSQLQuery("select fav from user_favs where user_id=:userID and content_id=:contentID order by date desc")
+				.setParameter("userID", id.getUserId()).setParameter("contentID", id.getContentId());
+		return (Boolean)query.list().get(0);
 	}
 
 }

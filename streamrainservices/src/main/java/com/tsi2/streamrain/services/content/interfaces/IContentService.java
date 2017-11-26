@@ -49,4 +49,6 @@ public interface IContentService {
 
 	List<SharedContentViewDto> getShareContent(final String userNickName, final Integer searchType, final String tenantID);
 
+	String isFav(final Integer contentID, final String userNickName, final String tenantID);
+
 }
