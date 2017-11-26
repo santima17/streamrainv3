@@ -35,13 +35,18 @@
 			<div class="col-md-4" v-if="c.mostrar" v-for="c in contents" :key="c">
 				<div class="thumbnail">
 					<!-- Etiqueta PPV -->
-					<div v-if="c.isPayPerView ==='PayPerView'" style="padding-right:5px;top:0px;left:15px;color:white;position:absolute;background-color:green;font-weigth:bold">
-						PayPerView
+					<div v-if="c.isPayPerView ==='PayPerView'" style="padding:2px;top:0px;left:15px;color:white;position:absolute;background-color:green;font-weigth:bold">
+						<b>	PayPerView</b>
 					</div>
 					<!-- Etiqueta Destacado -->
-					<div v-if="c.featured" style="top:0px;right:15px;color:white;position:absolute;background-color:red;font-weigth:bold;">
-						Destacado
+					<div v-if="c.featured" style="padding:2px;top:0px;right:15px;color:white;position:absolute;background-color:red;font-weigth:bold;">
+						<b>Destacado</b>
 					</div>
+
+					<div v-if="c.blocked" style="padding:9px;top:0px;right:120px;color:white;position:absolute;background-color:grey;font-weigth:bold">
+						<b>Bloqueado</b>
+					</div>
+
 					<!-- Portada -->
 					<img style="width:280;height:200" :src="c.coverPictureUrl" alt="...">
 					<b><i class="fa fa-film" aria-hidden="true" v-if="c.alwaysAvailable==='VOD'"></i>
@@ -98,13 +103,15 @@
 								<div style="text-align:right;font-weight:bold;">
 								 	<span v-if="selected.isPayPerView ==='PayPerView'" style="padding:5px;color:white;background-color:green;font-weigth:bold">PayPerView</span>
 									<span v-if="selected.featured" style="padding:5px;color:white;background-color:red;font-weigth:bold;">Destacado</span>
+									<span v-if="selected.blocked" style="padding:5px;color:white;background-color:grey;font-weigth:bold;">Bloqueado</span>
 								</div>
 								<p>
 								<b>Tipo: </b>{{selected.type}}<br>
 								<b>Categoria: </b>{{selected.categoriesName}}<br><br>
 								<span  v-if="selected.alwaysAvailable==='VOD'"><b>Duracion: </b>{{selected.duration}}minutos<br><br></span>
 								<span  v-if="selected.alwaysAvailable==='LIVE'"><b>Inicio: </b>{{selected.dateStartLiveOnly}}<br>
-								<b>Datos para Emision:</b><br> audiopt:111, audiortpmap:opus/48000/2, videopt:100, videortpmap: VP8/90000<br><br>
+								<b>Video Port:</b> {{selected.janus_video_port}} - 
+								<b>Audio Port:</b> {{selected.janus_audio_port}} <br><br>
 								</span>
 								<b>Director(es): </b>{{selected.directorsName}}<br>
 								<b>Actor(es): </b>{{selected.actorsName}}<br><br>
@@ -159,15 +166,16 @@ export default {
 				input = this.inputBuscar;
 				filter = input.toUpperCase();
 				for (var index = 0; index < result.body.length; index++){ //result.body.length;
-					var content = result.body[index];//contentsaux[index]; //
+					var content = result.body[index]; //result.body[index];//
 					var name; var description;
 					var type; var alwaysAvailable;
 					var isPayPerView; var featured;
 					var coverPictureUrl; var duration;
 					var actorsName; var directorsName;
 					var categoriesName;	var similarContentsName
-					var ranking;var namemin;
+					var ranking;var namemin; var blocked;
 					var dateStartLiveOnly;var mostrar = true;
+					var janus_audio_port; var janus_video_port;
 					for (var key in content){
 						var value = content[key];
 						if (key === 'name') {
@@ -247,6 +255,15 @@ export default {
 								alwaysAvailable = 'LIVE'
 							}
 						}
+						if (key === 'janus_audio_port') {
+							janus_audio_port= value;
+						}
+						if (key === 'janus_video_port') {
+							janus_video_port= value;
+						} 
+						if (key === 'blocked') {
+							blocked= value;
+            			}
 					}
 					if ((name.toUpperCase().indexOf(filter) > -1 || description.toUpperCase().indexOf(filter)> -1)
 					&& mostrar){
@@ -255,8 +272,9 @@ export default {
 						mostrar = false;
 					}
 					this.contents.push({
-						name,namemin,description,type,isPayPerView,featured,mostrar,coverPictureUrl,duration,ranking,
-						similarContentsName, categoriesName, actorsName, directorsName,alwaysAvailable,dateStartLiveOnly
+						name,namemin,description,type,isPayPerView,featured,mostrar,coverPictureUrl,duration,
+						ranking,similarContentsName, categoriesName, actorsName, directorsName,
+						alwaysAvailable,dateStartLiveOnly, janus_audio_port, janus_video_port, blocked
 					})
 				}
 			}) 

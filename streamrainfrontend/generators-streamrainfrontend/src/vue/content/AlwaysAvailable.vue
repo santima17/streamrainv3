@@ -135,7 +135,7 @@
 	</div>
 	
 	<div style="text-align:right">
-		<button type="submit" class="btn btn-primary">Guardar VOD</button>
+		<button type="submit" class="btn btn-primary" :disabled="!buttonEnable">{{ buttonText }} <i v-if="!buttonEnable" class="fa fa-spinner fa-spin" style="font-size"></i></button>
 	</div>
 
 	</form>
@@ -184,6 +184,9 @@ export default {
 			options: [],
 			searchText: '', 
 			lastSelectItem: {},
+
+			buttonEnable: true,
+      		buttonText: 'Guardar VOD'
 		}
 	},
 	created () {
@@ -191,6 +194,9 @@ export default {
 			this.getContents();
     },
 	methods: {
+		cargarDatosPrueba () {
+
+		},
 		getContents () {
 			const i = this;
 			const session = i.session;
@@ -263,48 +269,62 @@ export default {
         	this.formData.append(fieldName, fileList[0], fileList[0].name);
       	},
 		crearContenido() {
-
-			for (var i = 0; i < this.idSimilarContents.length; i++){
-						var idsc = this.idSimilarContents[i];
-						var idc;
-						for (var key in idsc){
-							var id = idsc[key];
-							if (key === 'value') {
-									this.idSimilarContentsIDS.push(id)
+			if (!this.buttonEnable) return;
+			const updateButtonEnable = this.updateButtonEnable;
+			const updateButtonText = this.updateButtonText;
+			
+			if (this.buttonEnable) {
+          		updateButtonEnable(false);
+          		updateButtonText('Please wait... ');  
+				for (var i = 0; i < this.idSimilarContents.length; i++){
+							var idsc = this.idSimilarContents[i];
+							var idc;
+							for (var key in idsc){
+								var id = idsc[key];
+								if (key === 'value') {
+										this.idSimilarContentsIDS.push(id)
+								}
 							}
-						}
-						
-				}
-
-			const datos = JSON.parse('{'
-					+`"name":"${this.name}",`
-					+`"description":"${this.description}",`
-					+`"type":"${this.type}",`
-					+`"duration":${this.duration},`
-					+`"idCategories":${JSON.stringify(this.idCategories)},`
-					+`"directors":${JSON.stringify(this.directors)},`
-					+`"actors":${JSON.stringify(this.actors)},`
-					+`"idSimilarContents":${JSON.stringify(this.idSimilarContentsIDS)},`
-					+`"isPayPerView":${this.isPayPerView},`
-					+`"featured":${this.featured},`
-					+`"featuredDateStart":"${this.featuredDateStart}",`
-					+`"featuredDateFinish":"${this.featuredDateFinish}"`
-					+'}');
-					console.log(JSON.stringify(datos));
-			this.formData.append('datos', new Blob([JSON.stringify(datos)],{type: "application/json"}));
-			const url = `${this.config.backend}/generator/createContent`;
-			this.$http.post(url, this.formData,
-				{
-				headers: {
-					Authorization : this.session.token
+							
 					}
-				}).then((response) => {	
-					// exito
-					this.eventBus.$emit('updateMessage', 'Contenido VOD Creado!');
-					// ir a home o crear nuevo
-					this.$router.push("/");
-				}).catch((error) => {						
-			});
+				const datos = JSON.parse('{'
+						+`"name":"${this.name}",`
+						+`"description":"${this.description}",`
+						+`"type":"${this.type}",`
+						+`"duration":${this.duration},`
+						+`"idCategories":${JSON.stringify(this.idCategories)},`
+						+`"directors":${JSON.stringify(this.directors)},`
+						+`"actors":${JSON.stringify(this.actors)},`
+						+`"idSimilarContents":${JSON.stringify(this.idSimilarContentsIDS)},`
+						+`"isPayPerView":${this.isPayPerView},`
+						+`"featured":${this.featured},`
+						+`"featuredDateStart":"${this.featuredDateStart}",`
+						+`"featuredDateFinish":"${this.featuredDateFinish}"`
+						+'}');
+						console.log(JSON.stringify(datos));
+				this.formData.append('datos', new Blob([JSON.stringify(datos)],{type: "application/json"}));
+				const url = `${this.config.backend}/generator/createContent`;
+				this.$http.post(url, this.formData,
+					{
+					headers: {
+						Authorization : this.session.token
+						}
+					}).then((response) => {	
+						// exito
+						this.eventBus.$emit('updateMessage', 'Contenido VOD Creado!');
+						// ir a home o crear nuevo
+						this.$router.push("/");
+					}).catch((error) => {				
+						updateButtonText('Guardar VOD');
+						updateButtonEnable(true);
+				});
+			}	
+		},
+		updateButtonEnable: function (buttonEnable) {
+			this.buttonEnable = buttonEnable;
+		},
+		updateButtonText: function (buttonText) {
+			this.buttonText = buttonText;
 		},
 		guardarDirector: function (nombre,apellido) {
 			if (nombre.trim() !== '' && apellido.trim() !== '') {

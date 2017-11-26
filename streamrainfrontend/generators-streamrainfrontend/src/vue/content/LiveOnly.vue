@@ -148,7 +148,7 @@
 	</div>
 	
 	<div style="text-align:right">
-		<button type="submit" class="btn btn-primary">Guardar LIVE</button>
+		<button type="submit" class="btn btn-primary" :disabled="!buttonEnable">{{ buttonText }} <i v-if="!buttonEnable" class="fa fa-spinner fa-spin" style="font-size"></i></button>
 	</div>
 
 	</form>
@@ -198,6 +198,9 @@ export default {
 			options: [],
 			searchText: '', 
 			lastSelectItem: {},
+
+			buttonEnable: true,
+      		buttonText: 'Guardar LIVE'
 		}
 	},
 	created () {
@@ -276,6 +279,13 @@ export default {
 			this.formData.append('video', fileList[0], fileList[0].name);
       	},
 		crearContenidoLive() {
+		if (!this.buttonEnable) return;
+			const updateButtonEnable = this.updateButtonEnable;
+			const updateButtonText = this.updateButtonText;
+			
+			if (this.buttonEnable) {
+          		updateButtonEnable(false);
+          		updateButtonText('Please wait... ');  
 			for (var i = 0; i < this.idSimilarContents.length; i++){
 						var idsc = this.idSimilarContents[i];
 						var idc;
@@ -321,11 +331,16 @@ export default {
 					this.eventBus.$emit('updateMessage', 'Contenido LIVE Creado!');
 					this.$router.push("/");
 				}).catch((error) => {						
-					// error
-					//for (var item of this.formData.entries()) {
-					//		console.log(item[0]+ ', ' +item[1]); 
-					//}	
+						updateButtonText('Guardar LIVE');
+						updateButtonEnable(true);
 			});
+			}
+		},
+		updateButtonEnable: function (buttonEnable) {
+			this.buttonEnable = buttonEnable;
+		},
+		updateButtonText: function (buttonText) {
+			this.buttonText = buttonText;
 		},
 		guardarDirector: function (nombre,apellido) {
 			if (nombre.trim() !== '' && apellido.trim() !== '') {

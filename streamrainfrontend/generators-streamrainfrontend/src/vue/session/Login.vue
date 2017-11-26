@@ -8,7 +8,7 @@
 						<div class="logo text-center"><img src="../../assets/img/tenantLogo.png" alt="..."></div>
 						<p class="lead">Portal de Administracion</p>
 						</div>
-						<form class="form-auth-small" v-on:submit.prevent="logintrucho">
+						<form class="form-auth-small" v-on:submit.prevent="login">
 						<div class="form-group">
 							<div class="input-group">
 								<span class="input-group-addon"><i class="fa fa-user"></i></span>
