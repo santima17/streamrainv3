@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tsi2.streamrain.datatypes.content.ContentDto;
-import com.tsi2.streamrain.datatypes.content.UserContentFavDto;
 import com.tsi2.streamrain.datatypes.tenant.TenantDto;
 import com.tsi2.streamrain.services.tenants.interfaces.ITenantService;
 
@@ -52,7 +50,7 @@ public class TenantController {
         }
         return response;
     }
-    
+        
     @RequestMapping(value = "/blockUser", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> blockUser(@RequestParam String userNickName, @RequestParam String tenantId) {
     	boolean ok = tenantService.blockUser(userNickName, tenantId);

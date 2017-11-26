@@ -12,4 +12,5 @@ public interface ITenantService {
 	List<TenantDto> getAllTenant();
 	boolean blockUser(final String userNickName, final String tenantName);
 	boolean blockContent(final Integer contentId, final String tenantId);
+	boolean updateTenant(final TenantDto tenant);
 }

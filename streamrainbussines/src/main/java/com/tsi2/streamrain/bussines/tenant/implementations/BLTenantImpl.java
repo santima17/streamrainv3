@@ -53,4 +53,8 @@ public class BLTenantImpl implements IBLTenant{
 		return daoService.saveOrUpdate(content, tenantId);
 	}
 
+	public boolean updateTenant(final Tenants tenant) {
+		return daoMainService.saveOrUpdate(tenant, null);
+	}
+
 }

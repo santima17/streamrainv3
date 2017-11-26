@@ -18,4 +18,6 @@ public interface IBLTenant {
 
 	public boolean blockContent(final Integer contentId, final String tenantId);
 
+	public boolean updateTenant(final Tenants tenant);
+
 }

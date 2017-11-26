@@ -47,5 +47,9 @@ public class TenantServiceImpl implements ITenantService{
 		return tenantBussines.blockContent(contentId, tenantId);
 	}
 
+	public boolean updateTenant(final TenantDto tenant) {
+		return tenantBussines.updateTenant((Tenants)tenantConverter.deConverter(tenant));
+	}
+
 
 }
