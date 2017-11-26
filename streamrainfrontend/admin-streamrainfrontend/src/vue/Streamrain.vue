@@ -34,7 +34,7 @@
         <li :class="activnuevo"><router-link to="/createGenerator"><i class="fa fa-television" aria-expanded="false"></i> Nuevo GENERADOR</router-link></li>
          <li :class="activelistg"><router-link to="/listGenerators"><i class="fa fa-list-alt" aria-expanded="false"></i> GENERADORES</router-link></li>
          <li :class="activebcontent"><router-link to="/blockContent"><i class="fa fa-ban" aria-expanded="false"></i> Bloquear CONTENIDO</router-link></li>
-          <li :class="activebuser"><router-link to="/blockUser"><i class="fa fa-user-times" aria-expanded="false"></i> Bloquera USUARIO </router-link></li>
+          <li :class="activebuser"><router-link to="/blockUser"><i class="fa fa-user-times" aria-expanded="false"></i> Bloquear USUARIO </router-link></li>
       </ul>
     </nav>
   </div>

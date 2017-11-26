@@ -21,12 +21,12 @@
 			<div class="col-md-4" v-if="u.mostrar" v-for="u in users" :key="u">
 				<div class="thumbnail">
 
-          <div v-if="u.blocked" style="padding:9px;top:0px;right:0px;color:white;position:absolute;background-color:grey;font-weigth:bold">
+          <div v-if="u.blocked" style="padding:9px;top:0px;right:20px;color:white;position:absolute;background-color:grey;font-weigth:bold">
 						<b>Bloqueado</b>
 					</div>
 					<!-- Datos del contenido -->
 					<div class="caption">
-						<h3>{{u.nickname}}</h3>
+						<h3><i class="fa fa-user-o" aria-hidden="true"></i> {{u.nickname}}</h3>
 						<b>Email: </b>{{u.email}}<br>
             <b>Country: </b>{{u.country}} <br>
 						<b>City: </b>{{u.city}}<br>
@@ -88,16 +88,16 @@ export default {
     },
     bloquear(nickname) {
       var tenantId = this.selected;
-          this.$http.post(`${this.config.backend}/administrator/user/all/blockUser?tenantId=${tenantId}&nickname=${nickname}`,
+          this.$http.post(`${this.config.backend}/administrator/blockUser?tenantId=${tenantId}&userNickName=${nickname}`,
             {},
-            {headers: { 	'Authorization': this.session.token}}).then((response) => {
+            {headers: { 'Authorization': this.session.token}}).then((response) => {
               this.buscar();
             }).catch((response) => {            
             });
     },
     unbloquear(nickname) {
       var tenantId = this.selected;
-          this.$http.post(`${this.config.backend}/administrator/user/all/unblockUser?tenantId=${tenantId}&nickname=${nickname}`,
+          this.$http.post(`${this.config.backend}/administrator/unblockUser?tenantId=${tenantId}&userNickName=${nickname}`,
             {},
             {headers: { 	'Authorization': this.session.token}}).then((response) => {
               this.buscar();

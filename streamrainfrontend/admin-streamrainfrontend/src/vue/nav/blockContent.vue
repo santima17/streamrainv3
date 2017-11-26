@@ -47,7 +47,7 @@
 					</div>
 					<!-- Datos del contenido -->
 					<div class="caption">
-						<h3>{{c.namemin}}</h3>
+						<h3 :title="c.name">{{c.namemin}}</h3>
 						<!-- Mas info - muestra modal con toda la info -->
 						<div class="text-right" >
               <button type="submit" class="btn btn-primary" @click="bloquear(c.contentId)" v-if="!c.blocked">Bloquear </button>

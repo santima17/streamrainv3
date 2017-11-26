@@ -17,11 +17,14 @@
 					
 					<!-- Datos del contenido -->
 					<div class="caption">
-						<h3>{{g.name}}</h3>
+            <p style="color:#5A5A5A">
+						<h3><i class="fa fa-television" aria-expanded="false"></i> {{g.name}}</h3>
+            
+            
 						<b>Data Base: </b>{{g.dbIp}}:{{g.dbPort}}<br>
             <b>Data Base USER: </b>{{g.dbUser}} <br>
 						<b>Generator USER: </b>{{g.generatorUser}}<br>
-
+            </p>
 					</div>
 				</div>
 			</div>
