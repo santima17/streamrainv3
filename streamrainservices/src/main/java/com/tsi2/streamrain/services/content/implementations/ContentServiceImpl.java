@@ -50,7 +50,11 @@ public class ContentServiceImpl implements IContentService {
 	}
 
 	public ContentDto getContentById(final Integer contentID, final String tenantID) {
-		return contentConverter.converter(contentBussines.getContentById(contentID, tenantID));
+		Contents content = contentBussines.getContentById(contentID, tenantID);
+		if (content == null) {
+			return null;
+		}
+		return contentConverter.converter(content);
 	}
 
 	@Override
@@ -148,6 +152,10 @@ public class ContentServiceImpl implements IContentService {
 	@Override
 	public List<SharedContentViewDto> getShareContent(final String userNickName, final Integer searchType, final String tenantID) {
 		return sharedContentConverter.convertAll(contentBussines.getShareContent(userNickName, searchType, tenantID));
+	}
+
+	public boolean updateViewContent(UserContentViewDto lastViewDto, final Integer contentID, final String userNickName, final String tenantID) {
+		return contentBussines.updateViewContent(userContentViewConverter.deConverter(lastViewDto), contentID, userNickName, tenantID);
 	}
 
 }

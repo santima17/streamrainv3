@@ -48,5 +48,6 @@ public interface IBLContent {
 
 	List<SharedContents> getShareContent(final String userNickName, final Integer searchType, final String tenantID);
 
+	boolean updateViewContent(final UserViews userView, final Integer contentID, final String userNickName, final String tenantID);
 
 }

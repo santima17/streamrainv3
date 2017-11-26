@@ -176,6 +176,20 @@ public class ContentUserController {
         return new ResponseEntity<UserContentViewDto>(lastViewDto, HttpStatus.OK);
     }
     
+    @RequestMapping(value = "/updateDuration", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserContentViewDto> updateDuration(@RequestBody UserContentViewDto userContentViewDto) {
+    	UserContentViewDto lastViewDto = contentService.getLastViewToContent(userContentViewDto, sessionService.getCurrentTenant());
+    	if (lastViewDto == null) {
+    		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    	}
+    	lastViewDto.setSecond(userContentViewDto.getSecond());
+    	boolean ok = contentService.updateViewContent(lastViewDto, lastViewDto.getContentID(), lastViewDto.getUserNickname(), sessionService.getCurrentTenant());
+    	if (!ok) {
+    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    	}
+        return new ResponseEntity<UserContentViewDto>(lastViewDto, HttpStatus.OK);
+    }
+    
     
     @RequestMapping(value = "/spolierComment", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SpoilerMarkDto> spolierMarkComment(@RequestParam String userNickName, @RequestParam Integer userCommentId) {

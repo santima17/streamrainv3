@@ -2,6 +2,7 @@ package com.tsi2.streamrain.bussines.content.implementations;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -163,9 +164,17 @@ public class BLContentImpl implements IBLContent {
 	}
 
 	public UserViews getLastViewToContent(Integer contentID, String userNickname, String tenantID) {
-		// TODO Auto-generated method stub
 		Set<UserViews> views = daoService.get(Contents.class, contentID, tenantID).getUserViewses();
-		return views.iterator().next();
+		Integer id = 0;
+		UserViews result = null;
+		Iterator<UserViews> it = views.iterator();
+		while (it.hasNext()) {
+			UserViews userView = it.next();
+			if (userView.getId() > id) {
+				result = userView;
+			}
+		}
+		return result;
 	}
 
 	public boolean spolierMarkComment(final String userNickName, final Integer userCommentId, final String tenantID) {
@@ -221,6 +230,14 @@ public class BLContentImpl implements IBLContent {
 			objectQuery.setUsersByDestinationUserId(user); 
 		}
 		return daoService.getAllByExample(SharedContents.class, objectQuery, tenantID);
+	}
+
+	public boolean updateViewContent(final UserViews userView, final Integer contentID, final String userNickName, final String tenantID) {
+		Contents contents = daoService.get(Contents.class, contentID, tenantID);
+		Users user = daoUserService.getUserByNickname(userNickName, tenantID);
+		userView.setContents(contents);
+		userView.setUsers(user);
+		return daoService.saveOrUpdate(userView, tenantID);
 	}
 	 
 

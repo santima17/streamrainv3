@@ -49,4 +49,7 @@ public interface IContentService {
 
 	List<SharedContentViewDto> getShareContent(final String userNickName, final Integer searchType, final String tenantID);
 
+	boolean updateViewContent(final UserContentViewDto lastViewDto, final Integer contentID, final String userNickName, final String tenantID);
+
+
 }
