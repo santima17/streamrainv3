@@ -62,7 +62,7 @@
 					</div>
 					<!-- Datos del contenido -->
 					<div class="caption">
-						<h3>{{c.namemin}}</h3>
+						<h3 :title="c.name">{{c.namemin}}</h3>
 						<!-- Mas info - muestra modal con toda la info -->
 						<div class="text-right" @click="seleccionado(c)">
 							<a data-toggle="modal" data-target="#largeModal" style="font-weight:bold;font-color:blue;cursor:pointer">Mas Info</a>
