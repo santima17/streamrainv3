@@ -1,0 +1,24 @@
+#Facebook
+facebook.app.id=foo
+facebook.app.secret=bar
+ 
+#Twitter
+twitter.consumer.key=1QGM8tmFLZ6dgPh69MAYJretF
+twitter.consumer.secret=hur382wc0EoA1mU5QiFRqOh6HU8SvUAmCyNtKbfp7FNy6AH5sG
+twitter.access.token=394926189-ZB2lC5te2V9atQZGrhAXVHISzAxwMus6F8R6ZI9e
+twitter.access.token.secret=CToGKxN5tvdYnransErsMQ6yOrj70IzM9JWKuSuyVQL9O
+
+#Location file path
+<<<<<<< Updated upstream
+location.file.path.video=C:\\Users\\juanb\\Documents\\streamrain\\store\\
+location.file.path.picture=C:\\Users\\juanb\\Documents\\streamrain\\img\\
+location.file.path.docker.vod=http://192.168.99.100:3030/
+=======
+location.file.path.video=/home/santiago/tsi2workspace3/streamrainv3/nginx/videos
+location.file.path.picture=/home/santiago/tsi2workspace3/streamrainv3/nginx/img
+>>>>>>> Stashed changes
+
+admin.user=admin
+admin.password=40bd001563085fc35165329ea1ff5c5ecbdbbeef
+
+janus.chatRoom.url=/keepChatMessage

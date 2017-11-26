@@ -232,12 +232,26 @@ public class BLContentImpl implements IBLContent {
 		return daoService.getAllByExample(SharedContents.class, objectQuery, tenantID);
 	}
 
+
 	public boolean updateViewContent(final UserViews userView, final Integer contentID, final String userNickName, final String tenantID) {
 		Contents contents = daoService.get(Contents.class, contentID, tenantID);
 		Users user = daoUserService.getUserByNickname(userNickName, tenantID);
 		userView.setContents(contents);
 		userView.setUsers(user);
 		return daoService.saveOrUpdate(userView, tenantID);
+	}
+
+	public String isFav(Integer contentID, String userNickName, String tenantID) {
+		Users user = daoUserService.getUserByNickname(userNickName, tenantID);
+		UserFavsId fID = new UserFavsId();
+		fID.setUserId(user.getId());
+		fID.setContentId(contentID);
+		Boolean fav = daoUserService.getFav(fID, tenantID);
+		if(fav != null && fav) {
+			return "true";
+		}else {
+			return "false";
+		}
 	}
 	 
 

@@ -50,4 +50,6 @@ public interface IBLContent {
 
 	boolean updateViewContent(final UserViews userView, final Integer contentID, final String userNickName, final String tenantID);
 
+	String isFav(final Integer contentID, final String userNickName, final String tenantID);
+
 }

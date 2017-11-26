@@ -95,6 +95,9 @@ public class ContentUserController {
         return response;
     }
     
+<<<<<<< Updated upstream
+        
+=======
     @RequestMapping(value = "/fav/{contentID}/{userNickName}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PathTokenVODDto> isFav(@PathVariable Integer contentID, @PathVariable String userNickName) {
     	
@@ -104,6 +107,7 @@ public class ContentUserController {
         return new ResponseEntity<PathTokenVODDto>(dto, HttpStatus.OK);
     }
     
+>>>>>>> Stashed changes
     @RequestMapping(value = "/voteContent", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ContentVoteDto> voteContent(@RequestBody ContentVoteDto contentVoteDto) {
     	boolean voteOk = contentService.voteContent(contentVoteDto.getContentID(), contentVoteDto.getUserNickname(), contentVoteDto.getRank(), sessionService.getCurrentTenant());
@@ -181,20 +185,6 @@ public class ContentUserController {
     @RequestMapping(value = "/getLastViewOfContent", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserContentViewDto> getLastViewOfContent(@RequestBody UserContentViewDto userContentViewDto) {
     	UserContentViewDto lastViewDto = contentService.getLastViewToContent(userContentViewDto, sessionService.getCurrentTenant());
-        return new ResponseEntity<UserContentViewDto>(lastViewDto, HttpStatus.OK);
-    }
-    
-    @RequestMapping(value = "/updateDuration", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserContentViewDto> updateDuration(@RequestBody UserContentViewDto userContentViewDto) {
-    	UserContentViewDto lastViewDto = contentService.getLastViewToContent(userContentViewDto, sessionService.getCurrentTenant());
-    	if (lastViewDto == null) {
-    		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    	}
-    	lastViewDto.setSecond(userContentViewDto.getSecond());
-    	boolean ok = contentService.updateViewContent(lastViewDto, lastViewDto.getContentID(), lastViewDto.getUserNickname(), sessionService.getCurrentTenant());
-    	if (!ok) {
-    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    	}
         return new ResponseEntity<UserContentViewDto>(lastViewDto, HttpStatus.OK);
     }
     

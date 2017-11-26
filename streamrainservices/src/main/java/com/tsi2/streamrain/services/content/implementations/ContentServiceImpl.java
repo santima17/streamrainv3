@@ -154,8 +154,14 @@ public class ContentServiceImpl implements IContentService {
 		return sharedContentConverter.convertAll(contentBussines.getShareContent(userNickName, searchType, tenantID));
 	}
 
+
 	public boolean updateViewContent(UserContentViewDto lastViewDto, final Integer contentID, final String userNickName, final String tenantID) {
 		return contentBussines.updateViewContent(userContentViewConverter.deConverter(lastViewDto), contentID, userNickName, tenantID);
+	}
+	
+	@Override
+	public String isFav(final Integer contentID, final String userNickName, final String tenantID) {
+		return contentBussines.isFav(contentID, userNickName, tenantID); 
 	}
 
 }

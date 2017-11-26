@@ -51,5 +51,6 @@ public interface IContentService {
 
 	boolean updateViewContent(final UserContentViewDto lastViewDto, final Integer contentID, final String userNickName, final String tenantID);
 
+	String isFav(final Integer contentID, final String userNickName, final String tenantID);
 
 }
