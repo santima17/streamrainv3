@@ -59,6 +59,7 @@
           <button v-on:click="signup" class="btn btn-default" :disabled="!buttonEnable">{{ buttonText }} <i v-if="!buttonEnable" class="fa fa-spinner fa-spin" style="font-size"></i></button>
         </div>
         <br>
+        <a role="button" v-if="!success.show" v-on:click="randomUser()">Random User</a>
         <hr>
       </div>
       <div class="col-sm-2 sidenav">
@@ -68,6 +69,7 @@
 </template>
 
 <script>
+  const sampleUsers = require('../../assets/samples/users');
   export default {
     props: [
       'config',
@@ -197,6 +199,16 @@
       },
       updateButtonText: function (buttonText) {
         this.buttonText = buttonText;
+      },
+      // Cargar ejemplo
+      randomUser: function() {
+        const user = sampleUsers[Math.floor(Math.random()*sampleUsers.length)];
+        this.nickname = user.nickname;
+        this.email = user.email;
+        this.password = user.password;
+        this.confirmPassword = user.confirmPassword;
+        this.country = user.country;
+        this.city = user.city;
       }
     }
   }

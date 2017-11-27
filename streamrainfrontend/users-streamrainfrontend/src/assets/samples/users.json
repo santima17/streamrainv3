@@ -1,0 +1,28 @@
+[
+  {
+    "nickname": "diego",
+    "email": "diegopolenta@gmial.com",
+    "password": "diego",
+    "confirmPassword": "diego",
+    "country": "Uruguay",
+    "city": "Montevideo",
+    "facebookUserId": null,
+    "twitterUserId": null,
+    "integratorId": null,
+    "isBanned": false,
+    "blocked": false
+  },
+  {
+    "nickname": "seba",
+    "email": "sebafernandez@gmial.com",
+    "password": "seba",
+    "confirmPassword": "seba",
+    "country": "Uruguay",
+    "city": "Montevideo",
+    "facebookUserId": null,
+    "twitterUserId": null,
+    "integratorId": null,
+    "isBanned": false,
+    "blocked": false
+  }
+]

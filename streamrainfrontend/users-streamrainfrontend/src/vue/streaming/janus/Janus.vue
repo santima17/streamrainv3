@@ -78,9 +78,9 @@
         i.leaveStreaming();
       });
 
-      this.eventBus.$on('getJanusLiveContent', function (streamId) {
-        i.updateStreamId(streamId); // TODO: HACERLO SÓLO SI TODO SALE OK
-        i.janusGetLiveContent(streamId);
+      this.eventBus.$on('getJanusLiveContent', function (content) {
+        i.updateStream(content); // TODO: HACERLO SÓLO SI TODO SALE OK
+        i.janusGetLiveContent(content);
       });
     },
     data () {
@@ -91,6 +91,7 @@
         started: false,
         userToken: this.session.janusToken,
         streamId: null,
+        streamPin: null,
         // Streaming
         streaming: {
           ready: false,
@@ -178,8 +179,9 @@
           });
         } 
       },
-      updateStreamId: function (streamId) {
-        this.streamId = parseInt(streamId);
+      updateStream: function (content) {
+        this.streamId = parseInt(content.streamId);
+        this.streamPin = parseInt(content.pin);
       },
       updateStarted: function (started) {
         this.started = started;
@@ -425,12 +427,12 @@
           }
         });
       },
-      janusGetLiveContent: function (streamId) {
+      janusGetLiveContent: function (content) {
         if (!this.session.isBanned && this.textroom.ready && this.streaming.ready) {
-          this.janusJoinTextroom(streamId);
-          this.janusWatchStream(streamId);
+          this.janusJoinTextroom(content);
+          this.janusWatchStream(content);
         } else if (this.session.isBanned && this.streaming.ready) {
-          this.janusWatchStream(streamId);
+          this.janusWatchStream(content);
         }
       },
       janusUpdateStreamsList: function (callback) {
@@ -456,26 +458,32 @@
           return callback(null);
         }
       },
-      janusWatchStream: function (streamId) {
-        const body = {
+      janusWatchStream: function (content) {
+        let body = {
           request: 'watch',
-          id: parseInt(streamId)
+          id: parseInt(content.streamId)
         };
+        if (content.pin) {
+          body.pin = content.pin;
+        }
 	      this.streaming.handle.send({
           message: body
         });
       },
-      janusJoinTextroom: function (textroomId) {
+      janusJoinTextroom: function (content) {
         const eventBus = this.eventBus;
         this.textroom.myid = Janus.randomString(12);
         const transaction = Janus.randomString(12);
-        const register = {
+        let register = {
           textroom: 'join',
           transaction: transaction,
-          room: parseInt(textroomId),
+          room: parseInt(content.streamId),
           username: this.textroom.myusername,
           display: this.textroom.myusername
         };
+        if (content.pin) {
+          register.pin = content.pin;
+        }
         this.textroom.transactions[transaction] = function (response) {
           if (response['textroom'] === 'error') {
             Janus.error(response['error']);

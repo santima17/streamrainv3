@@ -29,6 +29,8 @@
       'contentId',
       'myFav',
       'postFav',
+      'eventBus',
+      'config'
     ],
     components: {
       'streamrain-errorshelper': ErrorsHelper

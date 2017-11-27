@@ -6,10 +6,12 @@
       <div class="col-sm-8 text-left">
         <h1>
           {{ stream.name }} <i v-if="titleSpinner && !alert.show" class="fa fa-spinner fa-spin" style="font-size"></i>
-          <streamrain-favbutton v-if="myFav !== null" ref="errorshelper"
+          <streamrain-favbutton v-if="myFav !== null" ref="favbutton"
             :session="session"
             :contentId="$route.params.streamId"
             :myFav="myFav"
+            :eventBus="eventBus"
+            :config="config"
           >
           </streamrain-favbutton>
         </h1>
@@ -27,7 +29,7 @@
         <!-- alert -->
         <div class="row" id="room">
           <div class="col-sm-7">
-            <video ref="video" width="100%" v-on:playing="playingVideo" autoplay />
+            <video ref="video" width="100%" v-on:playing="playingVideo" controls />
           </div>
           <div class="col-sm-5">
             <div class="panel panel-info" v-if="chatroom.ready && !session.isBanned">
@@ -164,6 +166,7 @@
         sendingRank: false,
         //
         currentStream: null,
+        pin: null,
         stream: {
           ready: false,
           name: 'Live Stream'
@@ -186,8 +189,11 @@
       const streamId = this.$route.params.streamId;
       const session = this.session;
 
-      this.eventBus.$once('JanusReady', function (result) {
-        i.eventBus.$emit('getJanusLiveContent', streamId);
+      this.eventBus.$on('JanusReady', function (result) {
+        i.eventBus.$emit('getJanusLiveContent', {
+          streamId,
+          pin: i.pin
+        });
       });
 
       this.eventBus.$on('janusStartingStream', function () {
@@ -195,6 +201,14 @@
 
       this.eventBus.$on('janusStartedStream', function () {
         i.stream.ready = true;
+        this.$http.get(`${i.config.backend}/user/content/view/${streamId}/${session.nickname}`,
+        {
+          headers: {
+            'Authorization': session.token
+          }
+        }).catch((response) => {;
+          i.$refs.errorshelper.processHttpResponse(response);
+        });
       });
 
       this.eventBus.$on('janusRemoteStream', function (obj) {
@@ -306,17 +320,20 @@
         }
       }).then((response) => {
         const newStream = response.body;
-        console.log(JSON.stringify(newStream))
-        if (newStream.isPayPerView && !session.janusPins[`cid${streamId}`]) {
-          return i.$router.push(`/buyPPVContent/${streamId}`);
+        if (newStream.isPayPerView) {
+          if (!session.janusPins[`cid${streamId}`]) {
+            return i.$router.push(`/buyPPVContent/${streamId}`);
+          } else {
+            i.updatePin(session.janusPins[`cid${streamId}`]);
+          }
         }
         newStream.ready = false;
         i.updateStream(newStream);
         this.eventBus.$emit('JanusReady?', null);
         i.getMyRank();
-        i.getMyFav();
+        // i.getMyFav();
       }).catch((response) => {
-        this.$refs.errorshelper.processHttpResponse(response);
+        i.$refs.errorshelper.processHttpResponse(response);
       });
     },
     beforeDestroy () {
@@ -334,7 +351,7 @@
         }).then((response) => {
           i.setMyRank(response.body.pathTokenVOD);
         }).catch((response) => {
-          this.$refs.errorshelper.processHttpResponse(response);
+          i.$refs.errorshelper.processHttpResponse(response);
         });
       },
       getMyFav: function () {
@@ -348,7 +365,7 @@
         }).then((response) => {
           i.setMyFav(response.body.pathTokenVOD);
         }).catch((response) => {
-          this.$refs.errorshelper.processHttpResponse(response);
+          i.$refs.errorshelper.processHttpResponse(response);
         });
       },
       setMyRank: function (myRank) {
@@ -357,7 +374,9 @@
       },
       setMyFav: function (myFav) {
         this.myFav = myFav;
-        // this.$refs.fivestarsrating.paintStars(myRank);
+      },
+      updatePin: function (pin) {
+        this.pin = pin;
       },
       updateStream: function (stream) {
         this.titleSpinner = false;
