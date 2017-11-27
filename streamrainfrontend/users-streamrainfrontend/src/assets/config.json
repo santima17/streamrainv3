@@ -1,7 +1,7 @@
 {
-  "backend": "http://generator3.192.168.1.6.nip.io:8080/streamrainRESTUI",
+  "backend": "http://192.168.0.142:3000",
   "tenant": {
     "name": "Default Tenant"
   },
-  "debug_level": 1
+  "debug_level": 0
 }

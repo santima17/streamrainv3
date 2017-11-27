@@ -1,33 +1,44 @@
 <template>
   <div>
-    <div v-if="stream.id && !sendingRank" v-on:mouseleave="loadMyRank(myRank)">
+    <div v-if="stream.id && !sending" v-on:mouseleave="loadMyRank()">
       <i v-bind:class="stars.s1.class" v-on:mouseover="paintStars(1)" v-on:click="sendRank(1)"/>
       <i v-bind:class="stars.s2.class" v-on:mouseover="paintStars(2)" v-on:click="sendRank(2)"/>
       <i v-bind:class="stars.s3.class" v-on:mouseover="paintStars(3)" v-on:click="sendRank(3)"/>
       <i v-bind:class="stars.s4.class" v-on:mouseover="paintStars(4)" v-on:click="sendRank(4)"/>
       <i v-bind:class="stars.s5.class" v-on:mouseover="paintStars(5)" v-on:click="sendRank(5)"/>
     </div>
-    <div v-if="sendingRank">
+    <div v-if="sending">
       <i class="fa fa-spinner fa-spin text-info" style="font-size"></i>
     </div>
-    <div v-if="stream.ranking">
-      <b>Ranking:</b> {{ stream.ranking }}
+    <div v-if="localRanking">
+      <b>Ranking:</b> {{ localRanking }}
     </div>
-    <div v-if="stream.id && !stream.ranking">
+    <div v-if="stream.id && !localRanking">
       <b>Ranking:</b> Unranked
     </div>
+    <streamrain-errorshelper ref="errorshelper"
+      :eventBus="eventBus"
+      :config="config"
+    >
+    </streamrain-errorshelper>
   </div>
 </template>
 
 <script>
+  import ErrorsHelper from '../utils/ErrorsHelper.vue';
   export default {
     props: [
       'session',
       'stream',
       'myRank',
       'postRank',
-      'getRank'
+      'getRank',
+      'eventBus',
+      'config'
     ],
+    components: {
+      'streamrain-errorshelper': ErrorsHelper
+    },
     data () {
       return {
         stars: {
@@ -52,17 +63,42 @@
             painted: false
           }
         },
-        sendingRank: false
+        sending: false,
+        myLocalRank: null,
+        localRanking: null,
       }
     },
+    created () {
+      this.localRanking = this.stream.ranking;
+    },
     methods: {
-      setSendingRank: function (sendingRank) {
-        this.sendingRank = sendingRank;
+      getUpdatedRanking: function () {
+        const i = this;
+        i.$http.get(i.getRank,
+        {
+          headers: {
+            'Authorization': i.session.token
+          }
+        }).then((response) => {
+          i.updateLocalRanking((response.body.pathTokenVOD).toFixed(1));
+        }).catch((response) => {
+          console.error(JSON.stringify(response));
+          i.$refs.errorshelper.processHttpResponse(response);
+        });
+      },
+      updateSending: function (sending) {
+        this.sending = sending;
+      },
+      updateLocalRanking: function (localRanking) {
+        this.localRanking = localRanking;
+      },
+      updateMyLocalRank: function (myLocalRank) {
+        this.myLocalRank = myLocalRank;
       },
       sendRank: function (rank) {
-        if (rank === this.myRank) return;
+        if (rank === this.myLocalRank) return;
         const i = this;
-        i.setSendingRank(true);
+        i.updateSending(true);
         i.$http.post(i.postRank, {rank},
         {
           headers: {
@@ -70,15 +106,17 @@
           }
         }).then((response) => {
           i.paintStars(rank);
-          i.setSendingRank(false);
+          i.updateMyLocalRank(rank);
+          i.getUpdatedRanking();
+          i.updateSending(false);
         }).catch((response) => {
+          i.updateSending(false);
           console.error(JSON.stringify(response));
-          // TODO: mostrar una alerta.
+          i.$refs.errorshelper.processHttpResponse(response);
         });
       },
-      loadMyRank: function (myRank) {
-        this.myRank = myRank;
-        this.paintStars(myRank);
+      loadMyRank: function () {
+        this.paintStars(this.myLocalRank || this.myRank);
       },
       paintStars: function (star) {
         switch (star) {

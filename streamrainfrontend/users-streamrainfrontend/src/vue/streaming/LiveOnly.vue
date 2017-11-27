@@ -6,16 +6,29 @@
       <div class="col-sm-8 text-left">
         <h1>
           {{ stream.name }} <i v-if="titleSpinner && !alert.show" class="fa fa-spinner fa-spin" style="font-size"></i>
-          <streamrain-favbutton v-if="myFav !== null" ref="favbutton"
-            :session="session"
-            :contentId="$route.params.streamId"
-            :myFav="myFav"
-            :eventBus="eventBus"
-            :config="config"
-          >
-          </streamrain-favbutton>
         </h1>
-        <hr>
+        <div>
+          <div class="col-md-6 text-right">
+            <streamrain-sharebutton v-if="stream.id"  ref="sharebutton"
+              :session="session"
+              :contentId="$route.params.streamId"
+              :eventBus="eventBus"
+              :config="config"
+            >
+            </streamrain-sharebutton>            
+          </div>
+          <div class="col-md-6 text-left">
+            <streamrain-favbutton v-if="myFav !== null" ref="favbutton"
+              :session="session"
+              :contentId="$route.params.streamId"
+              :myFav="myFav"
+              :eventBus="eventBus"
+              :config="config"
+            >
+            </streamrain-favbutton>            
+          </div>
+        </div>
+        <br>
         <!-- alert -->
         <div class="row">
           <div class="col-sm-12" v-if="alert.show">
@@ -29,7 +42,7 @@
         <!-- alert -->
         <div class="row" id="room">
           <div class="col-sm-7">
-            <video ref="video" width="100%" v-on:playing="playingVideo" controls />
+            <video v-bind:hidden="!stream.ready" ref="video" width="100%" v-on:playing="playingVideo" controls />
           </div>
           <div class="col-sm-5">
             <div class="panel panel-info" v-if="chatroom.ready && !session.isBanned">
@@ -71,7 +84,7 @@
               </div>
             </div>
             <div v-if="session.isBanned">
-              <p class="text-right text-danger">You are banned from chatroom</p> 
+              <p class="text-right text-danger">[Chat] You are banned...</p> 
             </div>
           </div>
         </div>
@@ -87,13 +100,14 @@
             </div>
           </div>
           <div class="col-sm-6 text-right">
-            <streamrain-fivestarsrating ref="fivestarsrating"
+            <streamrain-fivestarsrating v-if="stream.id" ref="fivestarsrating"
               :session="session"
               :stream="stream"
               :myRank="myRank"
-              :postRank="`${config.backend}/user/COMPLETAR-1}`"
-              :getRank="`${config.backend}/user/COMPLETAR-2}`"
+              :postRank="`${config.backend}/user/content/rank/${$route.params.streamId}/${session.nickname}`"
+              :getRank="`${config.backend}/user/content/rank/${$route.params.streamId}`"
               :eventBus="eventBus"
+              :config="config"
             >
             </streamrain-fivestarsrating>
           </div>
@@ -146,6 +160,7 @@
 <script>
   import FiveStarsRating from '../utils/FiveStarsRating.vue';
   import FavButton from '../utils/FavButton.vue';
+  import ShareButton from '../utils/ShareButton.vue';
   import ErrorsHelper from '../utils/ErrorsHelper.vue';
   export default {
     props: [
@@ -157,7 +172,8 @@
     components: {
       'streamrain-fivestarsrating': FiveStarsRating,
       'streamrain-favbutton': FavButton,
-      'streamrain-errorshelper': ErrorsHelper
+      'streamrain-errorshelper': ErrorsHelper,
+      'streamrain-sharebutton': ShareButton
     },
     data () {
       return {
@@ -206,7 +222,7 @@
           headers: {
             'Authorization': session.token
           }
-        }).catch((response) => {;
+        }).catch((response) => {
           i.$refs.errorshelper.processHttpResponse(response);
         });
       });
@@ -331,7 +347,7 @@
         i.updateStream(newStream);
         this.eventBus.$emit('JanusReady?', null);
         i.getMyRank();
-        // i.getMyFav();
+        i.getMyFav();
       }).catch((response) => {
         i.$refs.errorshelper.processHttpResponse(response);
       });

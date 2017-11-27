@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="lead text-left">
     <div v-if="localFav !== null && !sending">
       <a v-if="localFav" v-on:click="sendUnfav()" class="text-info" role="button">
         <i class="glyphicon glyphicon-heart">
@@ -11,7 +11,7 @@
       </a>
     </div>
     <div v-if="localFav !== null && sending">
-      <i class="fa fa-spinner fa-spin" style="font-size"></i>
+      <i class="fa fa-spinner fa-spin text-info" style="font-size"></i>
     </div>
     <streamrain-errorshelper ref="errorshelper"
       :eventBus="eventBus"
@@ -45,11 +45,51 @@
       this.localFav = this.myFav;
     },
     methods: {
+      updateSending: function (sending) {
+        this.sending = sending;
+      },
+      updateLocalFav: function (localFav) {
+        this.localFav = localFav;
+      },
       sendFav: function () {
-        this.localFav = true;
+        const i = this;
+        i.updateSending(true);
+        i.$http.post(`${i.config.backend}/user/content/fav`,
+        {
+          fav: true
+        },
+        {
+          headers: {
+            'Authorization': i.session.token
+          }
+        }).then((response) => {
+          i.updateLocalFav(true);
+          i.updateSending(false);
+        }).catch((response) => {
+          i.updateSending(false);
+          console.error(JSON.stringify(response));
+          i.$refs.errorshelper.processHttpResponse(response);
+        });
       },
       sendUnfav: function () {
-        this.localFav = false;
+        const i = this;
+        i.updateSending(true);
+        i.$http.post(`${i.config.backend}/user/content/fav`,
+        {
+          fav: false
+        },
+        {
+          headers: {
+            'Authorization': i.session.token
+          }
+        }).then((response) => {
+          i.updateLocalFav(false);
+          i.updateSending(false);
+        }).catch((response) => {
+          i.updateSending(false);
+          console.error(JSON.stringify(response));
+          i.$refs.errorshelper.processHttpResponse(response);
+        });
       }
     }
   }
