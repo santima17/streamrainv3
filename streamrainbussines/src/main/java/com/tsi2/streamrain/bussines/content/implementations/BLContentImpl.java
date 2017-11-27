@@ -9,8 +9,10 @@ import java.util.Set;
 import com.tsi2.streamrain.bussines.content.interfaces.IBLContent;
 import com.tsi2.streamrain.context.StremRainDataContextLoader;
 import com.tsi2.streamrain.dao.implementations.StreamRainMongoDbDAO;
+import com.tsi2.streamrain.dao.implementations.StreamRainMySQLContentDAO;
 import com.tsi2.streamrain.dao.implementations.StreamRainMySQLDAO;
 import com.tsi2.streamrain.dao.implementations.StreamRainMySQLUserDAO;
+import com.tsi2.streamrain.dao.interfaces.IDAOContentService;
 import com.tsi2.streamrain.dao.interfaces.IDAOMongoDBService;
 import com.tsi2.streamrain.dao.interfaces.IDAOService;
 import com.tsi2.streamrain.dao.interfaces.IDAOUserService;
@@ -24,7 +26,6 @@ import com.tsi2.streamrain.model.generator.UserFavs;
 import com.tsi2.streamrain.model.generator.UserFavsId;
 import com.tsi2.streamrain.model.generator.UserRatings;
 import com.tsi2.streamrain.model.generator.UserRatingsId;
-import com.tsi2.streamrain.model.generator.UserSubscriptions;
 import com.tsi2.streamrain.model.generator.UserViews;
 import com.tsi2.streamrain.model.generator.Users;
 
@@ -33,6 +34,8 @@ public class BLContentImpl implements IBLContent {
 
 	IDAOService daoService = (StreamRainMySQLDAO) StremRainDataContextLoader.contextLoader().getBean("daoService");
 	
+	IDAOContentService daoContentService = (StreamRainMySQLContentDAO) StremRainDataContextLoader.contextLoader().getBean("daoContentService");
+		
 	IDAOUserService daoUserService = (StreamRainMySQLUserDAO) StremRainDataContextLoader.contextLoader().getBean("daoUserService");
 		
 	IDAOMongoDBService daoMongoDbService = (StreamRainMongoDbDAO) StremRainDataContextLoader.contextLoader().getBean("daoMongoDBService");
@@ -170,8 +173,9 @@ public class BLContentImpl implements IBLContent {
 		Iterator<UserViews> it = views.iterator();
 		while (it.hasNext()) {
 			UserViews userView = it.next();
-			if (userView.getId() > id) {
+			if (userView.getUsers().getNickname().equals(userNickname) && userView.getId() > id) {
 				result = userView;
+				id = userView.getId();
 			}
 		}
 		return result;
@@ -238,7 +242,8 @@ public class BLContentImpl implements IBLContent {
 		Users user = daoUserService.getUserByNickname(userNickName, tenantID);
 		userView.setContents(contents);
 		userView.setUsers(user);
-		return daoService.saveOrUpdate(userView, tenantID);
+		int result = daoContentService.updateContentView(userView, tenantID);
+		return result != 0;
 	}
 
 	public String isFav(Integer contentID, String userNickName, String tenantID) {

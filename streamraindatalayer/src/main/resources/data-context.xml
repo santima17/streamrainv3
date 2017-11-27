@@ -13,5 +13,6 @@
 	<bean id="daoMongoDBService" class="com.tsi2.streamrain.dao.implementations.StreamRainMongoDbDAO"/>
 	<bean id="daoPaymentService" class="com.tsi2.streamrain.dao.implementations.StreamRainMySQLPaymentDAO"/>
 	<bean id="daoReportService" class="com.tsi2.streamrain.dao.implementations.StreamRainMySQLReportDAO"/>
+	<bean id="daoContentService" class="com.tsi2.streamrain.dao.implementations.StreamRainMySQLContentDAO"/>
 	
 </beans>
