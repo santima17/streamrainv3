@@ -463,7 +463,4 @@
     overflow-y:scroll;
     width:100%;
   }
-  .star {
-    cursor: pointer;
-  }
 </style>

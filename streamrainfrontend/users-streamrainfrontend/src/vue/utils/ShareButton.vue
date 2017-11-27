@@ -120,7 +120,7 @@
         this.usersToShare.forEach((user) => {
           i.$http.post(`${i.config.backend}/user/content/shareContent`,
           {
-            contentId: true,
+            contentId: i.contentId,
             usersByDestinationUserId: user,
             usersByUserId: i.session.nickname,
             date: now

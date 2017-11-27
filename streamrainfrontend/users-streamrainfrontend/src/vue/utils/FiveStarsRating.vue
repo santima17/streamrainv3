@@ -198,3 +198,9 @@
     }
   }
 </script>
+
+<style>
+  .star {
+    cursor: pointer;
+  }
+</style>

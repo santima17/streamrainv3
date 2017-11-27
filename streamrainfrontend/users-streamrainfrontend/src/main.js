@@ -13,6 +13,7 @@ import Home from './vue/nav/Home.vue';
 import Catalog from './vue/nav/Catalog.vue';
 import Subscription from './vue/nav/Subscription.vue';
 import BuyPPVContent from './vue/nav/BuyPPVContent.vue';
+import Notifications from './vue/nav/Notifications.vue';
 // Streaming
 import LiveOnly from './vue/streaming/LiveOnly.vue'; 
 import AlwaysAvailable from './vue/streaming/AlwaysAvailable.vue';
@@ -81,6 +82,13 @@ const routes = [
     component: BuyPPVContent,
     meta: {
       title: `${config.tenant.name} | Buy PPV Content`
+    }
+  },
+  {
+    path: '/notifications',
+    component: Notifications,
+    meta: {
+      title: `${config.tenant.name} | Notifications`
     }
   },
   {

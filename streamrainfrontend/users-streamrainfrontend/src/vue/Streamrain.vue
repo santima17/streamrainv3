@@ -16,6 +16,11 @@
             <li><router-link to="/">Home</router-link></li>
             <li><router-link to="/catalog">Catalog</router-link></li>
             <li><router-link to="/subscription">Subscription</router-link></li>
+            <li>
+              <router-link to="/notifications">
+                <i class="glyphicon glyphicon-bell"></i>
+              </router-link>
+            </li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li v-if="!session"><router-link to="/login">Log In</router-link></li>
