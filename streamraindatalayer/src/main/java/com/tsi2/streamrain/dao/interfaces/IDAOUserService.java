@@ -2,7 +2,6 @@ package com.tsi2.streamrain.dao.interfaces;
 
 import java.util.List;
 
-import com.tsi2.streamrain.model.generator.UserFavs;
 import com.tsi2.streamrain.model.generator.UserFavsId;
 import com.tsi2.streamrain.model.generator.UserRatings;
 import com.tsi2.streamrain.model.generator.Users;
@@ -20,5 +19,7 @@ public interface IDAOUserService extends IDAOService {
 	List<UserRatings> getRankForUser(final Integer contentID, final Integer userID, final String tenantID);
 	
 	Boolean getFav(final UserFavsId id, final String tenantID);
+	
+	List<Object[]> getShareContent(final Integer userNickName, final Integer searchType, final String tenantID);
 
 }
