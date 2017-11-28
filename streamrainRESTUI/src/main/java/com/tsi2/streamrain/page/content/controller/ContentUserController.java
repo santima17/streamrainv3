@@ -68,12 +68,19 @@ public class ContentUserController {
     @RequestMapping(value = "/view/{contentID}/{userNickName}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PathTokenVODDto> getContent(@PathVariable Integer contentID, @PathVariable String userNickName) {
     	Long days = paymentService.getDaysValidSubscription(userNickName, sessionService.getCurrentTenant());
-
+   	
         ResponseEntity<PathTokenVODDto> response;
         if (days == null) {
             response = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {
         	ContentDto contentDto = contentService.getContentById(contentID, sessionService.getCurrentTenant());
+        	
+        	if (contentDto.getIsPayPerView()) {
+	        	boolean payed = paymentService.existsPPV(contentID, userNickName, sessionService.getCurrentTenant());
+	        	if (!payed) {
+	        		return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+	        	}
+        	}
         	
         	UserContentViewDto userContentViewDto = new UserContentViewDto();
         	userContentViewDto.setContentID(contentID);

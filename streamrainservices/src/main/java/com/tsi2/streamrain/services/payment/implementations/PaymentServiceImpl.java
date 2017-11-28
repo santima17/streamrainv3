@@ -42,4 +42,8 @@ public class PaymentServiceImpl implements IPaymentService {
 		return paymentBussines.getDaysValidSubscription(userNickName, tenantID);
 	}
 
+	public boolean existsPPV(final Integer contentID, final String userNickName, final String tenantID) {
+		return paymentBussines.existsPPV(contentID, userNickName, tenantID);
+	}
+
 }

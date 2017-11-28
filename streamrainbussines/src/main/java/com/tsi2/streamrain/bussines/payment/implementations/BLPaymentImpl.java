@@ -6,8 +6,10 @@ import java.util.UUID;
 
 import com.tsi2.streamrain.bussines.payment.interfaces.IBLPayment;
 import com.tsi2.streamrain.context.StremRainDataContextLoader;
+import com.tsi2.streamrain.dao.implementations.StreamRainMySQLContentDAO;
 import com.tsi2.streamrain.dao.implementations.StreamRainMySQLPaymentDAO;
 import com.tsi2.streamrain.dao.implementations.StreamRainMySQLUserDAO;
+import com.tsi2.streamrain.dao.interfaces.IDAOContentService;
 import com.tsi2.streamrain.dao.interfaces.IDAOPaymentService;
 import com.tsi2.streamrain.dao.interfaces.IDAOUserService;
 import com.tsi2.streamrain.model.generator.Contents;
@@ -23,6 +25,8 @@ public class BLPaymentImpl implements IBLPayment {
 			.getBean("daoUserService");
 	IDAOPaymentService daoPaymentMethodService = (StreamRainMySQLPaymentDAO) StremRainDataContextLoader.contextLoader()
 			.getBean("daoPaymentService");
+	IDAOContentService daoContentService = (StreamRainMySQLContentDAO) StremRainDataContextLoader.contextLoader()
+			.getBean("daoContentService");
 
 	public void saveUserSubscription(UserSubscriptions userSubscriptions, final String nickName,
 			final Integer idPaymentMethod, final String tenantID) {
@@ -53,7 +57,7 @@ public class BLPaymentImpl implements IBLPayment {
 		return daoPaymentMethodService.getAll(PaymentMethods.class, tenantID);
 	}
 
-	public Long getDaysValidSubscription(String userNickName, final String tenantID) {
+	public Long getDaysValidSubscription(final String userNickName, final String tenantID) {
 		try {
 			Users user = daoService.getUserByNickname(userNickName, tenantID);
 			Date now = new Date();
@@ -70,6 +74,16 @@ public class BLPaymentImpl implements IBLPayment {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	public boolean existsPPV(final Integer contentID, final String userNickName, final String tenantID) {
+		Users user = daoService.getUserByNickname(userNickName, tenantID);
+		Contents contents = daoContentService.get(Contents.class, contentID, tenantID);
+		UserPpvs userPpvs = new UserPpvs();
+		userPpvs.setContents(contents);
+		userPpvs.setUsers(user);
+		List<UserPpvs> list = daoPaymentMethodService.getAllByExample(UserPpvs.class, userPpvs, tenantID);
+		return !list.isEmpty();
 	}
 
 }

@@ -16,4 +16,6 @@ public interface IPaymentService {
 
 	Long getDaysValidSubscription(final String userNickName, final String tenantID);
 
+	boolean existsPPV(final Integer contentID, final String userNickName, final String tenantID);
+
 }
