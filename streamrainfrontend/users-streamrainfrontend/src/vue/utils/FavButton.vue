@@ -1,5 +1,5 @@
 <template>
-  <div class="lead text-left">
+  <div class="lead text-right">
     <div v-if="localFav !== null && !sending">
       <a v-if="localFav" v-on:click="sendUnfav()" class="text-info" role="button">
         <i class="glyphicon glyphicon-heart">

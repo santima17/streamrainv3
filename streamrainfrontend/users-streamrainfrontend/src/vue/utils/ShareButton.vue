@@ -2,8 +2,8 @@
   <div class="text-right">
     <div>
       <a v-on:click="getAllUsers()" data-toggle="modal" data-target="#shareModal" class="text-info" role="button">
-        <i class="lead glyphicon glyphicon-share">
-        </i>
+        <i class="glyphicon glyphicon-share">
+        </i> Share!
       </a>
     </div>
     <div class="modal fade" id="shareModal" role="dialog" aria-labelledby="shareModal" aria-hidden="true">

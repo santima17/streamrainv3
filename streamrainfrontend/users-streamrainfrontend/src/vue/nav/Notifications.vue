@@ -18,16 +18,36 @@
         </div>
         <!-- alert -->
         <div>
-          <h2>Shared with me</h2>
-          <ul v-if="counter === 0" class="list">
-            <li v-for="(sharedContent, index) in sharedContents" :key="index">
-              <p>contentId: {{ sharedContent.contentId }}</p>
-              <p>usersByDestinationUserId: {{ sharedContent.usersByDestinationUserId }}</p>
-              <p>usersByUserId: {{ sharedContent.usersByUserId }}</p>
-              <p>date: {{ sharedContent.date }}</p>
-              <p>CONTENT JSON: {{ contents[sharedContent.contentId] }}</p>
-            </li>
-          </ul>
+          <h3>Shared with me</h3>
+          <div v-if="counter === 0" class="list-group">
+            <a v-for="(sharedContent, index) in sharedContents" :key="index" class="list-group-item">
+              <div class="row">
+                <div class="col-sm-9">
+                  <h4 class="list-group-item-heading">{{ contents[sharedContent.contentId].name }}</h4>
+                  <p class="list-group-item-text">
+                    <div v-if="contents[sharedContent.contentId].ranking">Ranking: {{ contents[sharedContent.contentId].ranking }}</div>
+                    <div v-if="!contents[sharedContent.contentId].ranking">Ranking: Unranked</div>
+                    <br>
+                    <div class="text-info">Shared by {{ contents[sharedContent.contentId].sharedFromNickname }}</div>
+                    <div class="">{{ sharedContent.date }}</div>
+                    <br>
+                    <div v-if="contents[sharedContent.contentId].alwaysAvailable">
+                      <router-link :to="`/vod/${sharedContent.contentId}`"><div class="btn btn-info btn-sm">Watch now!</div></router-link>
+                    </div>
+                    <div v-if="!contents[sharedContent.contentId].alwaysAvailable">
+                      <router-link :to="`/live/${sharedContent.contentId}`"><div class="btn btn-info btn-sm">Watch now!</div></router-link>
+                    </div>
+                    <!-- <div>{{ contents[sharedContent.contentId] }}</div> -->
+                  </p>
+                </div>
+                <div class="col-sm-3 text-right">
+                  <div class="thumbnail">
+                    <img v-bind:src="contents[sharedContent.contentId].coverPictureUrl">
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
         </div>        
         <streamrain-errorshelper ref="errorshelper"
           :eventBus="eventBus"
@@ -92,17 +112,6 @@
             });
           });
         });
-        i.sharedContents.forEach((entry) => {
-          this.$http.get(`${this.config.backend}/user/getById/${entry.usersByUserId}`,
-          {
-            headers: {
-              'Authorization': i.session.token
-            }
-          }).then((response2) => {
-            i.addContent(response2.body);
-            i.decCounter();
-          });
-        });
       }).catch((response1) => {
         i.$refs.errorshelper.processHttpResponse(response1);
       });
@@ -144,3 +153,10 @@
     }
   }
 </script>
+
+<style>
+  .thumbnail img {
+    max-height: 100%;
+    max-width: 100%;
+  }
+</style>

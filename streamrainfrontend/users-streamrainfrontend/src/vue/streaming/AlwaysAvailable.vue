@@ -8,25 +8,13 @@
           {{ stream.name }} <i v-if="titleSpinner && !alert.show" class="fa fa-spinner fa-spin" style="font-size"></i>
         </h1>
         <div>
-          <div class="col-md-6 text-right">
             <streamrain-sharebutton v-if="stream.id"  ref="sharebutton"
               :session="session"
               :contentId="$route.params.streamId"
               :eventBus="eventBus"
               :config="config"
             >
-            </streamrain-sharebutton>            
-          </div>
-          <div class="col-md-6 text-left">
-            <streamrain-favbutton v-if="myFav !== null" ref="favbutton"
-              :session="session"
-              :contentId="$route.params.streamId"
-              :myFav="myFav"
-              :eventBus="eventBus"
-              :config="config"
-            >
-            </streamrain-favbutton>            
-          </div>
+            </streamrain-sharebutton>
         </div>
         <br>
         <!-- alert -->
@@ -63,6 +51,14 @@
               :config="config"
             >
             </streamrain-fivestarsrating>
+            <streamrain-favbutton v-if="myFav !== null" ref="favbutton"
+              :session="session"
+              :contentId="$route.params.streamId"
+              :myFav="myFav"
+              :eventBus="eventBus"
+              :config="config"
+            >
+            </streamrain-favbutton>
           </div>
         </div>
         <div v-if="stream.description">
@@ -272,7 +268,12 @@
             i.updateSecond(i.$refs.video.currentTime);
           }, 5000);
         }).catch((response) => {
+          if (response.status === 403) {
+            // Es PPV y no lo pagó
+            return i.$router.push(`/buyPPVContent/${i.$route.params.streamId}`);
+          }
           console.log(JSON.stringify(response));
+          i.$refs.errorshelper.processHttpResponse(response);
         });
       }
     }
