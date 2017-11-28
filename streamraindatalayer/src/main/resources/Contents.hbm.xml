@@ -73,7 +73,7 @@
                 <column name="id_content_2" not-null="true" />
             </many-to-many>
         </set>
-        <set name="userViewses" table="user_views" inverse="true" lazy="true" fetch="select">
+        <set name="userViewses" table="user_views" inverse="true" lazy="true" fetch="select" cascade="all">
             <key>
                 <column name="content_id" not-null="true" />
             </key>

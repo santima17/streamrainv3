@@ -167,7 +167,14 @@ public class BLContentImpl implements IBLContent {
 	}
 
 	public UserViews getLastViewToContent(Integer contentID, String userNickname, String tenantID) {
-		Set<UserViews> views = daoService.get(Contents.class, contentID, tenantID).getUserViewses();
+		//Set<UserViews> views = daoService.get(Contents.class, contentID, tenantID).getUserViewses();
+		//UserViews uViews = new UserViews();
+		Contents contents = daoService.get(Contents.class, contentID, tenantID);
+		Users user = daoUserService.getUserByNickname(userNickname, tenantID);
+		List<UserViews> views = daoContentService.findUserViewByContentAndUser(user, contents, tenantID);
+//		uViews.setContents(contents);
+//		uViews.setUsers(user);
+//		List<UserViews> views = (List<UserViews>) daoService.getAllByExample(UserViews.class, uViews, tenantID);
 		Integer id = 0;
 		UserViews result = null;
 		Iterator<UserViews> it = views.iterator();

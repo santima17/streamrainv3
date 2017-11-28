@@ -74,20 +74,27 @@ public class ContentUserController {
             response = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {
         	ContentDto contentDto = contentService.getContentById(contentID, sessionService.getCurrentTenant());
-        	//Guardar en UserView
+        	
         	UserContentViewDto userContentViewDto = new UserContentViewDto();
         	userContentViewDto.setContentID(contentID);
         	userContentViewDto.setUserNickname(userNickName);
         	userContentViewDto.setDateStart(new Date());
         	userContentViewDto.setSecond(0);
-        	contentService.addViewToContent(userContentViewDto, sessionService.getCurrentTenant());
-        	
+        	        	
         	PathTokenVODDto dto = new PathTokenVODDto();
+        	int duration = 0;
         	if (contentDto.getAlwaysAvailable() != null) {
+        		UserContentViewDto lastViewDto = contentService.getLastViewToContent(userContentViewDto, sessionService.getCurrentTenant());
+        		if (lastViewDto != null && lastViewDto.getSecond() != -1) {
+        			duration = lastViewDto.getSecond();
+        		}        		
 	        	String pathTokenVOD = Utils.obtainPathTokenVOD(contentDto.getStorageUrl(), days.intValue());
 	        	dto.setPathTokenVOD(locationDockerVOD + pathTokenVOD);
+	        	dto.setDuration(duration);
         	}else {
+        		contentService.addViewToContent(userContentViewDto, sessionService.getCurrentTenant());
         		dto.setPathTokenVOD("OK");
+        		dto.setDuration(0);
         	}
         	        	
             response = new ResponseEntity<PathTokenVODDto>(dto, HttpStatus.OK);
@@ -132,6 +139,7 @@ public class ContentUserController {
     
     @RequestMapping(value = "/addContentToFav", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserContentFavDto> voteContent(@RequestBody UserContentFavDto userContentFavDto) {
+    	userContentFavDto.setFav(true);
     	boolean addOk = contentService.addContentToFav(userContentFavDto, sessionService.getCurrentTenant());
         ResponseEntity<UserContentFavDto> response;
         if (addOk) {
@@ -144,6 +152,7 @@ public class ContentUserController {
     
     @RequestMapping(value = "/removeContentToFav", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserContentFavDto> removeVoteContent(@RequestBody UserContentFavDto userContentFavDto) {
+    	userContentFavDto.setFav(false);
     	boolean removeOk = contentService.removeContentOfFav(userContentFavDto, sessionService.getCurrentTenant());
         ResponseEntity<UserContentFavDto> response;
         if (removeOk) {
@@ -184,18 +193,14 @@ public class ContentUserController {
         return new ResponseEntity<UserContentViewDto>(lastViewDto, HttpStatus.OK);
     }
     
-    @RequestMapping(value = "/updateDuration", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/insertDuration", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserContentViewDto> updateDuration(@RequestBody UserContentViewDto userContentViewDto) {
-    	UserContentViewDto lastViewDto = contentService.getLastViewToContent(userContentViewDto, sessionService.getCurrentTenant());
-    	if (lastViewDto == null) {
-    		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    	}
-    	lastViewDto.setSecond(userContentViewDto.getSecond());
-    	boolean ok = contentService.updateViewContent(lastViewDto, lastViewDto.getContentID(), lastViewDto.getUserNickname(), sessionService.getCurrentTenant());
+    	userContentViewDto.setDateStart(new Date());
+    	boolean ok = contentService.addViewToContent(userContentViewDto, sessionService.getCurrentTenant());
     	if (!ok) {
     		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     	}
-        return new ResponseEntity<UserContentViewDto>(lastViewDto, HttpStatus.OK);
+        return new ResponseEntity<UserContentViewDto>(HttpStatus.OK);
     }
     
     

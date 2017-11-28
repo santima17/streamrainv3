@@ -115,6 +115,9 @@ public class ContentServiceImpl implements IContentService {
 	public UserContentViewDto getLastViewToContent(final UserContentViewDto userContentViewDto, final String tenantID) {
 		UserViews lastUserContentViewDto = contentBussines.getLastViewToContent(userContentViewDto.getContentID(),
 				userContentViewDto.getUserNickname(), tenantID);
+		if (lastUserContentViewDto == null) {
+			return null;
+		}
 		return userContentViewConverter.converter(lastUserContentViewDto);
 
 	}

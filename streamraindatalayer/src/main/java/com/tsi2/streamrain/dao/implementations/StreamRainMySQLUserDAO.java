@@ -61,7 +61,11 @@ public class StreamRainMySQLUserDAO extends StreamRainMySQLDAO implements IDAOUs
 		Query query = dbSession
 				.createSQLQuery("select fav from user_favs where user_id=:userID and content_id=:contentID order by date desc")
 				.setParameter("userID", id.getUserId()).setParameter("contentID", id.getContentId());
-		return (Boolean)query.list().get(0);
+		if (query.list().isEmpty()) {
+			return false;
+		}else {
+			return (Boolean)query.list().get(0);
+		}
 	}
 
 }
