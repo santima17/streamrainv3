@@ -242,6 +242,12 @@
       updateAlert: function (alert) {
         this.alert = alert;
       },
+      doTracking: function(){
+        const i = this;
+        this.intervalid1 = setInterval(function () {
+          i.updateSecond(i.$refs.video.currentTime);
+        }.bind(this), 5000);
+      },
       getVodContent: function() {
         const i = this;
         const config = this.config;
@@ -252,21 +258,21 @@
             'Authorization': i.session.token
           }
         }).then((response) => {
-          console.log(JSON.stringify(response));
-          return;
-          const url = response.body.pathTokenVOD;
-          const player = dashjs.MediaPlayer().create();
-          player.initialize(i.$refs.video, url, false);
-          if (response.body.duration > 5) {
-            player.seek(response.body.duration - 5);
-          } else {
-            player.seek(0);
-          }
-          i.$refs.current.innerHTML =i.$refs.video.load();
-          i.$refs.current.innerHTML =i.$refs.video.play();
-          i.vtime = setInterval(() => {
-            i.updateSecond(i.$refs.video.currentTime);
-          }, 5000);
+          // return;
+          // const url = response.body.pathTokenVOD;
+          // const player = dashjs.MediaPlayer().create();
+          // player.initialize(i.$refs.video, url, false);
+          // if (response.body.duration > 5) {
+          //   player.seek(response.body.duration - 5);
+          // } else {
+          //   player.seek(0);
+          // }
+          // i.$refs.current.innerHTML =i.$refs.video.load();
+          // i.$refs.current.innerHTML =i.$refs.video.play();
+          // i.vtime = setInterval(() => {
+          //   i.updateSecond(i.$refs.video.currentTime);
+          // }, 5000);
+          i.doTracking();
         }).catch((response) => {
           if (response.status === 403) {
             // Es PPV y no lo pagó
