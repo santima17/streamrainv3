@@ -78,7 +78,7 @@ public class ContentUserController {
         	if (contentDto.getIsPayPerView()) {
 	        	boolean payed = paymentService.existsPPV(contentID, userNickName, sessionService.getCurrentTenant());
 	        	if (!payed) {
-	        		return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+	        		return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 	        	}
         	}
         	
