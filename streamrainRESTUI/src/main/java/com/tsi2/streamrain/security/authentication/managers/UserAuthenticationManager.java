@@ -7,6 +7,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 
+import com.tsi2.streamrain.datatypes.user.UserDto;
+import com.tsi2.streamrain.model.generator.Users;
 import com.tsi2.streamrain.services.session.interfaces.ISessionService;
 import com.tsi2.streamrain.services.tenants.interfaces.ITenantService;
 import com.tsi2.streamrain.services.user.interfaces.IUserService;
@@ -35,6 +37,11 @@ public class UserAuthenticationManager implements AuthenticationManager {
 		boolean user = false;
 		if (!twitterLogin) {
 			user = userService.existsUser(userName, passEncrptyed, getSessionService().getCurrentTenant());
+			UserDto u = userService.getUserByNickname(userName, getSessionService().getCurrentTenant());
+			
+			if(u.isBlocked()) {
+				user = false;
+			}
 		} else {
 			user = userService.existsUserXTwitterId(twitterID, getSessionService().getCurrentTenant());
 		}
