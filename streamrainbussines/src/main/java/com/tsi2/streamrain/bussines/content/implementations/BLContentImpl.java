@@ -32,7 +32,7 @@ import com.tsi2.streamrain.model.generator.UserRatingsId;
 import com.tsi2.streamrain.model.generator.UserViews;
 import com.tsi2.streamrain.model.generator.Users;
 
-
+ 
 public class BLContentImpl implements IBLContent {
 
 	IDAOService daoService = (StreamRainMySQLDAO) StremRainDataContextLoader.contextLoader().getBean("daoService");

@@ -72,5 +72,10 @@ public class UserServiceImpl implements IUserService{
 		return userSuscriptionConverter.convertAll(userBussines.getAllSuscriptions(userNickname,tenantID)); 
 	}
 
+	@Override
+	public UserDto getUserById(Integer id, String tenantID) {
+		return userConverter.converter(userBussines.getUserById(id, tenantID));
+	}
+
 
 }

@@ -95,4 +95,8 @@ public class BLUserImpl implements IBLUser {
 		
 	}
 
+	public Users getUserById(Integer id, String tenantID) {
+		return daoService.get(Users.class, id, tenantID);
+	}
+
 }

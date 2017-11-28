@@ -12,15 +12,15 @@ import com.tsi2.streamrain.dao.implementations.StreamRainMySQLReportDAO;
 import com.tsi2.streamrain.dao.interfaces.IDAOReportService;
 
 public class BLReportImpl implements IBLReport{
-
+ 
 	IDAOReportService daoService = (StreamRainMySQLReportDAO) StremRainDataContextLoader.contextLoader().getBean("daoReportService");
 	
-	public HashMap<Date, Integer> getRankByDate(final Integer contentID, final Date dateFrom, final Date dateTo, final String tenantID) {
-		
-		List<Object[]> list = daoService.getRankByDate(contentID, dateFrom, dateTo, tenantID);
-		HashMap<Date, Integer> rateMap = new HashMap<Date, Integer>();
+	public HashMap<String, Integer> getFavByMovie(final String tenantID) {
+		  
+		List<Object[]> list = daoService.getFavByMovie(tenantID);
+		HashMap<String, Integer> rateMap = new HashMap<String, Integer>();
 		for(Object[] ur : list) {
-			rateMap.put((Date)ur[2],(Integer)ur[3]);
+			rateMap.put((String)ur[0],((BigInteger)ur[1]).intValue());
 		}
 		return rateMap;
 	}
