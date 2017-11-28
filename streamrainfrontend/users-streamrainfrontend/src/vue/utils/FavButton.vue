@@ -54,9 +54,11 @@
       sendFav: function () {
         const i = this;
         i.updateSending(true);
-        i.$http.post(`${i.config.backend}/user/content/fav`,
+        i.$http.post(`${i.config.backend}/user/content/addContentToFav`,
         {
-          fav: true
+          contentID: i.contentId,
+          userNickname: i.session.nickname,
+          isFav: true
         },
         {
           headers: {
@@ -74,9 +76,11 @@
       sendUnfav: function () {
         const i = this;
         i.updateSending(true);
-        i.$http.post(`${i.config.backend}/user/content/fav`,
+        i.$http.post(`${i.config.backend}/user/content/removeContentToFav`,
         {
-          fav: false
+          contentID: i.contentId,
+          userNickname: i.session.nickname,
+          isFav: false
         },
         {
           headers: {

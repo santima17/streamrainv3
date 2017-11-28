@@ -79,6 +79,26 @@
               'Authorization': i.session.token
             }
           }).then((response2) => {
+            let iContent = response2.body;
+            this.$http.get(`${this.config.backend}/user/getById/${entry.usersByUserId}`,
+            {
+              headers: {
+                'Authorization': i.session.token
+              }
+            }).then((response3) => {
+              iContent.sharedFromNickname = response3.body.nickname;
+              i.addContent(iContent);
+              i.decCounter();
+            });
+          });
+        });
+        i.sharedContents.forEach((entry) => {
+          this.$http.get(`${this.config.backend}/user/getById/${entry.usersByUserId}`,
+          {
+            headers: {
+              'Authorization': i.session.token
+            }
+          }).then((response2) => {
             i.addContent(response2.body);
             i.decCounter();
           });
@@ -107,6 +127,7 @@
       addContent: function (content) {
         this.contents[content.id] = content;
         this.ready = true;
+        console.log(JSON.stringify(content));
       },
       getDate: function(UNIX_timestamp){
         let a = new Date(UNIX_timestamp * 1000);

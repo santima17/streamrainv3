@@ -104,7 +104,7 @@
               :session="session"
               :stream="stream"
               :myRank="myRank"
-              :postRank="`${config.backend}/user/content/rank/${$route.params.streamId}/${session.nickname}`"
+              :postRank="`${config.backend}/user/content/voteContent`"
               :getRank="`${config.backend}/user/content/rank/${$route.params.streamId}`"
               :eventBus="eventBus"
               :config="config"

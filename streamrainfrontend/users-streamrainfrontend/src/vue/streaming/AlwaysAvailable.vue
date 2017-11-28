@@ -42,7 +42,7 @@
         <!-- alert -->
         <div class="row" id="room">
           <div class="col-sm-12">
-            <video ref="video" width="100%" controls />
+            <video v-on:ended="updateSecond(-1)" ref="video" width="100%" controls />
           </div>
         </div>
         <div class="row">
@@ -57,7 +57,7 @@
               :session="session"
               :stream="stream"
               :myRank="myRank"
-              :postRank="`${config.backend}/user/content/rank/${$route.params.streamId}/${session.nickname}`"
+              :postRank="`${config.backend}/user/content/voteContent`"
               :getRank="`${config.backend}/user/content/rank/${$route.params.streamId}`"
               :eventBus="eventBus"
               :config="config"
@@ -188,7 +188,7 @@
       updateSecond: function (second) {
         const i = this;
         const streamId = i.$route.params.streamId;
-        i.$http.put(`${i.config.backend}/user/content/updateDuration`,
+        i.$http.post(`${i.config.backend}/user/content/insertDuration`,
         {
           contentID: streamId,
           userNickname: i.session.nickname,
@@ -198,12 +198,9 @@
           headers: {
             'Authorization': i.session.token
           }
-        }).then((response) => {
-          // i.setMyRank(response.body.pathTokenVOD);
-          console.log('en el catch')
         }).catch((response) => {
-          console.log('en el catch')
-          // this.$refs.errorshelper.processHttpResponse(response);
+          console.error(JSON.stringify(response));
+          this.$refs.errorshelper.processHttpResponse(response);
         });
       },
       getMyRank: function () {
@@ -230,6 +227,7 @@
           }
         }).then((response) => {
           i.setMyFav(response.body.pathTokenVOD);
+          console.log(JSON.stringify(response.body));
         }).catch((response) => {
           this.$refs.errorshelper.processHttpResponse(response);
         });
@@ -239,7 +237,7 @@
         this.$refs.fivestarsrating.paintStars(myRank);
       },
       setMyFav: function (myFav) {
-        this.myFav = myFav;
+        this.myFav = (myFav === 'true');
       },
       updateStream: function (stream) {
         this.titleSpinner = false;
@@ -263,11 +261,16 @@
           const url = response.body.pathTokenVOD;
           const player = dashjs.MediaPlayer().create();
           player.initialize(i.$refs.video, url, false);
-          // player.seek(0);
-
+          if (response.body.duration > 5) {
+            player.seek(response.body.duration - 5);
+          } else {
+            player.seek(0);
+          }
           i.$refs.current.innerHTML =i.$refs.video.load();
           i.$refs.current.innerHTML =i.$refs.video.play();
-          i.vtime = setInterval(function(){i.$refs.current.innerHTML = i.$refs.video.currentTime;},5000)
+          i.vtime = setInterval(() => {
+            i.updateSecond(i.$refs.video.currentTime);
+          }, 5000);
         }).catch((response) => {
           console.log(JSON.stringify(response));
         });

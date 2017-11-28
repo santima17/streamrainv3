@@ -99,7 +99,11 @@
         if (rank === this.myLocalRank) return;
         const i = this;
         i.updateSending(true);
-        i.$http.post(i.postRank, {rank},
+        i.$http.post(i.postRank, {
+          contentID: i.stream.id,
+          userNickname: i.session.nickname,
+          rank
+        },
         {
           headers: {
             'Authorization': i.session.token

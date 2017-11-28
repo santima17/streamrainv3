@@ -100,7 +100,24 @@
         this.buttonText = buttonText;
       },
       buy: function () {
-        // TODO.
+        const i = this;
+        i.$http.post(`${i.config.backend}/user/payment/ppv`,
+        {
+          idContent: i.$route.params.contentId,
+          idPaymentMethods: 1,
+          userNickName: i.session.nickname,
+          datePayment: new Date()
+        },
+        {
+          headers: {
+            'Authorization': i.session.token
+          }
+        }).then((response) => {
+          console.log('Success!');
+        }).catch((response) => {
+          console.error(JSON.stringify(response));
+          this.$refs.errorshelper.processHttpResponse(response);
+        });
       },
       getDate: function(UNIX_timestamp){
         // TODO: arreglar.
