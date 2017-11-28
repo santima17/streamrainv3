@@ -29,4 +29,6 @@ public interface IBLUser {
 
 	List<UserSubscriptions> getAllSuscriptions(final String userNickname, final String tenantID);
 
+	Users getUserById(final Integer id, final String tenantID);
+
 }

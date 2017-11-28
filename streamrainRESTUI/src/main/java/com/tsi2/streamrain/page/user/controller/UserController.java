@@ -63,6 +63,18 @@ public class UserController {
         return response;
     }
     
+    @RequestMapping(value = "/getByID/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserDto> getUserById(@PathVariable Integer id) {
+    	UserDto user = userService.getUserById(id, sessionService.getCurrentTenant());
+        ResponseEntity<UserDto> response;
+        if (user == null) {
+            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            response = new ResponseEntity<>(user, HttpStatus.OK);
+        }
+        return response;
+    }
+    
     @RequestMapping(value = "/accesinformation/{userNickname}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<JanusAccessInformationDto> getAccessInformation(@PathVariable String userNickname) {
     	UserDto user = userService.getUserByNickname(userNickname, sessionService.getCurrentTenant());

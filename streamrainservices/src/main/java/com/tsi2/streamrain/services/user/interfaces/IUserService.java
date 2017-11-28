@@ -29,4 +29,6 @@ public interface IUserService {
 
 	List<UserSuscriptionDto> getAllSuscriptions(final String userNickname, final String tenantID);
 
+	UserDto getUserById(final Integer id, final String currentTenant);
+
 }

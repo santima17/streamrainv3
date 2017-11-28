@@ -1,9 +1,12 @@
 package com.tsi2.streamrain.converters.content;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.tsi2.streamrain.converters.interfaces.IConverter;
+import com.tsi2.streamrain.datatypes.content.ContentDto;
 import com.tsi2.streamrain.datatypes.content.SharedContentViewDto;
+import com.tsi2.streamrain.model.generator.Contents;
 import com.tsi2.streamrain.model.generator.SharedContents;
 
 public class SharedContentConverter implements IConverter<SharedContentViewDto, SharedContents> {
@@ -24,8 +27,13 @@ public class SharedContentConverter implements IConverter<SharedContentViewDto, 
 	}
 
 	public List<SharedContentViewDto> convertAll(List<SharedContents> source) {
-		// TODO Auto-generated method stub
-		return null;
+		List<SharedContentViewDto> dtoList = new ArrayList<SharedContentViewDto>();
+		if (source != null) {
+			for(SharedContents content : source) {
+				dtoList.add(converter(content));
+			}
+		}
+		return dtoList;
 	}
 
 	public List<SharedContents> deConvertAll(List<SharedContentViewDto> source) {

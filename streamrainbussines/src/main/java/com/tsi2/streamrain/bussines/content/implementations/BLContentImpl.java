@@ -1,6 +1,9 @@
 package com.tsi2.streamrain.bussines.content.implementations;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -29,7 +32,7 @@ import com.tsi2.streamrain.model.generator.UserRatingsId;
 import com.tsi2.streamrain.model.generator.UserViews;
 import com.tsi2.streamrain.model.generator.Users;
 
-
+ 
 public class BLContentImpl implements IBLContent {
 
 	IDAOService daoService = (StreamRainMySQLDAO) StremRainDataContextLoader.contextLoader().getBean("daoService");
@@ -233,14 +236,18 @@ public class BLContentImpl implements IBLContent {
 	
 	public List<SharedContents> getShareContent(final String userNickName, final Integer searchType, final String tenantID) {
 		Users user = daoUserService.getUserByNickname(userNickName, tenantID);
-		
-		SharedContents objectQuery = new SharedContents();
-		if(searchType == 0) {//los que compartió
-			objectQuery.setUsersByUserId(user);
-		}else {
-			objectQuery.setUsersByDestinationUserId(user); 
+		List<Object[]> list = daoUserService.getShareContent(user.getId(), searchType, tenantID);
+		List<SharedContents> newList = new ArrayList<SharedContents>();
+		for(Object[] ur : list) {
+			SharedContents sharedContent = new SharedContents();
+			sharedContent.setId((Integer)ur[0]);
+			sharedContent.setContents(daoService.get(Contents.class, (Integer)ur[1], tenantID));
+			sharedContent.setUsersByUserId(daoService.get(Users.class, (Integer)ur[2], tenantID));
+			sharedContent.setUsersByDestinationUserId(daoService.get(Users.class, (Integer)ur[3], tenantID));
+			sharedContent.setDate((Date)ur[4]);
+			newList.add(sharedContent);
 		}
-		return daoService.getAllByExample(SharedContents.class, objectQuery, tenantID);
+		return newList;
 	}
 
 

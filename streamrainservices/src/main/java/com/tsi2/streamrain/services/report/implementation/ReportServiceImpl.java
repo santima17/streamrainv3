@@ -19,14 +19,14 @@ public class ReportServiceImpl implements IReportService{
 
 	IBLReport reportBussines = (BLReportImpl) StremRainUserBussinesContextLoader.contextLoader().getBean("reportBussines");
 	
-	@Override
-	public List<RateByDateDto> rateList(final Integer contentID, final Date dateFrom, final Date dateTo, final String tenantID) {
-		List<RateByDateDto> rateList = new ArrayList<RateByDateDto>();
-		HashMap<Date, Integer> rateMap = reportBussines.getRankByDate(contentID, dateFrom, dateTo, tenantID);
-		for(Entry<Date, Integer> entry : rateMap.entrySet()) {
-		    RateByDateDto rateDto = new RateByDateDto();
-		    rateDto.setDate(entry.getKey());
-		    rateDto.setRate(entry.getValue());
+	@Override 
+	public List<UserByCountryDto> getFavByMovie(final String tenantID) {
+		List<UserByCountryDto> rateList = new ArrayList<UserByCountryDto>();
+		HashMap<String, Integer> rateMap = reportBussines.getFavByMovie(tenantID);
+		for(Entry<String, Integer> entry : rateMap.entrySet()) {
+			UserByCountryDto rateDto = new UserByCountryDto();
+		    rateDto.setCountry(entry.getKey());
+		    rateDto.setCant(entry.getValue());
 		    rateList.add(rateDto);
 		}
 		return rateList;

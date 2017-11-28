@@ -37,12 +37,11 @@ public class ReportController {
 	@Autowired
 	ISessionService sessionService;
 
-	@RequestMapping(value = "/getRateByDate", method = RequestMethod.POST)
-    public ResponseEntity<List<RateByDateDto>> getRateByDate(@RequestParam("contentID") Integer contentID, 
-    		@RequestParam("dateFrom") String dateFrom, @RequestParam("dateTo") String dateTo, HttpServletRequest request) throws ParseException {
+	@RequestMapping(value = "/getFavByMovie", method = RequestMethod.POST)
+    public ResponseEntity<List<UserByCountryDto>> getRateByDate(HttpServletRequest request) throws ParseException {
 		SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");
 		
-		List<RateByDateDto> list = reportService.rateList(contentID, formater.parse(dateFrom), formater.parse(dateTo), sessionService.getCurrentTenant());
+		List<UserByCountryDto> list = reportService.getFavByMovie(sessionService.getCurrentTenant());
 		if(list != null && !list.isEmpty()) {
 			return new ResponseEntity<>(list, HttpStatus.OK);
 		}else {
