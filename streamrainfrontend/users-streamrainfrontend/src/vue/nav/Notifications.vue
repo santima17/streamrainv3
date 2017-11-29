@@ -41,7 +41,7 @@
                 </div>
                 <div class="col-sm-3 text-right">
                   <div class="thumbnail">
-                    <img v-bind:src="contents[sharedContent.contentId].coverPictureUrl">
+                    <img v-bind:src="config.imgPath + '/' + contents[sharedContent.contentId].coverPictureUrl">
                   </div>
                 </div>
               </div>

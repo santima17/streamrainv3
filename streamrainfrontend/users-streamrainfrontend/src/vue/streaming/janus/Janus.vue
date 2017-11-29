@@ -415,10 +415,10 @@
               },
               error: function(error) {
                 Janus.error(error);
-                eventBus.$emit('setAlert', {
-                  show: true,
-                  message: `Janus ${error}`
-                });
+                // eventBus.$emit('setAlert', {
+                //   show: true,
+                //   message: `Janus ${error}`
+                // });
               },
               destroyed: function() {
                 window.location.reload();

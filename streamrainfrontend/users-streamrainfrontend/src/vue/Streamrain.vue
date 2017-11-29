@@ -73,6 +73,8 @@
       const localStorageSession = JSON.parse(localStorage.getItem(`streamrain-${this.config.tenant.name.replace(/\s/g, '')}-session`)) || {};
       if (Object.keys(localStorageSession).length) this.session = localStorageSession;
 
+      console.error(JSON.stringify(localStorageSession));
+
       const updateSession = this.updateSession;
       const removeSession = this.removeSession;
       const updateAlert = this.updateAlert;

@@ -82,9 +82,9 @@
               <span v-if="stream.type" class="label label-info">{{ stream.type }}</span>
               <span v-if="stream.isPayPerView" class="label label-danger">Pay Per View</span>
             </div>
-            <div v-if="stream.dateStart">
+            <div v-if="stream.dateStartLiveOnly">
               <br>
-              {{ getDate(stream.dateStart) }}
+              {{ stream.dateStartLiveOnly }}
             </div>
           </div>
           <div class="col-sm-6 text-right">
@@ -382,7 +382,7 @@
       },
       setMyRank: function (myRank) {
         this.myRank = myRank;
-        this.$refs.fivestarsrating.paintStars(myRank);
+        this.$refs.fivestarsrating.paintStars(parseInt(myRank));
       },
       setMyFav: function (myFav) {
         this.myFav = (myFav === 'true');

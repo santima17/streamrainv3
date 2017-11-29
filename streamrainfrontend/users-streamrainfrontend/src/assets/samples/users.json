@@ -24,5 +24,57 @@
     "integratorId": null,
     "isBanned": false,
     "blocked": false
+  },
+  {
+    "nickname": "maicol",
+    "email": "maicol@gmial.com",
+    "password": "maicol",
+    "confirmPassword": "maicol",
+    "country": "Argentina",
+    "city": "Chacarita",
+    "facebookUserId": null,
+    "twitterUserId": null,
+    "integratorId": null,
+    "isBanned": false,
+    "blocked": false
+  },
+  {
+    "nickname": "lautaro",
+    "email": "lautaro@gmial.com",
+    "password": "lautaro",
+    "confirmPassword": "lautaro",
+    "country": "Argentina",
+    "city": "Rosario",
+    "facebookUserId": null,
+    "twitterUserId": null,
+    "integratorId": null,
+    "isBanned": false,
+    "blocked": false
+  },
+  {
+    "nickname": "dario",
+    "email": "dario@gmial.com",
+    "password": "dario",
+    "confirmPassword": "dario",
+    "country": "Brasil",
+    "city": "Porto Alegre",
+    "facebookUserId": null,
+    "twitterUserId": null,
+    "integratorId": null,
+    "isBanned": false,
+    "blocked": false
+  },
+  {
+    "nickname": "ana",
+    "email": "ana@gmial.com",
+    "password": "ana",
+    "confirmPassword": "ana",
+    "country": "Uruguay",
+    "city": "Cerro Largo",
+    "facebookUserId": null,
+    "twitterUserId": null,
+    "integratorId": null,
+    "isBanned": false,
+    "blocked": false
   }
 ]

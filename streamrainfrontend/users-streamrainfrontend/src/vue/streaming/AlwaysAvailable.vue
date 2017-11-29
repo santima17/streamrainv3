@@ -361,6 +361,8 @@
           if (response.status === 403) {
             // Es PPV y no lo pagó
             return i.$router.push(`/buyPPVContent/${i.$route.params.streamId}`);
+          } else if (response.status === 401) {
+            return i.$router.push(`/subscription`);
           }
           console.log(JSON.stringify(response));
           i.$refs.errorshelper.processHttpResponse(response);

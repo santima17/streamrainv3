@@ -30,7 +30,7 @@
                       <br v-if="!streaming.isPayPerView">
                     </div>
                     <div class="panel-body text-center">
-                      <img v-bind:src="streaming.coverPictureUrl" height="150">
+                      <img v-bind:src="config.imgPath + '/' + streaming.coverPictureUrl" height="150">
                       <hr> 
                       <div class="text-info">
                         {{ streaming.type }}  
@@ -60,7 +60,7 @@
                       <br v-if="!streaming.isPayPerView">
                     </div>
                     <div class="panel-body text-center">
-                      <img v-bind:src="streaming.coverPictureUrl" height="150">
+                      <img v-bind:src="config.imgPath + '/' + streaming.coverPictureUrl" height="150">
                       <hr> 
                       <div class="text-info">
                         {{ streaming.type }}  
@@ -101,7 +101,7 @@
     },
     data () {
       return {
-        catalog: null
+        catalog: []
       }
     },
     created () {
@@ -115,7 +115,14 @@
           'Authorization': session.token
         }
       }).then((response) => {
-        i.updateCatalog(response.body);
+        // i.updateCatalog(response.body);
+        response.body.forEach((element) => {
+          if (!element.blocked) {
+            i.pushContent(element);
+          }
+          console.log(JSON.stringify(element))
+        });
+        
       }).catch((response) => {
         i.$refs.errorshelper.processHttpResponse(response);
       });
@@ -126,6 +133,9 @@
       },
       updateAlert: function (alert) {
         this.alert = alert;
+      },
+      pushContent: function (content) {
+        this.catalog.push(content);
       }
     }
   }

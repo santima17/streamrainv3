@@ -1,7 +1,8 @@
 {
-  "backend": "http://generator3.192.168.1.6.nip.io:8080/streamrainRESTUI",
+  "backend": "http://fox.192.168.1.7.nip.io:8080/streamrainRESTUI",
+  "imgPath": "http://192.168.1.7:3030/html",
   "tenant": {
-    "name": "Default Tenant"
+    "name": "Fox"
   },
-  "debug_level": 0
+  "debug_level": 1
 }

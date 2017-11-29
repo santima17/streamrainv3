@@ -26,7 +26,7 @@
                 <p class="text-center">
                   {{ content.description }}
                 </p>
-                <img v-bind:src="content.coverPictureUrl"  height="150">
+                <img v-bind:src="config.imgPath + '/' + content.coverPictureUrl"  height="150">
                 <br><br>
                 <div v-if="content.alwaysAvailable">
                   <router-link :to="`/vod/${content.id}`"><div class="btn btn-info btn-sm">Watch now!</div></router-link>
