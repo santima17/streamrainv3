@@ -45,7 +45,7 @@ public class StreamRainMySQLUserDAO extends StreamRainMySQLDAO implements IDAOUs
 		return user;
 	}
 
-	public List<UserRatings> getRankForUser(Integer contentID, Integer userID, String tenantID) {
+	public List<Object[]> getRankForUser(Integer contentID, Integer userID, String tenantID) {
 
 		Session dbSession = DBHibernateUtil.getSessionFactoryGenerator(tenantID);
 
@@ -65,7 +65,8 @@ public class StreamRainMySQLUserDAO extends StreamRainMySQLDAO implements IDAOUs
 		if (query.list().isEmpty()) {
 			return false;
 		}else {
-			return (Boolean)query.list().get(0);
+			Object[] ob = (Object[])query.list().get(0);
+			return (Boolean)ob[0];
 		}
 	}
 

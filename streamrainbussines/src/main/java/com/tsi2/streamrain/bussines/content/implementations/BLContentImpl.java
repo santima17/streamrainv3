@@ -219,10 +219,10 @@ public class BLContentImpl implements IBLContent {
 
 	public Integer getContentRaitingOfUser(Integer contentID, String userNickName, String tenantID) {
 		Users user = daoUserService.getUserByNickname(userNickName, tenantID);
-		List<UserRatings> urList = daoUserService.getRankForUser(contentID, user.getId(), tenantID);
+		List<Object[]> urList = daoUserService.getRankForUser(contentID, user.getId(), tenantID);
 		if (urList.isEmpty())
 			return 0;
-		return urList.get(0).getRate();
+		return (Integer)urList.get(0)[3];
 	}
 
 	public boolean shareContent(final Integer contentId, final Date date, final Integer usersByDestinationUserId,

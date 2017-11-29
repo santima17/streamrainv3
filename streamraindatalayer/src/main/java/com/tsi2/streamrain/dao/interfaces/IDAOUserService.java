@@ -16,7 +16,7 @@ public interface IDAOUserService extends IDAOService {
 
 	boolean findByTwitterId(final String twitterId, final String tenantID);
 	
-	List<UserRatings> getRankForUser(final Integer contentID, final Integer userID, final String tenantID);
+	List<Object[]> getRankForUser(final Integer contentID, final Integer userID, final String tenantID);
 	
 	Boolean getFav(final UserFavsId id, final String tenantID);
 	
