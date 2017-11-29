@@ -73,11 +73,13 @@ public class BLUserImpl implements IBLUser {
 
 	public List<String> getJanusPinForUser(final String userNickname, final String tenantID) {
 		Users user = daoService.getUserByNickname(userNickname, tenantID);
-		List<UserPpvs> userPpvs = daoJanusService.getPpvsForUser(user.getId(), tenantID);
+		List<Object[]> userPpvs = daoJanusService.getPpvsForUser(user.getId(), tenantID);
 		List<String> pinList = new ArrayList<String> ();
-		for(UserPpvs p : userPpvs) {
-			LiveOnlyContents loc = daoService.get(LiveOnlyContents.class, p.getId().getContentId() , tenantID);
-			pinList.add("CID="+p.getId().getContentId()+"PIN="+loc.getJanusPin());
+		for(Object[] p : userPpvs) {
+			LiveOnlyContents loc = daoService.get(LiveOnlyContents.class, (Integer)p[1] , tenantID);
+			if(loc != null && loc.getJanusPin()!=null) {
+				pinList.add("CID="+(Integer)p[1]+"PIN="+loc.getJanusPin());
+			}
 		}
 		return pinList;
 	}

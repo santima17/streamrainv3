@@ -41,6 +41,8 @@ public class ReportServiceImpl implements IReportService{
 			TopFiveDto top5 = new TopFiveDto();
 		    top5.setContentID((Integer)it.next());
 		    top5.setRank((Double)it.next());
+		    top5.setName((String)it.next());
+		    top5.setType((String)it.next());
 		    top5List.add(top5);
 		}
 		return top5List;

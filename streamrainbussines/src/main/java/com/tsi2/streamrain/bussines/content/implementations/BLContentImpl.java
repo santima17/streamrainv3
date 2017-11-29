@@ -32,22 +32,25 @@ import com.tsi2.streamrain.model.generator.UserRatingsId;
 import com.tsi2.streamrain.model.generator.UserViews;
 import com.tsi2.streamrain.model.generator.Users;
 
- 
 public class BLContentImpl implements IBLContent {
 
 	IDAOService daoService = (StreamRainMySQLDAO) StremRainDataContextLoader.contextLoader().getBean("daoService");
-	
-	IDAOContentService daoContentService = (StreamRainMySQLContentDAO) StremRainDataContextLoader.contextLoader().getBean("daoContentService");
-		
-	IDAOUserService daoUserService = (StreamRainMySQLUserDAO) StremRainDataContextLoader.contextLoader().getBean("daoUserService");
-		
-	IDAOMongoDBService daoMongoDbService = (StreamRainMongoDbDAO) StremRainDataContextLoader.contextLoader().getBean("daoMongoDBService");
-	
-	public Integer saveContent(Contents contents, final List<Integer> idCategories, final List<Integer> idSimilarContent, final String tenantID) {
+
+	IDAOContentService daoContentService = (StreamRainMySQLContentDAO) StremRainDataContextLoader.contextLoader()
+			.getBean("daoContentService");
+
+	IDAOUserService daoUserService = (StreamRainMySQLUserDAO) StremRainDataContextLoader.contextLoader()
+			.getBean("daoUserService");
+
+	IDAOMongoDBService daoMongoDbService = (StreamRainMongoDbDAO) StremRainDataContextLoader.contextLoader()
+			.getBean("daoMongoDBService");
+
+	public Integer saveContent(Contents contents, final List<Integer> idCategories,
+			final List<Integer> idSimilarContent, final String tenantID) {
 		try {
 			Set<Categories> categories = new HashSet<Categories>();
 			if (idCategories != null) {
-				for(Integer idCategory : idCategories) {
+				for (Integer idCategory : idCategories) {
 					Categories cat = daoService.get(Categories.class, idCategory, tenantID);
 					categories.add(cat);
 				}
@@ -55,18 +58,18 @@ public class BLContentImpl implements IBLContent {
 			contents.setCategorieses(categories);
 			Set<Contents> similarContents = new HashSet<Contents>();
 			if (idSimilarContent != null) {
-				for(Integer idSimilarCont : idSimilarContent) {
+				for (Integer idSimilarCont : idSimilarContent) {
 					Contents content = daoService.get(Contents.class, idSimilarCont, tenantID);
 					similarContents.add(content);
 				}
 			}
 			contents.setContentsesForIdContent1(similarContents);
 			return daoService.save(contents, tenantID);
-		}catch(Exception ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			return null;
 		}
-		
+
 	}
 
 	public List<Contents> getAllContents(final String tenantID) {
@@ -83,11 +86,12 @@ public class BLContentImpl implements IBLContent {
 
 	public void deleteContent(final Integer contentID, final String tenantID) {
 		Contents content = getContentById(contentID, tenantID);
-		//cambiar el baja logica a true
+		// cambiar el baja logica a true
 		daoService.saveOrUpdate(content, tenantID);
 	}
 
-	public boolean voteContent(final Integer contentID, final String userNickname, final Integer rank, final String tenantID) {
+	public boolean voteContent(final Integer contentID, final String userNickname, final Integer rank,
+			final String tenantID) {
 		UserRatings userRatings = new UserRatings();
 		userRatings.setRate(rank);
 		userRatings.setUseForRecommendations(true);
@@ -102,7 +106,7 @@ public class BLContentImpl implements IBLContent {
 		daoService.save(userRatings, tenantID);
 		return true;
 	}
-	
+
 	public Double getContentRaiting(Integer contentID, String tenantID) {
 		Contents content = daoService.get(Contents.class, contentID, tenantID);
 		return content.getRanking();
@@ -122,7 +126,6 @@ public class BLContentImpl implements IBLContent {
 		daoService.save(userFavs, tenantID);
 		return true;
 	}
-	
 
 	public boolean removeContentOfFav(Integer contentID, String userNickname, boolean isFav, String tenantID) {
 		UserFavs userFavs = new UserFavs();
@@ -146,12 +149,13 @@ public class BLContentImpl implements IBLContent {
 		userComments.setIsDeleted(delete);
 		userComments.setText(text);
 		userComments.setUsers(daoUserService.getUserByNickname(userNickname, tenantID));
-		//userComments.setContents(daoService.get(Contents.class, contentID, tenantID));
+		// userComments.setContents(daoService.get(Contents.class, contentID,
+		// tenantID));
 		daoService.save(userComments, tenantID);
 		return true;
-		
+
 	}
-	
+
 	public boolean getCommentsOfContent(Integer contentID, String userNickname, String tenantID) {
 		// TODO Auto-generated method stub
 		return false;
@@ -170,22 +174,19 @@ public class BLContentImpl implements IBLContent {
 	}
 
 	public UserViews getLastViewToContent(Integer contentID, String userNickname, String tenantID) {
-		//Set<UserViews> views = daoService.get(Contents.class, contentID, tenantID).getUserViewses();
-		//UserViews uViews = new UserViews();
 		Contents contents = daoService.get(Contents.class, contentID, tenantID);
 		Users user = daoUserService.getUserByNickname(userNickname, tenantID);
 		List<UserViews> views = daoContentService.findUserViewByContentAndUser(user, contents, tenantID);
-//		uViews.setContents(contents);
-//		uViews.setUsers(user);
-//		List<UserViews> views = (List<UserViews>) daoService.getAllByExample(UserViews.class, uViews, tenantID);
 		Integer id = 0;
 		UserViews result = null;
-		Iterator<UserViews> it = views.iterator();
-		while (it.hasNext()) {
-			UserViews userView = it.next();
-			if (userView.getUsers().getNickname().equals(userNickname) && userView.getId() > id) {
-				result = userView;
-				id = userView.getId();
+		if (views != null && !views.isEmpty()) {
+			Iterator<UserViews> it = views.iterator();
+			while (it.hasNext()) {
+				UserViews userView = it.next();
+				if (userView.getUsers().getNickname().equals(userNickname) && userView.getId() > id) {
+					result = userView;
+					id = userView.getId();
+				}
 			}
 		}
 		return result;
@@ -204,7 +205,7 @@ public class BLContentImpl implements IBLContent {
 			spoilerMarks.setDate(new Date());
 			spoilerMarks.setId(id);
 			return true;
-		}catch(Exception ex){
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			return false;
 		}
@@ -214,8 +215,8 @@ public class BLContentImpl implements IBLContent {
 		daoMongoDbService.saveChatMessageToContent(idJanusServer, jsonChatMessage, tenantID);
 		return true;
 	}
-  
-	public Integer getContentRaitingOfUser(Integer contentID, String userNickName, String tenantID) { 
+
+	public Integer getContentRaitingOfUser(Integer contentID, String userNickName, String tenantID) {
 		Users user = daoUserService.getUserByNickname(userNickName, tenantID);
 		List<UserRatings> urList = daoUserService.getRankForUser(contentID, user.getId(), tenantID);
 		if (urList.isEmpty())
@@ -223,8 +224,8 @@ public class BLContentImpl implements IBLContent {
 		return urList.get(0).getRate();
 	}
 
-	public boolean shareContent(final Integer contentId, final Date date, final Integer usersByDestinationUserId, final Integer usersByUserId,
-			final String tenantID) {
+	public boolean shareContent(final Integer contentId, final Date date, final Integer usersByDestinationUserId,
+			final Integer usersByUserId, final String tenantID) {
 		SharedContents sharedContent = new SharedContents();
 		sharedContent.setDate(date);
 		sharedContent.setContents(daoService.get(Contents.class, contentId, tenantID));
@@ -233,25 +234,26 @@ public class BLContentImpl implements IBLContent {
 		daoService.save(sharedContent, tenantID);
 		return true;
 	}
-	
-	public List<SharedContents> getShareContent(final String userNickName, final Integer searchType, final String tenantID) {
+
+	public List<SharedContents> getShareContent(final String userNickName, final Integer searchType,
+			final String tenantID) {
 		Users user = daoUserService.getUserByNickname(userNickName, tenantID);
 		List<Object[]> list = daoUserService.getShareContent(user.getId(), searchType, tenantID);
 		List<SharedContents> newList = new ArrayList<SharedContents>();
-		for(Object[] ur : list) {
+		for (Object[] ur : list) {
 			SharedContents sharedContent = new SharedContents();
-			sharedContent.setId((Integer)ur[0]);
-			sharedContent.setContents(daoService.get(Contents.class, (Integer)ur[1], tenantID));
-			sharedContent.setUsersByUserId(daoService.get(Users.class, (Integer)ur[2], tenantID));
-			sharedContent.setUsersByDestinationUserId(daoService.get(Users.class, (Integer)ur[3], tenantID));
-			sharedContent.setDate((Date)ur[4]);
+			sharedContent.setId((Integer) ur[0]);
+			sharedContent.setContents(daoService.get(Contents.class, (Integer) ur[1], tenantID));
+			sharedContent.setUsersByUserId(daoService.get(Users.class, (Integer) ur[2], tenantID));
+			sharedContent.setUsersByDestinationUserId(daoService.get(Users.class, (Integer) ur[3], tenantID));
+			sharedContent.setDate((Date) ur[4]);
 			newList.add(sharedContent);
 		}
 		return newList;
 	}
 
-
-	public boolean updateViewContent(final UserViews userView, final Integer contentID, final String userNickName, final String tenantID) {
+	public boolean updateViewContent(final UserViews userView, final Integer contentID, final String userNickName,
+			final String tenantID) {
 		Contents contents = daoService.get(Contents.class, contentID, tenantID);
 		Users user = daoUserService.getUserByNickname(userNickName, tenantID);
 		userView.setContents(contents);
@@ -266,12 +268,11 @@ public class BLContentImpl implements IBLContent {
 		fID.setUserId(user.getId());
 		fID.setContentId(contentID);
 		Boolean fav = daoUserService.getFav(fID, tenantID);
-		if(fav != null && fav) {
+		if (fav != null && fav) {
 			return "true";
-		}else {
+		} else {
 			return "false";
 		}
 	}
-	 
 
 }

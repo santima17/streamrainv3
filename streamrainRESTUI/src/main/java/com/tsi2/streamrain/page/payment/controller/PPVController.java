@@ -30,7 +30,6 @@ public class PPVController {
     	if (result.hasErrors()) {
     		return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
     	}
-    	sessionService.setCurrentTenant("generator1");
     	paymentService.saveUserContentPPV(userContentPPVDto, sessionService.getCurrentTenant());
         return response;
     }
