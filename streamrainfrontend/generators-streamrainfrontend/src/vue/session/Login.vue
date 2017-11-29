@@ -5,7 +5,8 @@
 				<div class="auth-box">
 					<div class="content">
 						<div class="header">
-						<div class="logo text-center"><img src="../../assets/img/tenantLogo.png" alt="..."></div>
+						<!-- <div class="logo text-center"><img :src="tenantLogo"  alt="..."></div>-->
+           <div class="logo text-center"><img src="../../assets/img/tenantLogo3.png" alt="..."></div>
 						<p class="lead">Portal de Administracion</p>
 						</div>
 						<form class="form-auth-small" v-on:submit.prevent="login">
@@ -43,6 +44,7 @@
     return {
       nickname: '',
       password: '',
+     // tenantLogo: '',
       buttonEnable: true,
       buttonText: 'Log In',
       loginError: {
@@ -51,6 +53,9 @@
       }
     }
   },
+ // created () {
+  //  this.tenantLogo = this.config.vod+'_'+this.config.tenant.name+'.png'
+  //},
   methods: {
      validation: function () {
       if (this.nickname.length < 1) {

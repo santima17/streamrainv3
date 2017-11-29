@@ -1,5 +1,12 @@
 <template>
 <div class="container-fluid text-left" style="width:95%">	
+
+<div class="col-md-12">
+	<div style="text-align:right">
+		<button type="button" class="btn btn-default" @click="cargardatos()" > Cargar Datos Demo</button>
+	</div>
+  </div>
+
 	<form enctype="multipart/form-data" @submit.prevent="crearContenido()">
 
 	<div id="basic-form" >
@@ -194,7 +201,16 @@ export default {
 			this.getContents();
     },
 	methods: {
-		cargarDatosPrueba () {
+		cargardatos () {
+		this.name = 'El senor de los anillos: Las dos torres';
+		this.description='Mientras Frodo y Sam se acercan más a Mordor con la ayuda del furtivo Gollum, la comunidad dividida se enfrenta al nuevo aliado de Sauron, Saruman, y sus hordas de Isengard.';
+		this.type = '1';
+		this.duration = 180;
+		this.directors.push({firstName: 'Peter', lastName: 'Jackson', isActor:false, isDirector:true});
+		this.actors.push({"firstName": "Elijah", "lastName": "Wood", "isActor":true, "isDirector":false});
+		this.actors.push({"firstName": "Viggo", "lastName": "Mortensen", "isActor":true, "isDirector":false});
+		this.actors.push({"firstName": "Liv", "lastName": "Tyler", "isActor":true, "isDirector":false});
+		this.actors.push({"firstName": "Orlando", "lastName": "Bloom", "isActor":true, "isDirector":false});
 
 		},
 		getContents () {
@@ -298,6 +314,7 @@ export default {
 						+`"idSimilarContents":${JSON.stringify(this.idSimilarContentsIDS)},`
 						+`"isPayPerView":${this.isPayPerView},`
 						+`"featured":${this.featured},`
+						+`"blocked": false,`
 						+`"featuredDateStart":"${this.featuredDateStart}",`
 						+`"featuredDateFinish":"${this.featuredDateFinish}"`
 						+'}');

@@ -1,6 +1,12 @@
 <template>
 <div class="container-fluid text-left" style="width:95%">
-		
+	
+<div class="col-md-12">
+	<div style="text-align:right">
+		<button type="button" class="btn btn-default" @click="cargardatos()" > Cargar Datos Demo</button>
+	</div>
+  </div>
+
 	<form enctype="multipart/form-data" @submit.prevent="crearContenidoLive()">
 
 	<div id="basic-form" >
@@ -208,6 +214,19 @@ export default {
 			this.getContents();
     },
 	methods: {
+		cargardatos () {
+		this.name = 'Defensa TSI203';
+		this.description='Presentacion Final de la plataforma StreamRain';
+		this.type = '4';
+		this.estimatedDuraction = 25;
+		this.dateStart = '2017-11-29T18:20:10';
+		this.directors.push({firstName: 'Gustavo', lastName: 'Guimerans', isActor:false, isDirector:true});
+		this.actors.push({"firstName": "Daniel", "lastName": "Martinez", "isActor":true, "isDirector":false});
+		this.actors.push({"firstName": "Santiago", "lastName": "Marquez", "isActor":true, "isDirector":false});
+		this.actors.push({"firstName": "Juan", "lastName": "Bonhomme", "isActor":true, "isDirector":false});
+		this.actors.push({"firstName": "Gabriel", "lastName": "Sanchez", "isActor":true, "isDirector":false});
+
+		},
 		getContents () {
 			const i = this;
 			i.$http.get(`${i.config.backend}/generator/createContent`,
@@ -309,6 +328,7 @@ export default {
 					+`"actors":${JSON.stringify(this.actors)},`
 					+`"idSimilarContents":${JSON.stringify(this.idSimilarContentsIDS)},`
 					+`"isPayPerView":${this.isPayPerView},`
+					+`"blocked": false,`
 					+`"featured":${this.featured},`
 					+`"featuredDateStart":"${this.featuredDateStart}",`
 					+`"featuredDateFinish":"${this.featuredDateFinish}",`

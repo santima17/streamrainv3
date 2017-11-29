@@ -116,6 +116,9 @@
       this.getJanusServers();
     },
     methods: {
+      updateJanusServer: function (janusServers) {
+        this.janusServers = janusServers;
+      },
       getJanusServers: function () {
         // Obtenemos los servidores Janus del Generator
         this.$http.get(`${this.config.backend}/generator/janus/janusServers`, {
@@ -124,7 +127,9 @@
           }
         })
         .then((result) => {
-          this.janusServers = result.body;
+          console.log(result);
+         // this.janusServers = result.body;
+          this.updateJanusServer(result.body);
         }, this);
         // Obtenemos los Janus Creation Token del Generator
         this.$http.get(`${this.config.backend}/generator/janus/janusCreationTokens`, {

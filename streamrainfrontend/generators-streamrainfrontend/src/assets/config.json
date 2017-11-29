@@ -1,5 +1,7 @@
 {
   "backend": "http://hbo.192.168.1.7.nip.io:8080/streamrainRESTUIGenerador",
+  "pathBackend": "192.168.1.7.nip.io:8080/streamrainRESTUIGenerador",
+  "vod": "http://192.168.1.7:3030/html",
   "tenant": {
     "name": "FOCCS"
   }

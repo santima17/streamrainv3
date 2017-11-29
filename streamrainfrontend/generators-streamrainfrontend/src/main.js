@@ -107,6 +107,12 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
+
+  //const tenant = to.fullPath.substring(7,to.fullPath.indexOf('.'));
+
+ // config.tenant.name = tenant;
+  //config.backend = 'http://'+tenant+config.pathBackend;
+
   if (!to.matched.length) {
     next('/notFound');
   } 

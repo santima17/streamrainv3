@@ -4,7 +4,7 @@
   <!-- NAVBAR -->
   <nav class="navbar navbar-default navbar-fixed-top" >
     <div class="container-fluid">
-      <router-link to="/"><img src="../assets/img/tenantLogo.png" ></router-link>
+      <router-link to="/"><img src="../assets/img/tenantLogo3.png" ></router-link>
       <div class="navbar-right">				
         <div id="navbar-menu">
           <ul class="nav navbar-nav">	
