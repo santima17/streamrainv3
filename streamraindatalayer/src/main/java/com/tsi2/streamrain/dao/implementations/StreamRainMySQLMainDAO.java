@@ -53,5 +53,11 @@ public class StreamRainMySQLMainDAO implements IDAOService {
 		final Criteria crit = dbSession.createCriteria(type).add(objectExample);
 		return crit.list();
 	}
+	
+	public <T> T refresh(final T o, final String tenantID) {
+		Session dbSession = DBHibernateUtil.getSessionFactoryMain();
+		dbSession.refresh(o);
+		return o;
+	}
 
 }

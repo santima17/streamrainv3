@@ -7,6 +7,7 @@ package com.tsi2.streamrain.dao.implementations;
 
 import com.tsi2.streamrain.context.DBHibernateUtil;
 import com.tsi2.streamrain.dao.interfaces.IDAOService;
+import com.tsi2.streamrain.model.generator.UserRatings;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ import org.hibernate.criterion.Example;
  *
  * @author santiago
  */
-public class StreamRainMySQLDAO implements IDAOService {
+public class StreamRainMySQLDAO implements IDAOService { 
 
 	public <T> Integer save(final T o, final String tenantID) {
 		Session dbSession = DBHibernateUtil.getSessionFactoryGenerator(tenantID);
@@ -64,6 +65,12 @@ public class StreamRainMySQLDAO implements IDAOService {
 	public <T> T merge(final T o, final String tenantID) {
 		Session dbSession = DBHibernateUtil.getSessionFactoryGenerator(tenantID);
 		return (T) dbSession.merge(o);
+	}
+	
+	public <T> T refresh(final T o, final String tenantID) {
+		Session dbSession = DBHibernateUtil.getSessionFactoryGenerator(tenantID);
+		dbSession.refresh(o);
+		return o;
 	}
 
 	public <T> boolean saveOrUpdate(final T o, final String tenantID) {

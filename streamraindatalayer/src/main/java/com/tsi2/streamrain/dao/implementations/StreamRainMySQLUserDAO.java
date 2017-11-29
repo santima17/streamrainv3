@@ -50,7 +50,7 @@ public class StreamRainMySQLUserDAO extends StreamRainMySQLDAO implements IDAOUs
 		Session dbSession = DBHibernateUtil.getSessionFactoryGenerator(tenantID);
 
 		Query query = dbSession
-				.createSQLQuery("select * from user_ratings where user_id = :userID and content_id = :contentID order by date")
+				.createSQLQuery("select * from user_ratings where user_id = :userID and content_id = :contentID order by date desc")
 				.setParameter("userID", userID).setParameter("contentID", contentID);
 
 		return query.list();
@@ -65,8 +65,7 @@ public class StreamRainMySQLUserDAO extends StreamRainMySQLDAO implements IDAOUs
 		if (query.list().isEmpty()) {
 			return false;
 		}else {
-			Object[] ob = (Object[])query.list().get(0);
-			return (Boolean)ob[0];
+			return (Boolean)query.list().get(0);
 		}
 	}
 

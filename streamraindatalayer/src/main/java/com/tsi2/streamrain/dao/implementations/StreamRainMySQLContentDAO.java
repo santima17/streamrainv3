@@ -36,17 +36,17 @@ public class StreamRainMySQLContentDAO extends StreamRainMySQLDAO implements IDA
 	
 	public List<UserViews> findUserViewByContentAndUser(Users user, Contents content, String tenantID) {
 		Session dbSession = DBHibernateUtil.getSessionFactoryGenerator(tenantID);
-		Transaction tx = dbSession.getTransaction();
+		//Transaction tx = dbSession.getTransaction();
 		try {
-			tx.begin();
+			//tx.begin();
 			List<UserViews> result = (List<UserViews>) dbSession.createQuery("select u from UserViews u where u.contents = :content and u.users = :user")
 					.setEntity("content", content)
 					.setEntity("user", user).list();
-			tx.commit();
+			//tx.commit();
 			return result;
 		} catch (Exception e) {
-			if (tx != null)
-				tx.rollback();
+			//if (tx != null)
+				//tx.rollback();
 			return null;
 		}
 	}
