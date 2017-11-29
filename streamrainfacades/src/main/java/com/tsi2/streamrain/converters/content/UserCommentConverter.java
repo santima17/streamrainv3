@@ -12,6 +12,7 @@ public class UserCommentConverter implements IConverter<UserContentCommentDto, U
 
 	public UserContentCommentDto converter(UserComments source) {
 		UserContentCommentDto commentDto = new UserContentCommentDto();
+		commentDto.setId(source.getId());
 		commentDto.setContentID(source.getAlwaysAvailableContents().getContentId());
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		commentDto.setDate(formatter.format(source.getDate()));

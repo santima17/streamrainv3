@@ -195,7 +195,15 @@ public class ContentUserController {
     }
     
     @RequestMapping(value = "/comment", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<UserContentCommentDto>> getAllCommentOfContent(@RequestParam Integer contentId) {    	List<UserContentCommentDto> list = contentService.getAllCommentOfContent(contentId, sessionService.getCurrentTenant());
+    public ResponseEntity<List<UserContentCommentDto>> getAllCommentOfContent(@RequestParam Integer contentId) {    	
+    	List<UserContentCommentDto> list = contentService.getAllCommentOfContent(contentId, sessionService.getCurrentTenant());
+    	if (!list.isEmpty()) {
+    		for (UserContentCommentDto commentDto : list) {
+    			if (contentService.isSpoilerComment(commentDto.getId(), sessionService.getCurrentTenant())) {
+    				commentDto.setSpoiler(true);
+    			}
+    		}
+    	}
         return new ResponseEntity<List<UserContentCommentDto>>(list, HttpStatus.OK);
     }
     

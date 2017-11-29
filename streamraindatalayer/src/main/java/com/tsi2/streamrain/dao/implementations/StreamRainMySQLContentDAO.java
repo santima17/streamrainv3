@@ -51,4 +51,16 @@ public class StreamRainMySQLContentDAO extends StreamRainMySQLDAO implements IDA
 		}
 	}
 
+	public boolean existSpolierMark(Integer commentId, String tenantID) {
+		Session dbSession = DBHibernateUtil.getSessionFactoryGenerator(tenantID);
+		Query query = dbSession
+				.createSQLQuery("select * from spoiler_marks where user_comment_id=:commentId")
+				.setParameter("commentId", commentId);
+		if (query.list().isEmpty()) {
+			return false;
+		}else {
+			return true;
+		}
+	}
+
 }

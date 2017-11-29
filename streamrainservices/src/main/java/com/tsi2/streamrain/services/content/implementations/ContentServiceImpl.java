@@ -173,4 +173,8 @@ public class ContentServiceImpl implements IContentService {
 		return userCommentConverter.convertAll(list);
 	}
 
+	public boolean isSpoilerComment(final Integer commentId, final String tenantID) {
+		return contentBussines.isSpoilerComment(commentId, tenantID);
+	}
+
 }

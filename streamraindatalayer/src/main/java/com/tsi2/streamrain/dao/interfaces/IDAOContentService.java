@@ -11,5 +11,7 @@ public interface IDAOContentService extends IDAOService{
 	int updateContentView(final UserViews userViews, final String tenantID);
 	
 	List<UserViews> findUserViewByContentAndUser(Users user, Contents content, String tenantID);
+	
+	boolean existSpolierMark(final Integer commentId, final String tenantID);
 
 }

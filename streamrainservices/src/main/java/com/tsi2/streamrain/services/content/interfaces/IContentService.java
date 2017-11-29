@@ -36,6 +36,8 @@ public interface IContentService {
 	UserContentViewDto getLastViewToContent(final UserContentViewDto userContentViewDto, final String tenantID);
 
 	boolean spolierMarkComment(final String userNickName, final Integer userCommentId, final String tenantID);
+	
+	boolean isSpoilerComment(final Integer commentId, final String tenantID);
 
 	List<JanusLiveOnlyInfoDto> getAllLiveOnlyContents(final String tenantID);
 

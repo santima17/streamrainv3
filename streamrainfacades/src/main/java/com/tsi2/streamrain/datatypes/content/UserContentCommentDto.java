@@ -2,6 +2,8 @@ package com.tsi2.streamrain.datatypes.content;
 
 public class UserContentCommentDto {
 	
+	private Integer id;
+	
 	private Integer contentID;
 	
 	private String userNickname;
@@ -11,7 +13,16 @@ public class UserContentCommentDto {
 	private boolean isDelete;
 	
 	private String date;
+	
+	private boolean spoiler;
 		
+	
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
 	public Integer getContentID() {
 		return contentID;
 	}
@@ -41,5 +52,11 @@ public class UserContentCommentDto {
 	}
 	public void setDate(String date) {
 		this.date = date;
+	}
+	public boolean isSpoiler() {
+		return spoiler;
+	}
+	public void setSpoiler(boolean spoiler) {
+		this.spoiler = spoiler;
 	}
 }

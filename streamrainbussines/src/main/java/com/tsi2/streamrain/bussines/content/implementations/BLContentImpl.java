@@ -1,9 +1,7 @@
 package com.tsi2.streamrain.bussines.content.implementations;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -274,6 +272,10 @@ public class BLContentImpl implements IBLContent {
 		} else {
 			return "false";
 		}
+	}
+
+	public boolean isSpoilerComment(final Integer commentId, final String tenantID) {
+		return daoContentService.existSpolierMark(commentId, tenantID);
 	}
 
 }

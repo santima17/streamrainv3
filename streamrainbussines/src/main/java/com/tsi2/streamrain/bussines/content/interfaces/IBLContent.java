@@ -39,6 +39,8 @@ public interface IBLContent {
 	UserViews getLastViewToContent(Integer contentID, String userNickname, String tenantID);
 
 	boolean spolierMarkComment(final String userNickName, final Integer userCommentId, final String tenantID);
+	
+	boolean isSpoilerComment(final Integer commentId, final String tenantID);
 
 	boolean addChatMessageToContent(final Integer idJanusServer, final String jsonChatMessage, String tenantID);
 
