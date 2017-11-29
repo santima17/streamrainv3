@@ -194,11 +194,11 @@ public class ContentUserController {
 		return response;
     }
     
-    @RequestMapping(value = "/getLastViewOfContent", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserContentViewDto> getLastViewOfContent(@RequestBody UserContentViewDto userContentViewDto) {
+    /*@RequestMapping(value = "/getAllComment", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<>> getLastViewOfContent(@RequestParam Integer contentId) {
     	UserContentViewDto lastViewDto = contentService.getLastViewToContent(userContentViewDto, sessionService.getCurrentTenant());
         return new ResponseEntity<UserContentViewDto>(lastViewDto, HttpStatus.OK);
-    }
+    }*/
     
     @RequestMapping(value = "/insertDuration", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserContentViewDto> updateDuration(@RequestBody UserContentViewDto userContentViewDto) {
