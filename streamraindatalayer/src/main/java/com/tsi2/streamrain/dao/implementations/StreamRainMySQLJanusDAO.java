@@ -40,7 +40,7 @@ public class StreamRainMySQLJanusDAO extends StreamRainMySQLDAO implements IDAOJ
 		return (String)query.uniqueResult();
 	}
 
-	public List<UserPpvs> getPpvsForUser(final int userID, final String tenantID) {
+	public List<Object[]> getPpvsForUser(final int userID, final String tenantID) {
 		Session dbSession = DBHibernateUtil.getSessionFactoryGenerator(tenantID);
 
 		Query query = dbSession.createSQLQuery("select * from user_ppvs where user_id = :userID").setParameter("userID",

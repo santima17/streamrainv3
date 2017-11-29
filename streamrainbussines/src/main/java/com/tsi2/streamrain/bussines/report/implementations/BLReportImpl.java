@@ -32,6 +32,8 @@ public class BLReportImpl implements IBLReport{
 		for(Object[] ur : list) {
 			rateMap.add((Integer)ur[0]);
 			rateMap.add((Double)ur[4]);
+			rateMap.add((String)ur[1]);
+			rateMap.add((String)ur[3]);
 		}
 		return rateMap;
 	}
