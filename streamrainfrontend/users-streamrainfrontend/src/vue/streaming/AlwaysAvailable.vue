@@ -30,7 +30,8 @@
         <!-- alert -->
         <div class="row" id="room">
           <div class="col-sm-12">
-            <video v-on:ended="updateSecond(-1)" ref="video" width="100%" controls />
+            <!-- <video v-on:ended="updateSecond(-1)" ref="video" width="100%" controls /> -->
+            <video ref="video" width="100%" controls />
           </div>
         </div>
         <div class="row">
@@ -93,16 +94,31 @@
             </div>
           </div>
         </div>
+        <div v-if="comments" class="list-group">
+          <a v-for="(comment, index) in comments" :key="index" class="list-group-item">
+            <div class="row">
+              <div class="col-sm-9">
+                <h4 class="list-group-item-heading">{{ comment.userNickname }}</h4>
+                <p class="list-group-item-text">
+                  <div class="text-info">{{ comment.text }}</div>
+                  <div>{{ comment.date }}</div>
+                </p>
+              </div>
+              <div class="col-sm-3 text-right">
+                <a v-on:click="activePrivateMessageMode" role="button">Spoiler <i class="glyphicon glyphicon-eye-close"></i></a>
+              </div>
+            </div>
+          </a>
+          <div class="input-group margin-bottom-sm">
+            <input v-model="messageToSend" class="form-control" type="text" placeholder="Write a comment" autocomplete="off" id="datasend"></input>
+            <span v-on:click="sendMessage" class="input-group-addon btn btn-info">Send</span>
+          </div>
+        </div>
         <streamrain-errorshelper ref="errorshelper"
           :eventBus="eventBus"
           :config="config"
         >
         </streamrain-errorshelper>
-        <a role="button" v-on:click="updateSecond(0)">Send Second 0</a>
-        <a role="button" v-on:click="updateSecond(5)">Send Second 5</a>
-        <a role="button" v-on:click="updateSecond(10)">Send Second 10</a>
-        <a role="button" v-on:click="updateSecond(25)">Send Second 25</a>
-        <a role="button" v-on:click="updateSecond(-1)">Send Second -1</a>
         <hr>
       </div>
       <div class="col-sm-2 sidenav">
@@ -152,12 +168,29 @@
         },
         messageToSend: null,
         titleSpinner: true,
+        lastSecondPosted: 0,
+        comments: null
       }
     },
     created () {
       const i = this;
       const streamId = this.$route.params.streamId;
       const session = this.session;
+
+      this.$http.get(`${this.config.backend}/user/content/${streamId}`,
+      {
+        headers: {
+          'Authorization': session.token
+        }
+      }).then((response) => {
+        const newStream = response.body;
+        i.updateStream(newStream);
+        i.getVodContent();
+        i.getMyRank();
+        i.getMyFav();
+      }).catch((response) => {
+        this.$refs.errorshelper.processHttpResponse(response);
+      });
 
       this.$http.get(`${this.config.backend}/user/content/${streamId}`,
       {
@@ -181,7 +214,15 @@
       clearInterval(this.vtime);
     },
     methods: {
+      updateLastSecondPosted: function (lastSecondPosted) {
+        this.lastSecondPosted = lastSecondPosted;
+      },
       updateSecond: function (second) {
+        if (second === this.lastSecondPosted) return;
+        this.updateLastSecondPosted(second);
+        if (Math.floor(second) === Math.floor(this.$refs.video.duration)) {
+          second = -1;
+        }
         const i = this;
         const streamId = i.$route.params.streamId;
         i.$http.post(`${i.config.backend}/user/content/insertDuration`,
@@ -258,22 +299,14 @@
             'Authorization': i.session.token
           }
         }).then((response) => {
-          // return;
-          // const url = response.body.pathTokenVOD;
-          // const player = dashjs.MediaPlayer().create();
-          // player.initialize(i.$refs.video, url, false);
-          // if (response.body.duration > 5) {
-          //   player.seek(response.body.duration - 5);
-          // } else {
-          //   player.seek(0);
-          // }
-          // i.$refs.current.innerHTML =i.$refs.video.load();
-          // i.$refs.current.innerHTML =i.$refs.video.play();
-          // i.vtime = setInterval(() => {
-          //   i.updateSecond(i.$refs.video.currentTime);
-          // }, 5000);
+          const url = response.body.pathTokenVOD;
+          const player = dashjs.MediaPlayer().create();
+          player.initialize(i.$refs.video, url, false);
+          i.updateLastSecondPosted(response.body.duration);
+          player.seek(response.body.duration);
           i.doTracking();
         }).catch((response) => {
+          console.error(JSON.stringify(response))
           if (response.status === 403) {
             // Es PPV y no lo pagó
             return i.$router.push(`/buyPPVContent/${i.$route.params.streamId}`);

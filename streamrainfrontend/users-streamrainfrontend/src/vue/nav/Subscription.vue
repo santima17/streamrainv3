@@ -20,26 +20,6 @@
             Get Subscription
           </button>
         </div>
-        <!-- <div>
-          <form name="aa" action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">                     
-            <input type="hidden" name="currency_code" value="USD">
-              <input type="hidden" name="charset" value="utf-8">
-              <input type="hidden" name="business" value="santiagomarquezmusic@gmail.com">
-              <input type="hidden" name="paymentaction" value="sale">
-              <input type="hidden" name="item_name" value="StreamRain Suscription - Aca va variable de tipo">
-              <input type="hidden" name="item_number" value="5">
-              <input type="hidden" name="amount" value="10">
-              <input type="hidden" name="first_name" value="Becky">
-              <input type="hidden" name="last_name" value="gif">
-              <input type="hidden" name="address_override" value="0">
-              <input type='hidden' name='return' value='http://hbo.127.0.0.1.nip.io:8080/streamrainRESTUI/user/payment/subscription/paypal/1/kaque/mensual'>
-              <input type='hidden' name='rm' value='2'>
-              <input type='hidden' name='cancel_return' value='https://'>
-              <input type="hidden" name="cmd" value="_xclick">
-              <input type="image" src="https://www.paypalobjects.com/es_XC/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-              <img alt="" border="0" src="https://www.paypalobjects.com/es_XC/i/scr/pixel.gif" width="1" height="1">    
-          </form>
-        </div> -->
         <streamrain-errorshelper ref="errorshelper"
           :eventBus="eventBus"
           :config="config"
@@ -93,9 +73,9 @@
         const i = this;
         const now = new Date();
         let days = 7;
-        if (subscriptionType === 'Month') {
+        if (this.subscriptionType === 'Month') {
           days = 31;
-        } else if (subscriptionType === 'Year') {
+        } else if (this.subscriptionType === 'Year') {
           days = 365;
         }
         this.$http.post(`${this.config.backend}/user/payment/subscription`,
