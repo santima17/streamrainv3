@@ -5,6 +5,12 @@
 <div class="container-fluid text-left" style="width:95%">
 	
   <div class="col-md-12">
+	<div style="text-align:right">
+		<button type="button" class="btn btn-default" @click="cargardatos()" > Cargar Datos Demo</button>
+	</div>
+  </div>
+
+  <div class="col-md-12">
 		<div class="form-group">
 			<label>Nombre</label>
 			<input type="text" class="form-control" v-model="name" required>
@@ -56,10 +62,12 @@
 <div class="col-md-6">
 	<div class="form-group">
 		<label for="picture" class="control-label">Logo</label>
-		<input type="file" @change="subirArchivo('picture', $event.target.files)" class="input-file">
+		<input type="file" @change="subirArchivo('logo', $event.target.files)" class="input-file">
 	</div>  
 </div> 
 	
+ 
+
   <div class="col-md-12">
 	<div style="text-align:right">
 		<button type="submit" class="btn btn-primary" :disabled="!buttonEnable">{{ buttonText }} <i v-if="!buttonEnable" class="fa fa-spinner fa-spin" style="font-size"></i></button>
@@ -101,10 +109,20 @@ export default {
 			buttonEnable: true,
       buttonText: 'Guardar GENERADOR'
 		}
-	},
+  },
+  mounted () {
+      $("#password").password('toggle');
+  },
 	methods: {
-		cargarDatosPrueba () {
-
+		cargardatos () {
+      this.name ='sonnny';
+			this.dbIp='127.0.0.1';
+			this.dbPort= '3306';
+			this.dbUser='root';
+			this.dbPassword= 'apagon23';
+			this.generatorUser= 'adminsonnny';
+      this.generatorPassword= '1234';
+      
 		},
 		subirArchivo(fieldName, fileList) {	    
         	this.formData.append(fieldName, fileList[0], fileList[0].name);
