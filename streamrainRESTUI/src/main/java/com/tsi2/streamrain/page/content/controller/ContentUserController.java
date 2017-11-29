@@ -218,13 +218,13 @@ public class ContentUserController {
     }
     
     
-    @RequestMapping(value = "/spolierComment", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<SpoilerMarkDto> spolierMarkComment(@RequestParam String userNickName, @RequestParam Integer userCommentId) {
+    @RequestMapping(value = "/spoiler", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<SpoilerMarkDto> spolierMarkComment(@RequestParam Integer userCommentId, @RequestParam String userNickName) {
     	boolean ok = contentService.spolierMarkComment(userNickName, userCommentId, sessionService.getCurrentTenant());
     	if (ok) {
-    		return new ResponseEntity<>(HttpStatus.OK);
+    		return new ResponseEntity<SpoilerMarkDto>(HttpStatus.OK);
     	}else {
-    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    		return new ResponseEntity<SpoilerMarkDto>(HttpStatus.BAD_REQUEST);
     	}
     }
     

@@ -46,7 +46,7 @@ public interface IBLContent {
 
 	Integer getContentRaitingOfUser(final Integer contentID, final String userNickName, final String tenantID);
 
-	boolean shareContent(final Integer contentId, final Date date, final Integer usersByDestinationUserId, final Integer usersByUserId,
+	boolean shareContent(final Integer contentId, final Date date, final String usersByDestinationUserId, final String usersByUserId,
 			final String tenantID);
 
 	List<SharedContents> getShareContent(final String userNickName, final Integer searchType, final String tenantID);

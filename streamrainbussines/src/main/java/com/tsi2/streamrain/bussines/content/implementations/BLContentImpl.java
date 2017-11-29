@@ -204,6 +204,7 @@ public class BLContentImpl implements IBLContent {
 			spoilerMarks.setUsers(user);
 			spoilerMarks.setDate(new Date());
 			spoilerMarks.setId(id);
+			daoService.save(spoilerMarks, tenantID);
 			return true;
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -224,13 +225,13 @@ public class BLContentImpl implements IBLContent {
 		return (Integer)urList.get(0)[3];
 	}
 
-	public boolean shareContent(final Integer contentId, final Date date, final Integer usersByDestinationUserId,
-			final Integer usersByUserId, final String tenantID) {
+	public boolean shareContent(final Integer contentId, final Date date, final String usersByDestinationUserId,
+			final String usersByUserId, final String tenantID) {
 		SharedContents sharedContent = new SharedContents();
 		sharedContent.setDate(date);
 		sharedContent.setContents(daoService.get(Contents.class, contentId, tenantID));
-		sharedContent.setUsersByDestinationUserId(daoUserService.get(Users.class, usersByDestinationUserId, tenantID));
-		sharedContent.setUsersByUserId(daoUserService.get(Users.class, usersByUserId, tenantID));
+		sharedContent.setUsersByDestinationUserId(daoUserService.getUserByNickname(usersByDestinationUserId, tenantID));
+		sharedContent.setUsersByUserId(daoUserService.getUserByNickname(usersByUserId, tenantID));
 		daoService.save(sharedContent, tenantID);
 		return true;
 	}

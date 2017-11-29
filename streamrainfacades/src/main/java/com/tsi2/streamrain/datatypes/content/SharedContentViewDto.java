@@ -6,9 +6,11 @@ public class SharedContentViewDto {
 	
     private Integer id;
     private Integer contentId;
-    private Integer usersByDestinationUserId;
-    private Integer usersByUserId;
+    private String usersByDestinationUserId;
+    private String usersByUserId;
     private Date date;
+    private String dateShared;
+    
 	public Integer getId() {
 		return id;
 	}
@@ -21,16 +23,16 @@ public class SharedContentViewDto {
 	public void setContentId(Integer contentId) {
 		this.contentId = contentId;
 	}
-	public Integer getUsersByDestinationUserId() {
+	public String getUsersByDestinationUserId() {
 		return usersByDestinationUserId;
 	}
-	public void setUsersByDestinationUserId(Integer usersByDestinationUserId) {
+	public void setUsersByDestinationUserId(String usersByDestinationUserId) {
 		this.usersByDestinationUserId = usersByDestinationUserId;
 	}
-	public Integer getUsersByUserId() {
+	public String getUsersByUserId() {
 		return usersByUserId;
 	}
-	public void setUsersByUserId(Integer usersByUserId) {
+	public void setUsersByUserId(String usersByUserId) {
 		this.usersByUserId = usersByUserId;
 	}
 	public Date getDate() {
@@ -39,10 +41,12 @@ public class SharedContentViewDto {
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	
-    
-    
-    
-    
+	public String getDateShared() {
+		return dateShared;
+	}
+	public void setDateShared(String dateShared) {
+		this.dateShared = dateShared;
+	}
+	 
 
 }

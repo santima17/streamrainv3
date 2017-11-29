@@ -111,8 +111,8 @@ public class ContentGeneratorController extends AbstractController {
 			Thread.sleep(5000);
 			boolean isLiveContent = false;
 			contentDto.setTenantId(sessionService.getCurrentTenant());
-			String pictureName = locationDockerVOD + "/html/" + picture.getOriginalFilename();
-			contentDto.setCoverPictureUrl(pictureName);
+			//String pictureName = locationDockerVOD + "/html/" + picture.getOriginalFilename();
+			contentDto.setCoverPictureUrl(picture.getOriginalFilename());
 			if ("1".equals(contentDto.getType())) {
 				contentDto.setType("Pelicula");
 				contentDto.setAlwaysAvailable(true);
