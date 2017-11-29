@@ -6,7 +6,7 @@
 					<div class="content">
 						<div class="header">
 						<!-- <div class="logo text-center"><img :src="tenantLogo"  alt="..."></div>-->
-           <div class="logo text-center"><img src="../../assets/img/tenantLogo3.png" alt="..."></div>
+           <div class="logo text-center"><img :src="config.vod + config.tenant.logoImg" height="100" alt="..."></div>
 						<p class="lead">Portal de Administracion</p>
 						</div>
 						<form class="form-auth-small" v-on:submit.prevent="login">

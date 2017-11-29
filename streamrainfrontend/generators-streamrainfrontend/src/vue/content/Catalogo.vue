@@ -221,7 +221,7 @@ export default {
 							}
 						}
 						if (key === 'coverPictureUrl') {
-							coverPictureUrl = `${this.config.vod}`+value;
+							coverPictureUrl = `${this.config.vod}/` + value;
 						}
 						if (key === 'duration') {
 							duration = value;

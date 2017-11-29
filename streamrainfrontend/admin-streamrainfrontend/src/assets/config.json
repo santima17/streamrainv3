@@ -1,4 +1,4 @@
 {
   "backend": "http://192.168.1.7:8080/streamrainRESTUIAdmin",
-  "vod": "http:/192.168.1.7:3030/html"
+  "vod": "http://192.168.1.7:3030/html"
 }
