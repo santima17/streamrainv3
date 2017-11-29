@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import VueRouter  from 'vue-router';
-import VueResource from 'vue-resource'
+import VueResource from 'vue-resource';
+import VueCarousel from 'vue-carousel';
 // Header & footer
-import Streamrain from './vue/Streamrain.vue'
+import Streamrain from './vue/Streamrain.vue';
 // Session
 import Login from './vue/session/Login.vue';
 import Logout from './vue/session/Logout.vue';
@@ -20,6 +21,7 @@ import AlwaysAvailable from './vue/streaming/AlwaysAvailable.vue';
 
 Vue.use(VueRouter);
 Vue.use(VueResource);
+Vue.use(VueCarousel);
 
 // ======================================================
 const config = require('./assets/config');
@@ -118,7 +120,7 @@ router.beforeEach((to, from, next) => {
   } 
   else {
     document.title = to.meta.title;
-    if (to.path !== '/login' && to.path !== '/signup' && to.path !== '/') {
+    if (to.path !== '/login' && to.path !== '/signup') {
       const session = JSON.parse(localStorage.getItem(`streamrain-${config.tenant.name.replace(/\s/g, '')}-session`));
       if (session !== undefined && session !== null) {
         next();

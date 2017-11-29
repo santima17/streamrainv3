@@ -8,13 +8,13 @@
           {{ stream.name }} <i v-if="titleSpinner && !alert.show" class="fa fa-spinner fa-spin" style="font-size"></i>
         </h1>
         <div>
-            <streamrain-sharebutton v-if="stream.id"  ref="sharebutton"
-              :session="session"
-              :contentId="$route.params.streamId"
-              :eventBus="eventBus"
-              :config="config"
-            >
-            </streamrain-sharebutton>
+          <streamrain-sharebutton v-if="stream.id"  ref="sharebutton"
+            :session="session"
+            :contentId="$route.params.streamId"
+            :eventBus="eventBus"
+            :config="config"
+          >
+          </streamrain-sharebutton>
         </div>
         <br>
         <!-- alert -->
@@ -30,7 +30,6 @@
         <!-- alert -->
         <div class="row" id="room">
           <div class="col-sm-12">
-            <!-- <video v-on:ended="updateSecond(-1)" ref="video" width="100%" controls /> -->
             <video ref="video" width="100%" controls />
           </div>
         </div>
@@ -95,23 +94,32 @@
           </div>
         </div>
         <div v-if="comments" class="list-group">
+          <h4>Comments</h4>
           <a v-for="(comment, index) in comments" :key="index" class="list-group-item">
             <div class="row">
               <div class="col-sm-9">
-                <h4 class="list-group-item-heading">{{ comment.userNickname }}</h4>
+                <p class="list-group-item-text text-info lead">{{ comment.userNickname }}</p>
                 <p class="list-group-item-text">
-                  <div class="text-info">{{ comment.text }}</div>
+                  <div v-if="comment.spoiler">
+                    <a data-toggle="collapse" :href="`#spoiler${index}`">Spoiler</a>
+                    <div :id="`spoiler${index}`" class="panel-collapse collapse">
+                      {{ comment.text }}
+                    </div>
+                  </div>
+                  <div v-if="!comment.spoiler">
+                    {{ comment.text }}
+                  </div>
                   <div>{{ comment.date }}</div>
                 </p>
               </div>
               <div class="col-sm-3 text-right">
-                <a v-on:click="activePrivateMessageMode" role="button">Spoiler <i class="glyphicon glyphicon-eye-close"></i></a>
+                <a v-on:click="markAsSpoiler(comment.id)" role="button"><i class="lead glyphicon glyphicon-eye-close"></i></a>
               </div>
             </div>
           </a>
           <div class="input-group margin-bottom-sm">
-            <input v-model="messageToSend" class="form-control" type="text" placeholder="Write a comment" autocomplete="off" id="datasend"></input>
-            <span v-on:click="sendMessage" class="input-group-addon btn btn-info">Send</span>
+            <input v-model="commentToSend" class="form-control" type="text" placeholder="Write a comment" autocomplete="off" id="datasend"></input>
+            <span v-on:click="sendComment" class="input-group-addon btn btn-info">Send</span>
           </div>
         </div>
         <streamrain-errorshelper ref="errorshelper"
@@ -169,7 +177,8 @@
         messageToSend: null,
         titleSpinner: true,
         lastSecondPosted: 0,
-        comments: null
+        comments: null,
+        commentToSend: null
       }
     },
     created () {
@@ -192,17 +201,13 @@
         this.$refs.errorshelper.processHttpResponse(response);
       });
 
-      this.$http.get(`${this.config.backend}/user/content/${streamId}`,
+      this.$http.get(`${this.config.backend}/user/content/comment?contentId=${streamId}`,
       {
         headers: {
           'Authorization': session.token
         }
       }).then((response) => {
-        const newStream = response.body;
-        i.updateStream(newStream);
-        i.getVodContent();
-        i.getMyRank();
-        i.getMyFav();
+        i.updateComments(response.body);
       }).catch((response) => {
         this.$refs.errorshelper.processHttpResponse(response);
       });
@@ -214,6 +219,52 @@
       clearInterval(this.vtime);
     },
     methods: {
+      markAsSpoiler: function (id) {
+        const i = this;
+        const contentID = this.$route.params.streamId;
+        i.$http.get(`${i.config.backend}/user/content/spoiler?userCommentId=${id}&userNickName=${i.session.nickname}`,
+        {
+          headers: {
+            'Authorization': i.session.token
+          }
+        }).then((response) => {
+          console.log('spoileo')
+        }).catch((response) => {
+          console.error(JSON.stringify(response));
+          this.$refs.errorshelper.processHttpResponse(response);
+        });
+      },
+      pushComment: function (comment) {
+        this.comments.push(comment);
+      },
+      updateComments: function (comments) {
+        this.comments = comments;
+      },
+      updateCommentToSend: function (commentToSend) {
+        this.commentToSend = commentToSend;
+      },
+      sendComment: function () {
+        const i = this;
+        const contentID = this.$route.params.streamId;
+        i.$http.post(`${i.config.backend}/user/content/addCommentToContent`,
+        {
+          contentID,
+          userNickname: i.session.nickname,
+          text: i.commentToSend,
+          isDelete: false
+        },
+        {
+          headers: {
+            'Authorization': i.session.token
+          }
+        }).then((response) => {
+          i.pushComment(response.body);
+          i.updateCommentToSend(null);
+        }).catch((response) => {
+          console.error(JSON.stringify(response));
+          this.$refs.errorshelper.processHttpResponse(response);
+        });
+      },
       updateLastSecondPosted: function (lastSecondPosted) {
         this.lastSecondPosted = lastSecondPosted;
       },
@@ -270,8 +321,8 @@
         });
       },
       setMyRank: function (myRank) {
-        this.myRank = myRank;
-        this.$refs.fivestarsrating.paintStars(myRank);
+        this.myRank = parseInt(myRank);
+        this.$refs.fivestarsrating.paintStars(parseInt(myRank));
       },
       setMyFav: function (myFav) {
         this.myFav = (myFav === 'true');

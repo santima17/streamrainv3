@@ -36,7 +36,7 @@
                         {{ streaming.type }}  
                       </div>
                       <div>
-                        {{ getDate(streaming.dateStart) }}
+                        {{ streaming.dateStartLiveOnly }}
                       </div>
                       <hr>
                       <router-link :to="`/live/${streaming.id}`"><div class="btn btn-info">Watch now!</div></router-link>
@@ -126,18 +126,6 @@
       },
       updateAlert: function (alert) {
         this.alert = alert;
-      },
-      getDate: function(UNIX_timestamp){
-        let a = new Date(UNIX_timestamp * 1000);
-        let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-        let year = a.getFullYear();
-        let month = months[a.getMonth()];
-        let date = a.getDate();
-        let hour = a.getHours();
-        let min = a.getMinutes();
-        let sec = a.getSeconds();
-        let time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min ;
-        return time;
       }
     }
   }

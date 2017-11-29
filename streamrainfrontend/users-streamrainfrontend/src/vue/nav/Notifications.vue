@@ -29,7 +29,7 @@
                     <div v-if="!contents[sharedContent.contentId].ranking">Ranking: Unranked</div>
                     <br>
                     <div class="text-info">Shared by {{ contents[sharedContent.contentId].sharedFromNickname }}</div>
-                    <div class="">{{ sharedContent.date }}</div>
+                    <div class="">{{ sharedContent.dateShared }}</div>
                     <br>
                     <div v-if="contents[sharedContent.contentId].alwaysAvailable">
                       <router-link :to="`/vod/${sharedContent.contentId}`"><div class="btn btn-info btn-sm">Watch now!</div></router-link>
@@ -37,7 +37,6 @@
                     <div v-if="!contents[sharedContent.contentId].alwaysAvailable">
                       <router-link :to="`/live/${sharedContent.contentId}`"><div class="btn btn-info btn-sm">Watch now!</div></router-link>
                     </div>
-                    <!-- <div>{{ contents[sharedContent.contentId] }}</div> -->
                   </p>
                 </div>
                 <div class="col-sm-3 text-right">
@@ -100,20 +99,18 @@
             }
           }).then((response2) => {
             let iContent = response2.body;
-            this.$http.get(`${this.config.backend}/user/getById/${entry.usersByUserId}`,
-            {
-              headers: {
-                'Authorization': i.session.token
-              }
-            }).then((response3) => {
-              iContent.sharedFromNickname = response3.body.nickname;
-              i.addContent(iContent);
-              i.decCounter();
-            });
+            iContent.sharedFromNickname = entry.usersByUserId;
+            i.addContent(iContent);
+            i.decCounter();
           });
         });
       }).catch((response1) => {
-        i.$refs.errorshelper.processHttpResponse(response1);
+        if (response1.status === 400) {
+          i.updateCounter(0);
+          i.updateReady(true);
+        } else {
+          i.$refs.errorshelper.processHttpResponse(response1);
+        }
       });
     },
     methods: {
@@ -138,17 +135,8 @@
         this.ready = true;
         console.log(JSON.stringify(content));
       },
-      getDate: function(UNIX_timestamp){
-        let a = new Date(UNIX_timestamp * 1000);
-        let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-        let year = a.getFullYear();
-        let month = months[a.getMonth()];
-        let date = a.getDate();
-        let hour = a.getHours();
-        let min = a.getMinutes();
-        let sec = a.getSeconds();
-        let time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min ;
-        return time;
+      updateReady: function (ready) {
+        this.ready = ready;
       }
     }
   }

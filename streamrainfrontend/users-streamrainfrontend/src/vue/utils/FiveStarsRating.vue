@@ -80,7 +80,7 @@
             'Authorization': i.session.token
           }
         }).then((response) => {
-          i.updateLocalRanking((response.body.pathTokenVOD).toFixed(1));
+          i.updateLocalRanking((response.body).toFixed(1));
         }).catch((response) => {
           console.error(JSON.stringify(response));
           i.$refs.errorshelper.processHttpResponse(response);
