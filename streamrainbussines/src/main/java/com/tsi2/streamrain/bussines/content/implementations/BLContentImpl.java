@@ -103,6 +103,7 @@ public class BLContentImpl implements IBLContent {
 		uID.setDate(new Date());
 		userRatings.setId(uID);
 		daoService.save(userRatings, tenantID);
+		daoService.refresh(daoService.get(Contents.class, contentID, tenantID), tenantID);
 		return true;
 	}
 
