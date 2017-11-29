@@ -29,10 +29,8 @@ public interface IContentService {
 	
 	boolean removeContentOfFav(final UserContentFavDto userContentFavDto, final String tenantID);
 
-	boolean addCommentToContent(final UserContentCommentDto userContentCommentDto, final String tenantID);
+	UserContentCommentDto addCommentToContent(final UserContentCommentDto userContentCommentDto, final String tenantID);
 	
-	boolean getCommentsOfContent(final UserContentCommentDto userContentCommentDto, final String tenantID);
-
 	boolean addViewToContent(final UserContentViewDto userContentViewDto, final String tenantID);
 	
 	UserContentViewDto getLastViewToContent(final UserContentViewDto userContentViewDto, final String tenantID);
@@ -52,5 +50,7 @@ public interface IContentService {
 	boolean updateViewContent(final UserContentViewDto lastViewDto, final Integer contentID, final String userNickName, final String tenantID);
 
 	String isFav(final Integer contentID, final String userNickName, final String tenantID);
+
+	List<UserContentCommentDto> getAllCommentOfContent(final Integer contentId, final String tenantID);
 
 }

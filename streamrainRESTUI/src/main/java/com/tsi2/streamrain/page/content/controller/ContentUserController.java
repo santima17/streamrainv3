@@ -172,10 +172,10 @@ public class ContentUserController {
     
     @RequestMapping(value = "/addCommentToContent", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserContentCommentDto> addCommentToContent(@RequestBody UserContentCommentDto userContentCommentDto) {
-    	boolean voteOk = contentService.addCommentToContent(userContentCommentDto, sessionService.getCurrentTenant());
+    	UserContentCommentDto result = contentService.addCommentToContent(userContentCommentDto, sessionService.getCurrentTenant());
         ResponseEntity<UserContentCommentDto> response;
-        if (voteOk) {
-            response = new ResponseEntity<>(HttpStatus.OK);
+        if (result != null) {
+            response = new ResponseEntity<UserContentCommentDto>(result, HttpStatus.OK);
         } else {
             response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -194,11 +194,10 @@ public class ContentUserController {
 		return response;
     }
     
-    /*@RequestMapping(value = "/getAllComment", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<>> getLastViewOfContent(@RequestParam Integer contentId) {
-    	UserContentViewDto lastViewDto = contentService.getLastViewToContent(userContentViewDto, sessionService.getCurrentTenant());
-        return new ResponseEntity<UserContentViewDto>(lastViewDto, HttpStatus.OK);
-    }*/
+    @RequestMapping(value = "/comment", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<UserContentCommentDto>> getAllCommentOfContent(@RequestParam Integer contentId) {    	List<UserContentCommentDto> list = contentService.getAllCommentOfContent(contentId, sessionService.getCurrentTenant());
+        return new ResponseEntity<List<UserContentCommentDto>>(list, HttpStatus.OK);
+    }
     
     @RequestMapping(value = "/insertDuration", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserContentViewDto> updateDuration(@RequestBody UserContentViewDto userContentViewDto) {

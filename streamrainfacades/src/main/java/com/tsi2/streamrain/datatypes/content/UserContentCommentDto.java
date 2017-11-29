@@ -9,8 +9,9 @@ public class UserContentCommentDto {
 	private String text;
 	
 	private boolean isDelete;
-
 	
+	private String date;
+		
 	public Integer getContentID() {
 		return contentID;
 	}
@@ -34,5 +35,11 @@ public class UserContentCommentDto {
 	}
 	public void setDelete(boolean isDelete) {
 		this.isDelete = isDelete;
+	}
+	public String getDate() {
+		return date;
+	}
+	public void setDate(String date) {
+		this.date = date;
 	}
 }

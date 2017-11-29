@@ -19,6 +19,7 @@ import com.tsi2.streamrain.dao.interfaces.IDAOContentService;
 import com.tsi2.streamrain.dao.interfaces.IDAOMongoDBService;
 import com.tsi2.streamrain.dao.interfaces.IDAOService;
 import com.tsi2.streamrain.dao.interfaces.IDAOUserService;
+import com.tsi2.streamrain.model.generator.AlwaysAvailableContents;
 import com.tsi2.streamrain.model.generator.Categories;
 import com.tsi2.streamrain.model.generator.Contents;
 import com.tsi2.streamrain.model.generator.SharedContents;
@@ -142,23 +143,23 @@ public class BLContentImpl implements IBLContent {
 		return true;
 	}
 
-	public boolean addCommentToContent(Integer contentID, String userNickname, String text, boolean delete,
+	public UserComments addCommentToContent(Integer contentID, String userNickname, String text, boolean delete,
 			String tenantID) {
 		UserComments userComments = new UserComments();
 		userComments.setDate(new Date());
 		userComments.setIsDeleted(delete);
 		userComments.setText(text);
 		userComments.setUsers(daoUserService.getUserByNickname(userNickname, tenantID));
-		// userComments.setContents(daoService.get(Contents.class, contentID,
-		// tenantID));
+		userComments.setAlwaysAvailableContents(daoService.get(AlwaysAvailableContents.class, contentID, tenantID));
 		daoService.save(userComments, tenantID);
-		return true;
-
+		return userComments;
 	}
 
-	public boolean getCommentsOfContent(Integer contentID, String userNickname, String tenantID) {
-		// TODO Auto-generated method stub
-		return false;
+	public List<UserComments> getCommentsOfContent(final Integer contentID, final String tenantID) {
+		AlwaysAvailableContents content = daoService.get(AlwaysAvailableContents.class, contentID, tenantID);
+		UserComments userComments = new UserComments();
+		userComments.setAlwaysAvailableContents(content);
+		return daoService.getAllByExample(UserComments.class, userComments, tenantID);
 	}
 
 	public boolean addViewToContent(Integer contentID, String userNickname, Date dateStart, Date dateFinish, int second,

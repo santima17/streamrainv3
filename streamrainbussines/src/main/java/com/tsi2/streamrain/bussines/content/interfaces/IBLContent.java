@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import com.tsi2.streamrain.model.generator.Contents;
 import com.tsi2.streamrain.model.generator.SharedContents;
+import com.tsi2.streamrain.model.generator.UserComments;
 import com.tsi2.streamrain.model.generator.UserViews;
 
 public interface IBLContent {
@@ -23,7 +24,7 @@ public interface IBLContent {
 	boolean addContentToFav(final Integer contentID, final String userNickname, final boolean isFav,
 			final String tenantID);
 
-	boolean addCommentToContent(final Integer contentID, final String userNickname, final String text,
+	UserComments addCommentToContent(final Integer contentID, final String userNickname, final String text,
 			final boolean delete, final String tenantID);
 
 	boolean addViewToContent(final Integer contentID, final String userNickname, final Date dateStart, final Date dateFinish,
@@ -33,7 +34,7 @@ public interface IBLContent {
 
 	boolean removeContentOfFav(Integer contentID, String userNickname, boolean fav, String tenantID);
 
-	boolean getCommentsOfContent(Integer contentID, String userNickname, String tenantID);
+	List<UserComments> getCommentsOfContent(final Integer contentID, final String tenantID);
 
 	UserViews getLastViewToContent(Integer contentID, String userNickname, String tenantID);
 

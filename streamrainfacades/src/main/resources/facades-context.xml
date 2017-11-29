@@ -34,7 +34,6 @@
 	
 	<bean id="userSuscriptionConverter" class="com.tsi2.streamrain.converters.user.UserSuscriptionConverter" />
 	
-	
-	
-			
+	<bean id="userCommentConverter" class="com.tsi2.streamrain.converters.content.UserCommentConverter" />
+				
 </beans>

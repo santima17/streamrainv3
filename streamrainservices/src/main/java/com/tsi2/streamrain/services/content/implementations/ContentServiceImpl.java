@@ -12,6 +12,7 @@ import com.tsi2.streamrain.converters.janus.JanusLiveContentConverter;
 import com.tsi2.streamrain.converters.content.ContentConverter;
 import com.tsi2.streamrain.converters.content.UserContentViewConverter;
 import com.tsi2.streamrain.converters.content.SharedContentConverter;
+import com.tsi2.streamrain.converters.content.UserCommentConverter;
 import com.tsi2.streamrain.datatypes.content.ContentDto;
 import com.tsi2.streamrain.datatypes.content.SharedContentViewDto;
 import com.tsi2.streamrain.datatypes.content.UserContentCommentDto;
@@ -20,6 +21,7 @@ import com.tsi2.streamrain.datatypes.content.UserContentViewDto;
 import com.tsi2.streamrain.datatypes.janus.JanusLiveOnlyInfoDto;
 import com.tsi2.streamrain.model.generator.Contents;
 import com.tsi2.streamrain.model.generator.SharedContents;
+import com.tsi2.streamrain.model.generator.UserComments;
 import com.tsi2.streamrain.model.generator.UserViews;
 import com.tsi2.streamrain.services.content.interfaces.IContentService;
 
@@ -34,11 +36,16 @@ public class ContentServiceImpl implements IContentService {
 	IConverter<UserContentViewDto, UserViews> userContentViewConverter = (UserContentViewConverter) StremRainFacadesContextLoader
 			.contextLoader().getBean("userContentViewConverter");
 	
-	IConverter<JanusLiveOnlyInfoDto, Contents>  janusLiveContentInfoConverter = (JanusLiveContentConverter) StremRainFacadesContextLoader.contextLoader()
+	IConverter<JanusLiveOnlyInfoDto, Contents> janusLiveContentInfoConverter = (JanusLiveContentConverter) StremRainFacadesContextLoader.contextLoader()
 			.getBean("janusLiveContentInfoConverter");
 	
-	IConverter<SharedContentViewDto, SharedContents>  sharedContentConverter = (SharedContentConverter) StremRainFacadesContextLoader.contextLoader()
+	IConverter<SharedContentViewDto, SharedContents> sharedContentConverter = (SharedContentConverter) StremRainFacadesContextLoader.contextLoader()
 			.getBean("sharedContentConverter"); 
+	
+	IConverter<UserContentCommentDto, UserComments> userCommentConverter = (UserCommentConverter) StremRainFacadesContextLoader.contextLoader()
+			.getBean("userCommentConverter"); 
+	
+	
 
 	public Integer saveContent(final ContentDto content, final String tenantID) {
 		return contentBussines.saveContent((Contents) contentConverter.deConverter(content), content.getIdCategories(), content.getIdSimilarContents(), tenantID);
@@ -92,16 +99,10 @@ public class ContentServiceImpl implements IContentService {
 	}
 
 	@Override
-	public boolean addCommentToContent(final UserContentCommentDto userContentCommentDto, final String tenantID) {
-		return contentBussines.addCommentToContent(userContentCommentDto.getContentID(),
+	public UserContentCommentDto addCommentToContent(final UserContentCommentDto userContentCommentDto, final String tenantID) {
+		return userCommentConverter.converter(contentBussines.addCommentToContent(userContentCommentDto.getContentID(),
 				userContentCommentDto.getUserNickname(), userContentCommentDto.getText(),
-				userContentCommentDto.isDelete(), tenantID);
-	}
-
-	@Override
-	public boolean getCommentsOfContent(final UserContentCommentDto userContentCommentDto, final String tenantID) {
-		return contentBussines.getCommentsOfContent(userContentCommentDto.getContentID(),
-				userContentCommentDto.getUserNickname(), tenantID);
+				userContentCommentDto.isDelete(), tenantID));
 	}
 
 	@Override
@@ -165,6 +166,11 @@ public class ContentServiceImpl implements IContentService {
 	@Override
 	public String isFav(final Integer contentID, final String userNickName, final String tenantID) {
 		return contentBussines.isFav(contentID, userNickName, tenantID); 
+	}
+
+	public List<UserContentCommentDto> getAllCommentOfContent(final Integer contentId, final String tenantID) {
+		List<UserComments> list = contentBussines.getCommentsOfContent(contentId, tenantID);
+		return userCommentConverter.convertAll(list);
 	}
 
 }
